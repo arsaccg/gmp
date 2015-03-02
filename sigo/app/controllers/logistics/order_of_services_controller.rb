@@ -43,8 +43,8 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          AND os.description LIKE '%#{keyword}%'
-          ORDER BY os.id ASC
+          AND (os.description LIKE '%#{keyword}%' OR e.name LIKE '%#{keyword}%')
+          ORDER BY os.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}"
         )
@@ -56,9 +56,9 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          AND os.description LIKE '%#{keyword}%'
+          AND (os.description LIKE '%#{keyword}%' OR e.name LIKE '%#{keyword}%')
           AND os.state LIKE '"+state.to_s+"'
-          ORDER BY os.id ASC
+          ORDER BY os.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}"
         )        
@@ -72,7 +72,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          ORDER BY os.id ASC
+          ORDER BY os.id DESC
           LIMIT #{display_length}"
         )
       else
@@ -84,7 +84,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.entity_id = e.id
           AND os.state LIKE '"+state.to_s+"'
           AND os.status = 1
-          ORDER BY os.id ASC
+          ORDER BY os.id DESC
           LIMIT #{display_length}"
         )        
       end
@@ -97,7 +97,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          ORDER BY os.id ASC"
+          ORDER BY os.id DESC"
         )
       else
         os = ActiveRecord::Base.connection.execute("
@@ -108,7 +108,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.state LIKE '"+state.to_s+"'
           AND os.entity_id = e.id
           AND os.status = 1
-          ORDER BY os.id ASC"
+          ORDER BY os.id DESC"
         )
       end 
     else
@@ -120,7 +120,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          ORDER BY os.id ASC
+          ORDER BY os.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}
           "
@@ -134,7 +134,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.entity_id = e.id
           AND os.state LIKE '"+state.to_s+"'
           AND os.status = 1
-          ORDER BY os.id ASC
+          ORDER BY os.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}
           "
@@ -189,6 +189,42 @@ class Logistics::OrderOfServicesController < ApplicationController
       array << [dos[6].to_s.rjust(5, '0'), @state, dos[2].to_s, dos[3].to_s, @fecha, dos[4].strftime("%d/%m/%Y").to_s, dos[5].to_s, @action]
     end
     render json: { :aaData => array }
+  end
+
+  def display_proveedor
+    p "_--------------------------------------------------------------------------------------------------------------------------------------"
+    p params[:element]
+    if params[:element].nil?
+      word = params[:q]
+    else
+      word = params[:element]
+    end
+    p word
+    p "-----------------------------------------------------------------------------------------------------------------------------------------"
+    article_hash = Array.new
+    @name = get_company_cost_center('cost_center')
+    type_ent = TypeEntity.find_by_preffix('P').id
+    if !params[:element].nil?
+      articles = ActiveRecord::Base.connection.execute("
+            SELECT ent.id, ent.name, ent.ruc
+            FROM entities ent, entities_type_entities ete
+            WHERE ete.type_entity_id = "+type_ent.to_s+"
+            AND ete.entity_id = ent.id
+            AND ent.id = " + word.to_s
+          )      
+    else
+      articles = ActiveRecord::Base.connection.execute("
+            SELECT ent.id, ent.name, ent.ruc
+            FROM entities ent, entities_type_entities ete
+            WHERE ete.type_entity_id = "+type_ent.to_s+"
+            AND ete.entity_id = ent.id
+            AND (ent.id = '%"+word.to_s+"%' OR ent.name LIKE '%" + word.to_s + "%' OR ent.ruc LIKE '%" + word.to_s + "%')"
+          )
+    end
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s, 'code' => art[2], 'name' => art[1]}
+    end
+    render json: {:articles => article_hash}
   end
 
   def show

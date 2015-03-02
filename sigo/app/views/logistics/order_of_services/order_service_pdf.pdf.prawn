@@ -29,9 +29,9 @@ repeat :all do
         columns(2).font_style = :bold
       end
 
-  table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN","Sector","FASE", "U.M", "CANTIDAD", "PRECIO UNITARIO", "% Dscto", "SUBTOTAL"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [35,70,260,40,40,30,65,100,55,75]) do
-        style(columns(0..9), :align => :center)
-        style(columns(0..9), :size => 9)
+  table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN","G. T.","SECTOR","FASE","U.M", "CANTIDAD", "PRECIO UNI.", "% Dscto", "SUBTOTAL"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [35,70,230,80,40,40,30,65,50,55,75]) do
+        style(columns(0..10), :align => :center)
+        style(columns(0..10), :size => 9)
         columns(0).font_style = :bold
         columns(1).font_style = :bold
         columns(2).font_style = :bold
@@ -42,6 +42,7 @@ repeat :all do
         columns(7).font_style = :bold
         columns(8).font_style = :bold
         columns(9).font_style = :bold
+        columns(10).font_style = :bold
       end
 end
 move_down 3
@@ -50,13 +51,18 @@ index=1
   if(@orderServiceDetails.first==data)
   stroke_horizontal_rule
   end
+  if(data.working_group_id==nil)
+  wg="-"
+  else
+  wg = data.working_group.name
+  end
   pad(1) {
-    table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount.to_f*data.unit_price.to_f, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [35,70,260,40,40,30,65,100,55,75]) do
+    table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{wg}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount.to_f*data.unit_price.to_f, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [35,70,230,80,40,40,30,65,50,55,75]) do
       columns(0).font_style = :bold
       style(columns(0..1), :align => :center)
-      style(columns(3..6), :align => :center)
-      style(columns(7..9), :align => :right)
-      style(columns(0..9), :size => 7.5)
+      style(columns(3..7), :align => :center)
+      style(columns(8..10), :align => :right)
+      style(columns(0..10), :size => 7.5)
     end
     move_down 2
     text "#{data.description}", :size => 7.5
