@@ -57,7 +57,7 @@ index=1
   wg = data.working_group.name
   end
   pad(1) {
-    table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{wg}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount.to_f*data.unit_price.to_f, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [35,70,230,80,40,40,30,65,50,55,75]) do
+    table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{wg}", "#{data.sector.code}", "#{data.phase.code rescue '-'}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount.to_f*data.unit_price.to_f, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [35,70,230,80,40,40,30,65,50,55,75]) do
       columns(0).font_style = :bold
       style(columns(0..1), :align => :center)
       style(columns(3..7), :align => :center)
