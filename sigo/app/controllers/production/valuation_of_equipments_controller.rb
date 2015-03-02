@@ -716,43 +716,54 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       igv_amount_porce_orden = (igv_total_facturar/(total_facturar_sin_igv + amortizacion_adelanto_sin_igv))/100
     end
 
-    # Creacion
-    code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') # next_code
-
-    order_of_service = OrderOfService.new(
-      state: 'approved', 
-      date_of_issue: Time.now.strftime('%Y-%m-%d'), 
-      description: description_serv,
-      method_of_payment_id: 1,
-      entity_id: @subcontract_equip.entity_id,
-      user_id: current_user.id,
-      cost_center_id: cost_center_id,
-      created_at: Time.now,
-      updated_at: Time.now,
-      money_id: 1,
-      exchange_of_rate: nil,
-      date_of_service: Time.now.strftime('%Y-%m-%d'), 
-      code: code_str
-    )
     extra_calculation = ExtraCalculation.find_by_concept("OTROS").id rescue nil
-    if order_of_service.save
-      ids_sec_phase = ActiveRecord::Base.connection.execute("
-        SELECT art.article_id, art.unit_of_measurement_id, subd.price_no_igv, SUM(ped.effective_hours), subd.price_no_igv*SUM(ped.effective_hours), ped.sector_id, ped.phase_id, ped.working_group_id
-        FROM part_of_equipments pe, part_of_equipment_details ped, subcontract_equipment_details subd, articles_from_cost_center_" + cost_center_id.to_s + " art
-        WHERE pe.id = ped.part_of_equipment_id
-        AND subd.article_id = art.id
-        AND pe.equipment_id = subd.id
-        AND subd.subcontract_equipment_id = " + @subcontract_equip.id.to_s + "
-        AND pe.subcontract_equipment_id = " + @subcontract_equip.id.to_s + "
-        AND pe.cost_center_id = " + cost_center_id.to_s + "
-        AND date BETWEEN '"+ @valuationofequipment.start_date.to_s+"' AND '"+ @valuationofequipment.end_date.to_s+"'
-        GROUP BY pe.equipment_id
-        ORDER BY art.id")
-      flag = false
-      eliminacion = true
-      if ids_sec_phase.count.to_i > 0 
-        desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
-        ids_sec_phase.each do |isp|
+
+    ####
+    @start_date = @valuationofequipment.start_date
+    @end_date = @valuationofequipment.end_date
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+cost_center_id.to_s+" WHERE start_date <= '"+@start_date.to_s+"' AND end_date >= '"+@start_date.to_s+"'").first[0].split[1].to_s
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+cost_center_id.to_s+" WHERE start_date <= '"+@end_date.to_s+"' AND end_date >= '"+@end_date.to_s+"'").first[0].split[1].to_s
+    @start_date = @start_date.to_date.strftime('%d-%m-%y')
+    @end_date = @end_date.to_date.strftime('%d-%m-%y')
+    txt_week_valuation = "SEMANA N° " + @inicio + ' - ' + @fin + ' / DEL ' + @start_date + ' AL ' + @end_date
+    ####
+
+    ids_sec_phase = ActiveRecord::Base.connection.execute("
+      SELECT art.article_id, art.unit_of_measurement_id, subd.price_no_igv, SUM(ped.effective_hours), subd.price_no_igv*SUM(ped.effective_hours), ped.sector_id, ped.phase_id, ped.working_group_id, CONCAT( subd.code,  ' ', art.name ) as name_article 
+      FROM part_of_equipments pe, part_of_equipment_details ped, subcontract_equipment_details subd, articles_from_cost_center_" + cost_center_id.to_s + " art
+      WHERE pe.id = ped.part_of_equipment_id
+      AND subd.article_id = art.id
+      AND pe.equipment_id = subd.id
+      AND subd.subcontract_equipment_id = " + @subcontract_equip.id.to_s + "
+      AND pe.subcontract_equipment_id = " + @subcontract_equip.id.to_s + "
+      AND pe.cost_center_id = " + cost_center_id.to_s + "
+      AND date BETWEEN '"+ @valuationofequipment.start_date.to_s+"' AND '"+ @valuationofequipment.end_date.to_s+"'
+      GROUP BY pe.equipment_id
+      ORDER BY art.id")
+    flag = false
+    eliminacion = true
+    if ids_sec_phase.count.to_i > 0 
+      desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
+      ids_sec_phase.each do |isp|
+        # Creacion
+        code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
+
+        order_of_service = OrderOfService.new(
+          state: 'approved', 
+          date_of_issue: Time.now.strftime('%Y-%m-%d'), 
+          description: code_str + ' - ' + txt_week_valuation + ' - ' + isp[8].to_s,
+          method_of_payment_id: 1,
+          entity_id: @subcontract_equip.entity_id,
+          user_id: current_user.id,
+          cost_center_id: cost_center_id,
+          created_at: Time.now,
+          updated_at: Time.now,
+          money_id: 1,
+          exchange_of_rate: nil,
+          date_of_service: Time.now.strftime('%Y-%m-%d'), 
+          code: code_str
+        )
+        if order_of_service.save
           order_service_detail = OrderOfServiceDetail.new(
             order_of_service_id: order_of_service.id,
             article_id: isp[0],
@@ -791,23 +802,23 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             flag = false
           end
         end
-      else
-        eliminacion = false
       end
+    else
+      eliminacion = false
+    end
 
 
-      if flag
-        @valuationofequipment.update_attribute(:locked, true)
-        flash[:notice] = "Se ha creado correctamente una nueva orden de servicio desde la Valorización " + @valuationofequipment.name.to_s + ' ' + @valuationofequipment.code.to_s
-        redirect_to :action => :index
-      elsif eliminacion
-        ActiveRecord::Base.connection.execute("DELETE FROM order_service_detail WHERE order_of_service_id = " + order_of_service.id.to_s)
-        ActiveRecord::Base.connection.execute("DELETE FROM order_services WHERE id = " + order_of_service.id.to_s)
-        flash[:error] = "Ha ocurrido un error interno, informe acerca de lo ocurrido"
-        redirect_to :action => :index
-      else
-        redirect_to :action => :index
-      end
+    if flag
+      @valuationofequipment.update_attribute(:locked, true)
+      flash[:notice] = "Se ha creado correctamente una nueva orden de servicio desde la Valorización " + @valuationofequipment.name.to_s + ' ' + @valuationofequipment.code.to_s
+      redirect_to :action => :index
+    elsif eliminacion
+      ActiveRecord::Base.connection.execute("DELETE FROM order_service_detail WHERE order_of_service_id = " + order_of_service.id.to_s)
+      ActiveRecord::Base.connection.execute("DELETE FROM order_services WHERE id = " + order_of_service.id.to_s)
+      flash[:error] = "Ha ocurrido un error interno, informe acerca de lo ocurrido"
+      redirect_to :action => :index
+    else
+      redirect_to :action => :index
     end
   end
 
