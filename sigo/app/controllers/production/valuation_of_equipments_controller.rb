@@ -716,7 +716,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       igv_amount_porce_orden = (igv_total_facturar/(total_facturar_sin_igv + amortizacion_adelanto_sin_igv))/100
     end
 
-    extra_calculation = ExtraCalculation.find_by_concept("OTROS").id rescue nil
+    #extra_calculation = ExtraCalculation.find_by_concept("OTROS").id rescue nil
 
     ####
     @start_date = @valuationofequipment.start_date
@@ -743,9 +743,10 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     flag = false
     eliminacion = true
     if ids_sec_phase.count.to_i > 0 
-      desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
+      #desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
       ids_sec_phase.each do |isp|
         # Creacion
+        break
         code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
 
         order_of_service = OrderOfService.new(
@@ -777,7 +778,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             unit_price_before_igv: isp[4],
             igv: igv_orden,
             quantity_igv: igv_amount_porce_orden*isp[4],
-            discount_after: desc_after_for_order*(-1),
+            discount_after: 0,
+            #discount_after: desc_after_for_order*(-1),
             unit_price_igv: igv_amount_orden*isp[4], # (total_facturar_sin_igv - amortizacion_adelanto_sin_igv + igv_total_facturar),
             description: description_serv,
             received: nil,
@@ -785,22 +787,23 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             updated_at: Time.now,
           )
 
-          if order_service_detail.save
-            flag = true
-            order_service_detail_extra_calc = OrderServiceExtraCalculation.new(
-              order_of_service_detail_id: order_service_detail.id,
-              extra_calculation_id: extra_calculation,
-              value: order_service_detail.discount_after.to_f.abs,
-              apply: "after",
-              operation: "minius",
-              created_at: Time.now,
-              updated_at: Time.now,
-              type: "soles"
-            )
-            order_service_detail_extra_calc.save
-          else
-            flag = false
-          end
+          #if order_service_detail.save
+          #  flag = true
+          #  order_service_detail_extra_calc = OrderServiceExtraCalculation.new(
+          #    order_of_service_detail_id: order_service_detail.id,
+          #    extra_calculation_id: extra_calculation,
+          #    value: order_service_detail.discount_after.to_f.abs,
+          #    apply: "after",
+          #    operation: "minius",
+          #    created_at: Time.now,
+          #    updated_at: Time.now,
+          #    type: "soles"
+          #  )
+          #  order_service_detail_extra_calc.save
+          #else
+            #flag = false
+          #end
+          flag = true
         end
       end
     else
