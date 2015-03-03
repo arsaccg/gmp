@@ -1,0 +1,102 @@
+.modal-dialog{ style: "width: 750px;" }
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %strong{"style"=>"font-size:16px;"}= "DE : "
+          %a{"style"=>"font-size:16px;font-weight:bold;color:#1E486E;"}="C.C. "+@cost_center1.code.to_s+"-"+@cost_center1.name.to_s
+          %br
+          %strong{"style"=>"font-size:16px;"}="AL  : "
+          %a{"style"=>"font-size:16px;font-weight:bold;color:#1E486E;"}="C.C. "+@cost_center2.code.to_s+"-"+@cost_center2.name.to_s
+    .modal-body
+      %input#cc{"style"=>"display:none;", :value=>"#{@cc}"}
+      %fieldset
+        %table.table.table-striped.table-bordered.table-hover.smart-form
+          %thead.panel-heading
+            %tr
+              %th{"style"=>"text-align:center;font-size:13px;"} Total
+              %th{"style"=>"text-align:center;font-size:13px;"} Devuelto
+              %th{"style"=>"text-align:center;font-size:13px;"} Pendiente
+          %tbody{:style=>"font-size:100%;"}
+            %th{"style"=>"color:#5f5f5f;text-align:center;font-size:12px;"}= number_to_currency(@total.to_f, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center;font-size:12px;"}= number_to_currency(@devuelto.to_f, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center;font-size:12px;"}= number_to_currency(@total.to_f - @devuelto.to_f, unit: 'S/. ', precision: 2)
+        %br
+        %br
+
+        %table#dt_basic.table.table-striped.table-bordered.table-hover.smart-form
+          %thead.panel-heading
+            %tr
+              %th{"style"=>"font-size:12px;text-align:center;"} N° Prestamo
+              %th{"style"=>"font-size:12px;text-align:center;"} Fecha de Prestamo
+              %th{"style"=>"font-size:12px;text-align:center;"} Monto
+              %th{"style"=>"font-size:12px;width:100px;text-align:center;"} Estado
+              %th{"style"=>"font-size:12px;text-align:center;"} Acciones
+          %tbody
+            - count = 1
+            - @loan.each do |loan|
+              %tr{"style"=>"padding:0px;margin:0px;"}
+                %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}
+                  %a.link_detail{:href=>"javascript:show_details("+loan.id.to_s+","+count.to_s+");" }="Prestamo N° "+ count.to_s
+                %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}=loan.loan_date.strftime("%d-%m-%Y").to_s
+                %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}= number_to_currency(loan.amount.to_f, unit: 'S/. ', precision: 2)
+                %td{"style"=>"font-size:12px;padding:0px;margin:0px;height:10px;"}
+                  -if loan.state == "1"
+                    %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;margin-left:9px;margin-top:3px;"} Pendiente
+                  -else
+                    %span.label.label-success{"style"=>"background-color: #3276B1;color:white;text-align:center;width:100px;font-weight:bold;margin-left:9px;margin-top:3px;"} Devuelto
+                %td{"style"=>"text-align:center;padding:0px;margin:0px;height:10px;"}
+                  %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+','+"#{@cost_center1.id}"+','+"#{@cost_center2.id}"+','+"#{@cc}"+');', "style"=>" color: white;font-size:11px;margin-top:2px;"}
+                    Editar
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item?', :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url_on_div('#{general_expenses_loan_path(loan.id)}', 'loan_show', '#{general_expenses_loan_path}' + '?cc1=#{@cost_center1.id}&cc2=#{@cost_center2.id}&cc3=#{@cc}', 'GET')"}}
+                    Eliminar
+              - count += 1
+      %br
+      .row{"style"=>"height: 40%; overflow-y: scroll;"}
+        #detail_show_loan
+      %br
+      
+
+      %footer
+        %button.btn.btn-danger#show{"data-dismiss" => "modal", type: "button"}
+          Salir   
+
+:javascript
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+    $('.popover-title').css('margin','6px');
+    $('.popover-content text-center').css('margin','6px');
+    $('.btn-group').css('width','50px');
+    $('.btn btn-small btn-primary').css('width','25px');
+    $('.btn btn-small').css('width','25px');
+    $(".link_detail").click(function() {
+      console.log("1");
+      $('table#dt_basic tr').removeClass("seleccionado");
+      $(this).parents("tr").addClass("seleccionado");
+    });
+ 
+  });
+
+  $("#show").click(function() {
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+    $('#loan').modal('show');
+    /*load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_show', data2, null, 'GET');*/
+  });
+
+  function show_details(id,num){
+    $("#detail_show_loan").empty();
+    $("#detail_show_loan").css("display","block");
+    str_item = {authenticity_token: "#{form_authenticity_token}", id: id, num:num};
+    append_url_ajax('#{show_details_general_expenses_loans_path}', 'detail_show_loan', str_item, 0, 'POST');
+    console.log("salio de todo")
+  }
+
+  function delete_item(code){
+    $("#" + code).empty();
+    $("#" + code).css("display","none");
+  }
+
+  function loan_delete(id_loan){
+    delete_to_url_on_div('/general_expenses/loans/'+id_loan, 'loan_show', '/general_expenses/loans/'+id_loan, 'GET');
+  }

@@ -14,6 +14,8 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 //= require turbolinks
+//= require jquery.datetimepicker
+//= require jquery.datetimepicker/init
 
 $(document).ready(function(){
   $("#left-panel ul li a").click(function(){
