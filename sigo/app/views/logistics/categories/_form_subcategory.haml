@@ -15,14 +15,14 @@
                   - @cate.each do |cat|
                     -if @category.code[0,2] == cat.code
                       %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => "selected"}
-                        = cat.name
+                        = cat.code.to_s + " - " + cat.name
                     -else
                       %option{:value => "#{cat.id}", :rel => "#{cat.code}"}
-                        = cat.name
+                        = cat.code.to_s + " - " + cat.name
                 -else
                   - @cate.each do |category|
                     %option{:value => "#{category.id}", :rel => "#{category.code}"}
-                      = category.name
+                      = category.code.to_s + " - " + category.name
         .row
           %section.col.col-2
             %label.label Código

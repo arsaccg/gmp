@@ -453,6 +453,34 @@ function load_items_delivery_order_ajax(url, div_id, parameters){
   });
 }
 
+function load_items_inventory_ajax(url, div_id, parameters){
+  var url_str = url;
+  var div_name = div_id; 
+
+  $.ajax({
+    type: 'POST',
+    url: url_str,
+    async: false,
+    data: parameters,
+    dataType : 'html',
+    beforeSend : function() {
+      $('#modalLoadingLabelading').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
+    },
+    success: function(data) {
+      $('#modalLoadingLabelading').modal('hide');
+      $('#'+div_name).html(data);
+    },
+    error : function(xhr, ajaxOptions, thrownError) {
+      console.log(xhr);
+      console.log(ajaxOptions);
+      console.log(thrownError);
+    }
+  });
+}
+
 function show_report_inventory(url, parameters, wurl, wname, wparameters){
   var url_str = url;
   
@@ -465,13 +493,13 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
     data: parameters,
     dataType : 'html',
     beforeSend : function() {
-      $('#modalLoading').modal('toggle', {
+      $('#modalLoadingLabelading2').modal('toggle', {
         keyboard: false,
         backdrop: 'static'
       });
     },
     success: function(data) {
-      $('#modalLoading').modal('hide');
+      $('#modalLoadingLabelading2').modal('hide');
       //var myWindow = window.open(wurl, wname, wparameters);
       var _form = document.createElement('form');
       _form.action = wurl;

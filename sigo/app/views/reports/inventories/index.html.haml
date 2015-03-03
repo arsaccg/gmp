@@ -73,20 +73,24 @@
               .section.col.col-md-2
                 %label.label Proveedor
               .section.col.col-md-10
-                %label.input{for: "supplier_id"}
-                %select#supplier-select.form-control.select2{:name =>"report_inventory[supplier_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Proveedores"}
-                  - @suppliers.each do |x|
-                    %option{:value => "#{x.id}"}
-                      = x.name
+                %input#supplier-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'supplier_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+                //%label.input{for: "supplier_id"}
+                //%select#supplier-select.form-control.select2{:name =>"report_inventory[supplier_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Proveedores"}
+                //  - @suppliers.each do |x|
+                //    %option{:value => "#{x.id}"}
+                //      = x.name
+
             .row#rowResponsible
               .section.col.col-md-2
                 %label.label Responsable
               .section.col.col-md-10
-                %label.input{for: "responsible_id"}
-                %select#responsible-select.form-control.select2{:name =>"report_inventory[responsible_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Responsables"}
-                  - @responsibles.each do |x|
-                    %option{:value => "#{x.id}"}
-                      = x.name
+                %input#responsible-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'responsible_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+                
+                //%label.input{for: "responsible_id"}
+                //%select#responsible-select.form-control.select2{:name =>"report_inventory[responsible_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Responsables"}
+                //  - @responsibles.each do |x|
+                //    %option{:value => "#{x.id}"}
+                //      = x.name
             .row#rowYear
               .section.col.col-md-2
                 %label.label Año
@@ -121,10 +125,13 @@
                 %label.label Articulo
               .section.col.col-md-10
                 %label.input{for: "article_id"}
-                %select#article-select.form-control.select2{:name =>"report_inventory[article_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Articulos"}
-                  - @articles.each do |x|
-                    %option{:value => "#{x[0]}"}
-                      = x[1]
+                %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+
+                //%select#article-select.form-control.select2{:name =>"report_inventory[article_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Articulos"}
+                //  - @articles.each do |x|
+                //    %option{:value => "#{x[0]}"}
+                //      = x[1]
+
             //.row
             //  .section.col.col-md-2
             //    %label.label Moneda
@@ -152,13 +159,13 @@
               .section.col.col-md-2
                 .form-group
                   .input-group
-                    = text_field(:report_inventory, :since_date, placeholder: "Fecha Desde", class: "form-control", style: "height:28px")
+                    = text_field(:report_inventory, :since_date, placeholder: "Fecha Desde", class: "form-control", type: "date", style: "height:28px")
                     %span.input-group-addon
                       %i.fa.fa-calendar
               .section.col.col-md-2
                 .form-group
                   .input-group
-                    = text_field(:report_inventory, :to_date, placeholder: "Fecha Hasta", class: "form-control", style: "height:28px")
+                    = text_field(:report_inventory, :to_date, placeholder: "Fecha Hasta", class: "form-control", type: "date", style: "height:28px")
                     %span.input-group-addon
                       %i.fa.fa-calendar
             .row#rowDocument{:style => 'display: none'}
@@ -182,6 +189,9 @@
                     %button.btn.btn-sm.btn-warning#btn-export-pdf{'type' => 'button', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Exportar a PDF"}
                       %i.fa.fa-file
                         Exportar
+                    %button.btn.btn-sm.btn-info#btn-clear{'type' => 'button'}
+                      %i.fa.fa-refresh
+                        Limpiar
 
   #widget-grid
     //.row#gridInput
@@ -214,17 +224,82 @@
 
     $('#cost_center-select').select2();
     $('#warehouse-select').select2();
-    $('#supplier-select').select2();
-    $('#responsible-select').select2();
     $('#year-select').select2();
     $('#period-select').select2();
     $('#format-select').select2();
-    $('#article-select').select2();
     $('#money-select').select2();
-    $('#report_inventory_since_date').datepicker();
-    $('#report_inventory_to_date').datepicker();
-    $("#report_inventory_since_date").mask('99/99/9999');
-    $("#report_inventory_to_date").mask('99/99/9999');
+
+    $('#article-select').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_reports_inventories_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#supplier-select').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_suppliers_reports_inventories_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.suppliers};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.ruc + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.ruc + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#responsible-select').select2({
+      placeholder: "Buscar responsable...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_responsibles_reports_inventories_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.responsibles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.dni + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.dni + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
 
     //Default Ingreso Almacén
     $("input[name=rad_type_id]").val([4]);
@@ -392,21 +467,15 @@
     // ********************************************************
     //  Acciones
     // ********************************************************
-    // Search #btn-find #btn-export-pdf
-    $('.btn-sm').click(function(){
-      var _action = 0;
+    function delGridResult() {
+      var gridResult = getGridResult();
+      $('#'+gridResult).html('');
+    }
+
+    function getGridResult() {
       var _report_type = parseInt($("input:radio[name=rad_type_id]:checked").val());
       var _kardex_type = parseInt($("input:radio[name=rad_kardex_type]:checked").val());
-      var _date_type = parseInt($("input:radio[name=rad_date_type]:checked").val());
-      
-      switch (this.id){
-        case "btn-find":
-          _action = 1;
-          break;
-        case "btn-export-pdf":
-          _action = 2;
-          break;
-      }
+
       var gridResult;
       switch (_report_type){
         case 1:
@@ -455,6 +524,46 @@
           }
           break;
       }
+      return gridResult;
+    }
+
+    function ResetFilters() {
+      $('#warehouse-select').select2("val", "");
+      $('#supplier-select').select2("val", "");
+      $('#responsible-select').select2("val", "");
+      $('#year-select').select2("val", "");
+      $('#period-select').select2("val", "");
+      $('#format-select').select2("val", "");
+      $('#article-select').select2("val", "");
+      $("#report_inventory_since_date").val("")
+      $("#report_inventory_to_date").val("");
+    }
+
+    // Search #btn-find #btn-export-pdf
+    $('.btn-sm').click(function(){
+
+      var _action = 0;
+      var _report_type = parseInt($("input:radio[name=rad_type_id]:checked").val());
+      var _kardex_type = parseInt($("input:radio[name=rad_kardex_type]:checked").val());
+      var _date_type = parseInt($("input:radio[name=rad_date_type]:checked").val());
+      
+      switch (this.id){
+        case "btn-find":
+          _action = 1;
+          delGridResult();
+          break;
+        case "btn-export-pdf":
+          _action = 2;
+          break;
+        case "btn-clear":
+          ResetFilters();
+          delGridResult();
+          return true;
+          break;          
+      }
+
+      var gridResult = getGridResult();
+
       // Data Parameters
       data = { authenticity_token: "#{form_authenticity_token}",
                report_action: _action,
@@ -477,7 +586,7 @@
       
       switch (_action){
         case 1:
-          load_items_delivery_order_ajax('#{show_rows_results_reports_inventories_path}', gridResult, data);
+          load_items_inventory_ajax('#{show_rows_results_reports_inventories_path}', gridResult, data);
           $('#' + gridResult + ' tr td a').tooltip('hide');
           break;
         case 2:

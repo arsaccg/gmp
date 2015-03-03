@@ -3,12 +3,11 @@
     %span.widget-icon
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
-      %strong="Orden de Servicio N° "+@numbercode.to_s
+      %strong="Nueva Orden de Servicio "
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @orderOfService], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
-        = hidden_field_tag "order_of_service[code]", @numbercode
         - f.fields_for :order_of_service_details do |del|
           = del.hidden_field :lock_version
         = f.hidden_field :lock_version
@@ -26,17 +25,8 @@
                 .form-group
                   %label.col-md-3.control-label Proveedores
                   .col-md-9
-                    .input-group
-                      %select.form-control#category-select{:name =>"order_of_service[entity_id]"}
-                        - @suppliers.each do |supp|
-                          - if @orderOfService.entity_id == supp.id
-                            %option{:value => "#{supp.id}", :selected => true}
-                              = supp.name
-                          - else
-                            %option{:value => "#{supp.id}"}
-                              = supp.name
-                      %span.input-group-addon
-                        %i.fa.fa-truck
+                    %input#proveedor-select.form-control{"name" =>"order_of_service[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@orderOfService.entity_id}"}                  
+
               .col-md-4
                 .form-group
                   %label.col-md-4.control-label Forma de pago
@@ -104,7 +94,15 @@
                         = text_field(:order_of_service, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
                       %span.input-group-addon
                         %i.fa.fa-male
-              .col-md-8
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label N° O.S. 
+                  .col-md-8
+                    .input-group                   
+                      = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-align-justify                      
+              .col-md-4
                 .form-group
                   %label.col-md-2.control-label Glosa
                   .col-md-10
@@ -215,7 +213,7 @@
                                   = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
                                 -value = 0                                
                           %td.price-without-igv
-                            - @unit_price_without_igv = oos.amount * oos.unit_price
+                            - @unit_price_without_igv = oos.amount.to_f * oos.unit_price.to_f
                             = text_field_tag 'unit_price_before_igv', "#{@unit_price_without_igv}", class: "form-control unit-price-before-igv", :readonly => true
                           %td.check-igv
                             %label.checkbox
@@ -352,13 +350,54 @@
         .form-actions{:style => "margin-top: 0;"}
           .row
             .col-md-12
-              %button.btn.btn-primary{type: "submit"}
+              %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
                 %i.fa.fa-save
                   Guardar
 
 :javascript
   
   $(document).ready(function(){
+    console.log("antes del select2")
+    $('#proveedor-select').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_proveedor_logistics_order_of_services_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_proveedor_logistics_purchase_orders_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+    console.log("antes del select2")
+    
     $('#article-select').select2({
       placeholder: "Buscar Insumos...",
       minimumInputLength: 3,
@@ -430,12 +469,31 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
-
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $('#new_order_of_service').valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
         return $('#new_order_of_service').valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
     });
 
     $('form[id^="edit_order_of_service"]').ajaxForm({
@@ -480,18 +538,33 @@
           },
           errorElement: 'span',
           errorClass: 'help-block',
-          errorPlacement: function (error, element) {
-            if (element.parent('.input-group').length) {
-              error.insertAfter(element.parent());
-            } else {
-              error.insertAfter(element);
-            }
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
-
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $form.valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
         return $form.valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
     });
 
   });

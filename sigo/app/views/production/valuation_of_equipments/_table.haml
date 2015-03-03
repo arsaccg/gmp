@@ -51,6 +51,9 @@
                         - if !unit.locked
                           %a.btn.btn-success.btn-xs{ :onclick => "javascript:load_url_ajax('#{generate_order_service_production_valuation_of_equipment_path(unit.id)}', 'content', null, null, 'GET')" }
                             Generar O.Serv.
+                        - else
+                          %a.btn.btn-success.btn-xs{ :onclick => "return false;", :disabled => true}
+                            O.Serv. ya generada
                   - count += 1
 
 

@@ -3,21 +3,62 @@ class Reports::InventoriesController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @warehouses = Warehouse.where("cost_center_id = "+@cost_center.to_s)
-    @suppliers = TypeEntity.find_by_preffix('P').entities
-    @responsibles = TypeEntity.find_by_preffix('T').entities
+    #@suppliers = TypeEntity.find_by_preffix('P').entities
+    #@responsibles = TypeEntity.find_by_preffix('T').entities
     @years = Array.new
     (2000..2050).each do |x|
       @years << x
     end
     @periods = LinkTime.group(:year, :month).uniq
     @formats = Format.all
-    @articles = Article.get_article_per_type_distinct('02',session[:cost_center])
+    #@articles = Article.get_article_per_type_distinct('02',session[:cost_center])
     #@moneys = Money.all
     render layout: false
   end
 
   def show
 
+  end
+
+  def display_articles
+    word = params[:q]
+    article_hash = Array.new
+    articles = Article.get_article_todo_per_type_concat('02', word)
+    articles.each do |x|
+      article_hash << {'id' => x[0].to_s, 'code' => x[1], 'name' => x[2], 'symbol' => x[4]}
+    end
+    render json: {:articles => article_hash}
+  end
+
+  def display_suppliers
+    word = params[:q]
+    supplier_hash = Array.new
+    type_ent = TypeEntity.find_by_preffix('P').id
+    suppliers = ActiveRecord::Base.connection.execute("
+            SELECT ent.id, ent.name, ent.ruc
+            FROM entities ent, entities_type_entities ete
+            WHERE ete.type_entity_id = " + type_ent.to_s + "
+            AND ete.entity_id = ent.id
+            AND Concat(ent.ruc, ' ', ent.name) LIKE '%" + word.to_s + "%'"
+          )
+    suppliers.each do |x|
+      supplier_hash << {'id' => x[0].to_s, 'name' => x[1], 'ruc' => x[2]}
+    end
+    render json: {:suppliers => supplier_hash}
+  end
+
+  def display_responsibles
+    word = params[:q]
+    responsible_hash = Array.new
+    type_ent = TypeEntity.find_by_preffix('T').id
+
+    @cost_center = get_company_cost_center('cost_center')
+    responsibles = Entity.joins(:workers).where("workers.cost_center_id = ?",@cost_center)
+
+    responsibles.each do |x|
+      responsible_hash << {'id' => x.id.to_s, 'dni' => x.dni, 'name' => x.name + ' ' + x.second_name + ' ' + x.paternal_surname + ' ' + x.maternal_surname}
+    end
+    render json: {:responsibles => responsible_hash}
   end
 
   def show_rows_results
@@ -50,20 +91,20 @@ class Reports::InventoriesController < ApplicationController
     #-------------------------------
     @suppliers = ""
     if params[:supplier_id] != ""
-      @suppliers = ","
-      params[:supplier_id].each.with_index(1) do |x, i|
-        @suppliers += x.to_s + ","
-      end
+      @suppliers = "," + params[:supplier_id] + ","
+      #params[:supplier_id].each.with_index(1) do |x, i|
+      #  @suppliers += x.to_s + ","
+      #end
     end
     #-------------------------------
     # Responsible
     #-------------------------------
     @responsibles = ""
     if params[:responsible_id] != ""
-      @responsibles = ","
-      params[:responsible_id].each.with_index(1) do |x, i|
-        @responsibles += x.to_s + ","
-      end
+      @responsibles = "," + params[:responsible_id] + ","
+      #params[:responsible_id].each.with_index(1) do |x, i|
+      #  @responsibles += x.to_s + ","
+      #end
     end
     #-------------------------------
     # Year
@@ -100,38 +141,39 @@ class Reports::InventoriesController < ApplicationController
     #-------------------------------
     @articles = ""
     if params[:article_id] != ""
-      @articles = ","
-      params[:article_id].each.with_index(1) do |x, i|
-        @articles += x.to_s + ","
-      end
+      @articles = "," + params[:article_id] + ","
+      #params[:article_id].each.with_index(1) do |x, i|
+      #  @articles += x.to_s + ","
+      #end
     end
     #  Article.joins(:type_of_article).where("type_of_articles.code" => "02").all.each do |x|
     #-------------------------------
     # Money
     #-------------------------------
     @moneys = ""
-    if params[:money_id] != ""
-      @moneys = ","
-      params[:money_id].each.with_index(1) do |x, i|
-        @moneys += x.to_s + ","
-      end
-    end
+    #if params[:money_id] != ""
+    #  @moneys = ","
+    #  params[:money_id].each.with_index(1) do |x, i|
+    #    @moneys += x.to_s + ","
+    #  end
+    #end
     #-------------------------------
-    #logger.info "PARAMETROS---:"
-
+    #logger.info "PARAMETROS---:" + params[:since_date] 
+    #logger.info "PARAMETROS---:" + params[:to_date] 
+    
     if params[:since_date] != ""
-      @since_date = Date.strptime(params[:since_date], '%d/%m/%Y')
+      @since_date = params[:since_date]#Date.strptime(params[:since_date], '%Y%d%m')
     else
-      @since_date = Date.strptime("01/01/1900", '%d/%m/%Y')
+      @since_date = Date.strptime("1900-01-01", '%Y-%m-%d')
     end if
     
     if params[:to_date] != ""
-      @to_date = Date.strptime(params[:to_date], '%d/%m/%Y')
+      @to_date = params[:to_date]#Date.strptime(params[:to_date], '%Y%d%m')
     else
-      @to_date = Date.strptime("31/12/2050", '%d/%m/%Y')
+      @to_date = Date.strptime("2050-12-31", '%Y-%m-%d')
     end if
-    @series = params[:series]
-    @document = params[:document]
+    @series = "" #params[:series]
+    @document = "" #params[:document]
 
     @date_type = params[:date_type]
     @report_type = params[:report_type]
@@ -194,7 +236,7 @@ class Reports::InventoriesController < ApplicationController
         Rails.cache.write('articles', @articles)
         Rails.cache.write('moneys', @moneys)
 
-        logger.info "@periods: " + @periods
+        #logger.info "@periods: " + @periods
 
         render :json => nil
     end
@@ -225,7 +267,7 @@ class Reports::InventoriesController < ApplicationController
     @articles = Rails.cache.read('articles')
     @moneys = Rails.cache.read('moneys')
 
-    logger.info "@periods cache: " + Rails.cache.read('periods')
+    #logger.info "@periods cache: " + Rails.cache.read('periods')
 
     case @kardex_type
       when "1"
@@ -265,7 +307,7 @@ class Reports::InventoriesController < ApplicationController
     @articles = Rails.cache.read('articles')
     @moneys = Rails.cache.read('moneys')
 
-    logger.info "@periods cache: " + Rails.cache.read('periods')
+    #logger.info "@periods cache: " + Rails.cache.read('periods')
     
     case @kardex_type
       when "1"

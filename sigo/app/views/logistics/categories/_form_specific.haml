@@ -15,14 +15,14 @@
                   - @cate.each do |cat|
                     -if @category.code[0,2] == cat.code
                       %option{:value => "#{cat.code}", :rel => "#{cat.code}", :selected => "selected"}
-                        = cat.name
+                        = cat.code.to_s + " - " + cat.name
                     -else
                       %option{:value => "#{cat.code}", :rel => "#{cat.code}"}
-                        = cat.name
+                        = cat.code.to_s + " - " +  cat.name
                 -else
                   - @cate.each do |cat|
                     %option{:value => "#{cat.code}"}
-                      = cat.name
+                      = cat.code.to_s + " - " + cat.name
           %section.col.col-5
             %label.label Sub Grupo
             %label.input{for: "subcategory_id"}
@@ -31,10 +31,10 @@
                   - @subcate.each do |cat|
                     -if @category.code[0,4] == cat.code
                       %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => "selected"}
-                        = cat.name
+                        = cat.code.to_s + " - " + cat.name
                     -else
                       %option{:value => "#{cat.id}", :rel => "#{cat.code}"}
-                        = cat.name
+                        = cat.code.to_s + " - " + cat.name
 
         .row
           %section.col.col-3
@@ -201,11 +201,11 @@
         $.each(newOptions, function(key,value){
           if ($("#specific_subcategory_id").val() == value.code)
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("code", value.code)
+              $("<option></option>").attr("value", value.id).text(value.code + " - " + value.name).attr("selected", "selected").attr("code", value.code)
             )
           else
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.id).text(value.name).attr("code", value.code)
+              $("<option></option>").attr("value", value.id).text(value.code + " - " + value.name).attr("code", value.code)
             )
           // Default Value:
           var code = $('option:selected', $('#subcategory-select')).attr('code');
