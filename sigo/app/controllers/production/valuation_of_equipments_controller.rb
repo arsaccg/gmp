@@ -742,28 +742,27 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       ORDER BY art.id")
     flag = false
     eliminacion = true
+    order_of_service = OrderOfService.new
     if ids_sec_phase.count.to_i > 0 
       #desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
       ids_sec_phase.each do |isp|
         # Creacion
-        break
         code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
 
-        order_of_service = OrderOfService.new(
-          state: 'approved', 
-          date_of_issue: Time.now.strftime('%Y-%m-%d'), 
-          description: code_str + ' - ' + txt_week_valuation + ' - ' + isp[8].to_s,
-          method_of_payment_id: 1,
-          entity_id: @subcontract_equip.entity_id,
-          user_id: current_user.id,
-          cost_center_id: cost_center_id,
-          created_at: Time.now,
-          updated_at: Time.now,
-          money_id: 1,
-          exchange_of_rate: nil,
-          date_of_service: Time.now.strftime('%Y-%m-%d'), 
-          code: code_str
-        )
+        order_of_service.state = 'approved'
+        order_of_service.date_of_issue = Time.now.strftime('%Y-%m-%d'), 
+        order_of_service.description = code_str + ' - ' + txt_week_valuation + ' - ' + isp[8].to_s,
+        order_of_service.method_of_payment_id = 1
+        order_of_service.entity_id = @subcontract_equip.entity_id
+        order_of_service.user_id = current_user.id
+        order_of_service.cost_center_id = cost_center_id
+        order_of_service.created_at = Time.now
+        order_of_service.updated_at = Time.now
+        order_of_service.money_id = 1
+        order_of_service.exchange_of_rate = nil
+        order_of_service.date_of_service = Time.now.strftime('%Y-%m-%d'), 
+        order_of_service.code = code_str
+
         if order_of_service.save
           order_service_detail = OrderOfServiceDetail.new(
             order_of_service_id: order_of_service.id,
