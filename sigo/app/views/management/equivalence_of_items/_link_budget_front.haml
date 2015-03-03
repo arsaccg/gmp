@@ -7,7 +7,56 @@
   - if @message_error == ''
     
     .row
-      .col-md-12
+      .col-md-8.col-sm-offset-2
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="partidas-meta" aria-describedby="data-table_info")
+          %thead
+            %tr
+              %th(colspan="2") Partidas Meta Seleccionadas
+              %th Total
+              %th Porcentaje
+              %th Eliminar
+          %tbody(id="items_table2")
+
+    %br
+    .row
+      .col-md-6
+        .content-load
+          .items-panel
+            %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
+              %thead
+                %tr
+                  %th Partidas Venta
+                  %th Acciones
+              %tbody
+                - result_credit = get_credit(@saleitembybudgets[0].budget_id)
+                - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
+                - @saleitembybudgets.each do |itembudget|
+                  - title = get_title_or_description(itembudget)
+                  - amount_str = ""
+                  - if  itembudget.item_id != nil
+                    - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
+                    - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
+                    - amount = meas_i.to_f - cred_i.to_f
+                    - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
+                  - else 
+                    - amount_str = "color-title"
+                  %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
+                    %td 
+                      = "---" * (itembudget.order.length/3).to_i
+                      = itembudget.order        
+                      -if itembudget.measured.to_f > 0
+                        -title_parsed = URI.escape(title.gsub('\'', '_'))
+                        %a{:href=>"javascript:add_item('#{itembudget.id.to_s}');"}
+                          = title
+                      -else
+                        %strong
+                          = title
+                    %td
+                      -if itembudget.measured.to_f > 0
+                        %center
+                          %a{:href=>"javascript:viewassigment2('#{itembudget.id.to_s}')"}
+                            Ver Asignaciones
+      .col-md-6
         .content-load
           .items-panel
             %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
@@ -53,57 +102,6 @@
                         = number_to_currency(number_with_precision(itembudget.price, :precision => 2).to_s , :unit=>'S/. ') rescue ""
                     -else
                       %td(colspan="2")
-    %br
-    .row
-      .col-md-4
-        .content-load
-          .items-panel
-            %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
-              %thead
-                %tr
-                  %th Partidas Venta
-                  %th Acciones
-              %tbody
-                - result_credit = get_credit(@saleitembybudgets[0].budget_id)
-                - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
-                - @saleitembybudgets.each do |itembudget|
-                  - title = get_title_or_description(itembudget)
-                  - amount_str = ""
-                  - if  itembudget.item_id != nil
-                    - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
-                    - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
-                    - amount = meas_i.to_f - cred_i.to_f
-                    - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
-                  - else 
-                    - amount_str = "color-title"
-                  %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
-                    %td 
-                      = "---" * (itembudget.order.length/3).to_i
-                      = itembudget.order        
-                      -if itembudget.measured.to_f > 0
-                        -title_parsed = URI.escape(title.gsub('\'', '_'))
-                        %a{:href=>"javascript:add_item('#{itembudget.id.to_s}');"}
-                          = title
-                      -else
-                        %strong
-                          = title
-                    %td
-                      -if itembudget.measured.to_f > 0
-                        %center
-                          %a{:href=>"javascript:viewassigment2('#{itembudget.id.to_s}')"}
-                            Ver Asignaciones
-      .col-md-8
-        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="partidas-meta" aria-describedby="data-table_info")
-          %thead
-            %tr
-              %th(colspan="2") Partidas Meta Seleccionadas
-              %th Total
-              %th Porcentaje
-              %th Eliminar
-          %tbody(id="items_table2")
-
-        %button.btn.btn-sm.btn-success.btn-prev#save{type: "button"}
-          Guardar
     .row{style: "display: none"}
       .col-lg-12
         %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-sale" aria-describedby="data-table_info")
@@ -168,6 +166,7 @@
     str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: $('#saleitembybudget_item').val(), percentage: percent};
 
     append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+    $("#tr" + porcentaje).remove();
   }
 
   $('#backlist-entity').click(function(){
