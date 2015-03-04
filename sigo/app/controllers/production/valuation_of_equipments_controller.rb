@@ -744,14 +744,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     eliminacion = true
     if ids_sec_phase.count.to_i > 0 
       #desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
-      p 'CUANTOS HAY!!!'
-      p ids_sec_phase.count
-      p 'CUANTOS HAY!!!'
       ids_sec_phase.each do |isp|
         # Creacion
-        p 'ENTRA A LA CREACION'
-        p 1
-        p 'ENTRA A LA CREACION'
         code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
 
         order_of_service = OrderOfService.new
