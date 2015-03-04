@@ -36,6 +36,12 @@ class Management::EquivalenceOfItemsController < ApplicationController
     render(partial: 'table_items2', :layout => false)
   end
 
+  def add_item4
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @goalitems = EquivalenceOfItem.where("sale_item_by_budget_id = ?",params[:item_id])
+    render(partial: 'table_items4', :layout => false)
+  end
+
   def link_budget_method
     equivalence = EquivalenceOfItem.new
     equivalence.sale_item_by_budget_id = params[:target_id]

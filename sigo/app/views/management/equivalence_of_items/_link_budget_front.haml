@@ -26,7 +26,6 @@
               %thead
                 %tr
                   %th Partidas Venta
-                  %th Acciones
               %tbody
                 - result_credit = get_credit(@saleitembybudgets[0].budget_id)
                 - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
@@ -51,11 +50,6 @@
                       -else
                         %strong
                           = title
-                    %td
-                      -if itembudget.measured.to_f > 0
-                        %center
-                          %a{:href=>"javascript:viewassigment2('#{itembudget.id.to_s}')"}
-                            Ver Asignaciones
       .col-md-6
         .content-load
           .items-panel
@@ -153,12 +147,19 @@
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item_management_equivalence_of_items_path}', 'items_table', str_item, 0, 'POST');
+    add_item4(elemento);
   }
 
   function add_item2(elemento){
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+  }
+
+  function add_item4(elemento){
+    str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
+
+    append_url_ajax('#{add_item4_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
   }
 
   function add_item3(elemento,porcentaje){
