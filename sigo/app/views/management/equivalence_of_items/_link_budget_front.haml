@@ -159,7 +159,50 @@
   function add_item4(elemento){
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
-    append_url_ajax('#{add_item4_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+    append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+  }
+
+  function add_item5(elemento){
+    var row = table.insertRow(0);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(4);
+    cell1.innerHTML = "NEW CELL1";
+    cell2.innerHTML = "NEW CELL2";
+    cell3.innerHTML = "NEW CELL3";
+    cell4.innerHTML = "NEW CELL4";
+    cell5.innerHTML = "NEW CELL5";
+  }
+
+  function add_item4(elemento){
+    var url="#{complete_management_equivalence_of_items_path}";
+    var form_token="#{form_authenticity_token}";
+    var default_value=0;
+    var str_html = "";
+    var table = document.getElementById("items_table2");
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { item_id: elemento, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.combo, function(key, value){
+        var row = table.insertRow(value.number);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        cell1.innerHTML = "NEW CELL1";
+        cell2.innerHTML = "NEW CELL2";
+        cell3.innerHTML = "NEW CELL3";
+        cell4.innerHTML = "NEW CELL4";
+        cell5.innerHTML = "NEW CELL5";
+      });
+    });
   }
 
   function add_item3(elemento,porcentaje){
