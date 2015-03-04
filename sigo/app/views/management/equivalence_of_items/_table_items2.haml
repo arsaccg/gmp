@@ -8,7 +8,8 @@
   %td
     = @goalitembybudget.order
   %td
-    = @goalitembybudget.subbudgetdetail
+    %a{:ondblclick=>"javascript:add_item3(#{@goalitembybudget.id},#{@reg_n.to_s})"}
+      = @goalitembybudget.subbudgetdetail
   %td
     -if @goalitembybudget.price != nil
       = (@goalitembybudget.measured*@goalitembybudget.price).round(2)
@@ -16,6 +17,6 @@
       = @goalitembybudget.measured
   %td
     %div
-      = text_field_tag 'equivalence_of_items[goalitembybudget][' + @reg_n.to_s + '][percentage]',  0, class: "form-control goal", :required => true, title:'No puede dejar este campo vacio'
+      = text_field_tag 'equivalence_of_items[goalitembybudget][' + @reg_n.to_s + '][percentage]',  100-@goalitembybudget.percentage.to_f, class: "form-control goal", :required => true, title:'No puede dejar este campo vacio'
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

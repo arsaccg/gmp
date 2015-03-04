@@ -217,6 +217,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_order_service_item_field'
         post 'show_rows_orders_service'
         post 'display_articles'
+        post 'display_proveedor'        
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
         post 'display_orders'
@@ -730,6 +731,20 @@ ArsacLogistica::Application.routes.draw do
       end
     end
 
+    resources :bond_letters do 
+      collection do
+        get 'new_bond_letter_detail'
+        post 'create_bond_letter_detail'
+        post 'type_advances'
+      end
+      member do
+        get 'edit_bond_letter_detail'
+        put 'update_bond_letter_detail'
+        delete 'destroy_bond_letter_detail'
+        post 'show_summary_table'
+      end
+    end
+
     resources :loans do
       collection do
         post 'create_loan'
@@ -753,6 +768,7 @@ ArsacLogistica::Application.routes.draw do
         post 'link_budget_method'
         post 'add_item'
         post 'add_item2'
+        post 'complete'
         get 'get_itembybudget_assigned'
         get 'get_itembybudget2_assigned'
       end

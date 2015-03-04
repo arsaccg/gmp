@@ -86,7 +86,7 @@ class Itembybudget < ActiveRecord::Base
 				b_code = budget_temp.id rescue ""
 				i_code = item_temp.id rescue ""
 
-			 	itembybudget_buffer << Itembybudget.new(item_code: item['codpartida'], order: item['Orden'], measured: item['Metrado'], price: item['Precio1'].to_f, owneritem: item['PropioPartida'].to_s, subbudget_code: item['CodSubpresupuesto'], budget_code: item['CodPresupuesto'], title: item['Expr2'], subbudgetdetail: item['Descripcion'], budget_id: b_code.to_i, item_id: i_code.to_i )
+			 	itembybudget_buffer << Itembybudget.new(item_code: item['codpartida'], order: item['Orden'], measured: item['Metrado'], price: item['Precio1'].to_f, owneritem: item['PropioPartida'].to_s, subbudget_code: item['CodSubpresupuesto'], budget_code: item['CodPresupuesto'], title: item['Expr2'], subbudgetdetail: item['Descripcion'], budget_id: b_code.to_i, item_id: i_code.to_i, unit: item['Unidad'].to_s )
 
 				#if new_item.save
 				#	queue_thread.pop

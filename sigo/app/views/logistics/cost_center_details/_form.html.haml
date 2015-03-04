@@ -48,15 +48,15 @@
         .row
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Nombre del contratista:
-            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).name,:readonly => true}
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@comp).name,:readonly => true}
 
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Dirección:
-            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).address,:readonly => true}
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@comp).address,:readonly => true}
 
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label RUC:
-            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).ruc,:readonly => true}              
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@comp).ruc,:readonly => true}              
         .row
           .col-sm-3{"style"=>"margin-left:30px;margin-right:35px;"}
             %label.label Fecha de Convocatoria

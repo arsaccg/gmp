@@ -1,0 +1,114 @@
+.modal-dialog{ style: "width: 80%;" }
+  .modal-content
+    .modal-header{"style"=>"height:75px;"}
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong{"style"=>"font-size:18px;"}CONTROL DE CARTAS FIANZA
+          %button.btn.btn-primary.btn-mini{"style"=>"float: right"}
+            %span{"style"=>"width=20px;text-align:center"}
+              %a{href: 'javascript:void(0);', :onclick => 'bond_letter_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white;"}
+                Agregar Concepto
+            
+    .modal-body
+      .row
+        .col.col-md-6
+          %strong{"style"=>"font-size:18px;"}= "A FAVOR DE: "
+          %span{"style"=>"font-size:18px;"}= Entity.find(@cc.cost_center_detail.entity_id).name
+        .col.col-md-6
+          %strong{"style"=>"font-size:18px;"}= "AFIANZANDO A: "
+          %span{"style"=>"font-size:18px;"}= @cc.company.name
+      %br
+      %br
+      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:100%;"}
+        %thead.panel-heading{"style"=>"background-color:#1E486E;"}
+          %tr{"style"=>"height:25px"}
+            %th{"style"=>"text-align:center;font-weight:bold;"} CONCEPTO
+            %th{"style"=>"text-align:center;font-weight:bold;"} EMISOR
+            %th{"style"=>"text-align:center;font-weight:bold;"} FECHA EMISION 
+            %th{"style"=>"text-align:center;font-weight:bold;"} FECHA DE VENCIMIENTO
+            %th{"style"=>"text-align:center;font-weight:bold;"} MONTO INICIAL
+            %th{"style"=>"text-align:center;font-weight:bold;"} MONTO RENOV
+            %th{"style"=>"text-align:center;font-weight:bold;"} RETENCION
+            %th{"style"=>"text-align:center;font-weight:bold;"} ESTADO
+            %th{"style"=>"text-align:center;font-weight:bold;"} ACCCIONES
+        %tbody
+          -@letters.each do |bl|
+            %tr{:style =>" height: 20px; "}
+              %td
+                -if bl.concept.to_i == 0
+                  %a.link_detail{ :href => "javascript:show_summary_table('#{show_summary_table_general_expenses_bond_letter_path(bl.id)}?cc=#{@cc.id}', this)" } 
+                    FIEL CUMPLIMIENTO
+                -elsif bl.concept.to_i == 1
+                  %a.link_detail{ :href => "javascript:show_summary_table('#{show_summary_table_general_expenses_bond_letter_path(bl.id)}?cc=#{@cc.id}', this)" } 
+                    = "ADELANTO - " + Advance.find(bl.advance_id).advance_type.to_s
+              %td
+                = Entity.find(bl.issuer_entity_id).name
+              -if bl.bond_letter_details.count > 0
+                %td
+                  = bl.bond_letter_details.last.issu_date.strftime("%d/%m/%Y").to_s
+                %td
+                  = bl.bond_letter_details.last.expiration_date.strftime("%d/%m/%Y %H:%M:%S").to_s
+                %td
+                  = number_to_currency  bl.bond_letter_details.first.amount.to_f, unit: 'S/.', precision: 2
+                %td
+                  = number_to_currency  bl.bond_letter_details.last.amount.to_f, unit: 'S/.', precision: 2
+                %td
+                  = number_to_currency  bl.bond_letter_details.last.amount.to_f*bl.bond_letter_details.last.retention.to_f/100, unit: 'S/.', precision: 2
+              -else
+                %td
+                  = "-"
+                %td
+                  = "-"
+                %td
+                  = number_to_currency  0, unit: 'S/.', precision: 2
+                %td
+                  = number_to_currency  0, unit: 'S/.', precision: 2
+                %td
+                  = number_to_currency  0, unit: 'S/.', precision: 2            
+              %td
+                -if bl.status.to_i == 1
+                  Activo
+                -else
+                  Cerrado
+              %td
+                %button.btn.btn-primary.btn-mini
+                  %span{"style"=>"width=20px;text-align:center"}
+                    %a{href: 'javascript:void(0);', :onclick => 'bond_letter_detail_new('+"#{@cc.id.to_s}"+","+"#{bl.id.to_s}"+');', "style"=>" color: white;"}
+                      Agregar C.F              
+
+                %button.btn.btn-warning.btn-mini
+                  %span{"style"=>"width=20px;text-align:center"}
+                    %a{href: 'javascript:void(0);', :onclick => 'bond_letter_edit('+"#{@cc.id.to_s}"+","+"#{bl.id.to_s}"+');', "style"=>" color: white;"}
+                      Editar
+
+      %div#show_detail
+      %footer
+        %button.btn.btn-danger#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
+          Salir
+
+
+:javascript
+
+  function show_summary_table(url, element){
+    $.ajax({
+      type: 'POST',
+      url: url,
+      async: false,
+      dataType : 'html',
+      beforeSend : function() {
+        $("#show_detail").html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
+      },
+      success: function(data) {
+        $("#show_detail").css({
+          opacity : '0.0'
+        }).html(data).delay(50).animate({
+          opacity : '1.0'
+        }, 300);
+      },
+      error : function(xhr, ajaxOptions, thrownError) {
+        $("#show_detail").html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+      }
+    });
+  }
