@@ -798,7 +798,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
 
     if flag
-      #@valuationofequipment.update_attribute(:locked, true)
+      @valuationofequipment.update_attribute(:locked, true)
       flash[:notice] = "Se ha creado correctamente una nueva orden de servicio desde la Valorización " + @valuationofequipment.name.to_s + ' ' + @valuationofequipment.code.to_s
       redirect_to :action => :index
     elsif eliminacion
