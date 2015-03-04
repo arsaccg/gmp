@@ -742,7 +742,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       ORDER BY art.id")
     flag = false
     eliminacion = true
-    order_of_service = OrderOfService.new
     if ids_sec_phase.count.to_i > 0 
       #desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
       p 'CUANTOS HAY!!!'
@@ -750,8 +749,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       p 'CUANTOS HAY!!!'
       ids_sec_phase.each do |isp|
         # Creacion
+        p 'ENTRA A LA CREACION'
+        p 1
+        p 'ENTRA A LA CREACION'
         code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
 
+        order_of_service = OrderOfService.new
         order_of_service.state = 'approved'
         order_of_service.date_of_issue = Time.now.strftime('%Y-%m-%d') 
         order_of_service.description = code_str + ' - ' + txt_week_valuation + ' - ' + isp[3].to_s
