@@ -731,6 +731,20 @@ ArsacLogistica::Application.routes.draw do
       end
     end
 
+    resources :bond_letters do 
+      collection do
+        get 'new_bond_letter_detail'
+        post 'create_bond_letter_detail'
+        post 'type_advances'
+      end
+      member do
+        get 'edit_bond_letter_detail'
+        put 'update_bond_letter_detail'
+        delete 'destroy_bond_letter_detail'
+        post 'show_summary_table'
+      end
+    end
+
     resources :loans do
       collection do
         post 'create_loan'
