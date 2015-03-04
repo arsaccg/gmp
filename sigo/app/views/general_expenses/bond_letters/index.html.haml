@@ -15,12 +15,31 @@
       .row
         .col.col-md-6
           %strong{"style"=>"font-size:18px;"}= "A FAVOR DE: "
-          %span{"style"=>"font-size:18px;"}= Entity.find(@cc.cost_center_detail.entity_id).name
+          -if @cc.cost_center_detail.nil?
+            -name = "-"
+          -else
+            -name = Entity.find(@cc.cost_center_detail.entity_id).name
+          %span{"style"=>"font-size:18px;"}= name
         .col.col-md-6
           %strong{"style"=>"font-size:18px;"}= "AFIANZANDO A: "
           %span{"style"=>"font-size:18px;"}= @cc.company.name
       %br
       %br
+      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:450px;height:100px;margin-left:23%;"}
+        %thead.panel-heading{"style"=>"background-color:#1E486E;"}
+          %tr{"style"=>"height:25px"}
+            %td{"colspan"=>2,"style"=>"text-align:center;font-weight:bold;"} RESUMEN
+        %tbody
+          %tr
+            %td{"style"=>"font-weight:bold;font-size:13px;padding-left:5px;"}  Total últimos montos
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=number_to_currency(@total_amount.to_f, unit: 'S/. ', precision: 2)
+          %tr
+            %td{"style"=>"font-weight:bold;font-size:13px;padding-left:5px;"}  Total últimas retenciones
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=number_to_currency(@total_retention.to_f, unit: 'S/. ', precision: 2)
+          %tr
+            %td{"style"=>"font-weight:bold;font-size:13px;padding-left:5px;"} Total Costo de Emisión
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=number_to_currency(@total_cost.to_f, unit: 'S/. ', precision: 2)
+
       %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:100%;"}
         %thead.panel-heading{"style"=>"background-color:#1E486E;"}
           %tr{"style"=>"height:25px"}
@@ -55,7 +74,7 @@
                 %td
                   = number_to_currency  bl.bond_letter_details.last.amount.to_f, unit: 'S/.', precision: 2
                 %td
-                  = number_to_currency  bl.bond_letter_details.last.amount.to_f*bl.bond_letter_details.last.retention.to_f/100, unit: 'S/.', precision: 2
+                  = number_to_currency  bl.bond_letter_details.last.retention_amount.to_f, unit: 'S/.', precision: 2
               -else
                 %td
                   = "-"

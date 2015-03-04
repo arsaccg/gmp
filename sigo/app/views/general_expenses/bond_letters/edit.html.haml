@@ -15,22 +15,14 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Emitido por
             %section.col-md-6
-              %select#issuer_entity_id.select2.form-control{:name => "bond_letter[issuer_entity_id]"}
-                %option{:value => nil, :disabled => true, :selected => true} Seleccione
-                - @issuer.each do |ph|
-                  %option{:value => "#{ph.id}", :selected => ph.id==@letter.issuer_entity_id}
-                    = ph.ruc + " - " + ph.name
-
+              %input#issuer_entity_id.form-control{"name" =>"bond_letter[issuer_entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@letter.issuer_entity_id}"}
 
           .row{"style"=>"margin-bottom:1%;"}
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} A Cargo de 
             %section.col-md-6
-              %select#receptor_entity_id.select2.form-control{:name => "bond_letter[receptor_entity_id]"}
-                %option{:value => nil, :disabled => true, :selected => true} Seleccione
-                - @receptor.each do |ph|
-                  %option{:value => "#{ph.id}", :selected => ph.id==@letter.receptor_entity_id}
-                    = ph.ruc + " - " + ph.name              
+              %input#receptor_entity_id.form-control{"name" =>"bond_letter[receptor_entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@letter.receptor_entity_id}"}
+
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Concepto
@@ -69,17 +61,103 @@
   });
 
   $(document).ready(function (){
+    $('#issuer_entity_id').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_issuer_general_expenses_bond_letters_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_issuer_general_expenses_bond_letters_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
 
-    $('#bond_letter_new').attr("tabindex","");
+    $('#receptor_entity_id').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_receptor_general_expenses_bond_letters_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_receptor_general_expenses_bond_letters_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#bond_letter_edit').attr("tabindex","");
+
+    if(#{@letter.concept} == "1"){
+      $("#concept_type_advance").show();
+      $("#advance_id").empty();
+      type_advances("#{type_advances_general_expenses_bond_letters_path}", "#{@cc.id.to_i.to_s}", "#{form_authenticity_token}", "0");      
+    }
 
     $("#concept").change(function() {
-        // foo is the id of the other select box 
-        if ($(this).val() == "1") {
-          $("#concept_type_advance").show();
-        }else{
-          $("#concept_type_advance").hide();
-        } 
+      if ($(this).val() == "1") {
+        $("#concept_type_advance").show();
+        $("#advance_id").empty();
+        type_advances("#{type_advances_general_expenses_bond_letters_path}", "#{@cc.id.to_i.to_s}", "#{form_authenticity_token}", "0");
+      }else{
+        $("#concept_type_advance").hide();
+        $("#advance_id").empty();
+      } 
     });
+
     submit_form($('form#update_bond_letter'))
   });
 
@@ -143,4 +221,33 @@
         console.log(error);
       }
     })
+  }
+
+  function type_advances(url, cost_center, form_token, default_value){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { cost_center: cost_center, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.advances, function(key, value){
+        item = {};
+        item['advance_type'] = value.advance_type;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#advance_id').empty();
+      $.each(newOptions, function(key,value){
+        if(#{@letter.advance_id}==value.id){
+          $('#advance_id').append(
+            $("<option></option>").attr("value", value.id).text(value.advance_type).attr("selected",true)
+          )          
+        }else{
+          $('#advance_id').append(
+            $("<option></option>").attr("value", value.id).text(value.advance_type)
+          )
+        }
+      });
+    });
   }

@@ -36,6 +36,22 @@ class Management::EquivalenceOfItemsController < ApplicationController
     render(partial: 'table_items2', :layout => false)
   end
 
+  def complete
+    @combo=Array.new
+    @goalitems = EquivalenceOfItem.where("sale_item_by_budget_id = ?",params[:item_id])
+    number = 0
+    @goalitems.each do |x|
+      @goalitembybudget = Itembybudget.find(x.target_item_by_budget_id)
+      if @goalitembybudget.price != nil
+        @combo << { 'id' => @goalitembybudget.id, 'order' => @goalitembybudget.order, 'subbudgetdetail' => @goalitembybudget.subbudgetdetail, 'measured' => @goalitembybudget.measured*@goalitembybudget.price, 'percentage' => x.percentage, 'number' => number}
+      else
+        @combo << { 'id' => @goalitembybudget.id, 'order' => @goalitembybudget.order, 'subbudgetdetail' => @goalitembybudget.subbudgetdetail, 'measured' => @goalitembybudget.measured, 'percentage' => x.percentage, 'number' => number}
+      end
+      number = number+1
+    end
+    render json: {:combo => @combo}
+  end
+
   def link_budget_method
     equivalence = EquivalenceOfItem.new
     equivalence.sale_item_by_budget_id = params[:target_id]

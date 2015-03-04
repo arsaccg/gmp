@@ -28,7 +28,7 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Fecha de Vencimiento
             %section.col-md-6
-              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control"
+              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control",  as: :string, type: "date"
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Monto
@@ -55,10 +55,14 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Retencion
             %section.col-md-6
-              .col-md-4
-                = text_field_tag 'bond_letter_detail[retention]', nil, class: "form-control", onkeypress: "return isNumber(event);"
-              .col-md-1
-                = text_field_tag 'porcentaje', '%', class: "form-control", :readonly => true, :style => "margin-left:5px; text-align:center;"
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_amount]', nil, class: "form-control", onkeypress: "return isNumber(event);"
+                  %i.icon-append.fa.fa-dollar
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_percentage]', nil, class: "form-control", :style => "margin-left:5px;", onkeypress: "return isNumber(event);"
+                  %i.icon-append %
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Tasa
@@ -77,13 +81,12 @@
 
   $("#new2").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
-    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_detail_new', data2, null, 'GET');
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_new', data2, null, 'GET');
   });
 
   $(document).ready(function (){
-    jQuery('#bond_letter_detail_expiration_date').datetimepicker();
-
-    $('#bond_letter_detail_new').attr("tabindex","");
+    /*$('#dateTimePicker').datetimepicker();*/            
+    $('#bond_letter_new').attr("tabindex","");
 
     $("#concept").change(function() {
         // foo is the id of the other select box 
@@ -99,7 +102,7 @@
   $("#smart-mod-eg1").click(function(e) {
     $('form#create_bond_letter_detail').submit();
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
-    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_detail_new', data2, null, 'GET');
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_new', data2, null, 'GET');
   });
 
   function submit_form(form_element){
@@ -109,32 +112,32 @@
           // Rules for form validation
           ignore: '',
           rules : {
-            'bond_letter[issuer_entity_id]' : {
+            'bond_letter_detail[code]' : {
               required : true,
             },
-            'bond_letter[receptor_entity_id]' : {
+            'bond_letter_detail[issu_date]' : {
               required : true,
             },
-            'bond_letter[concept]' : {
+            'bond_letter_detail[expiration_date]' : {
               required : true,
             },
-            'bond_letter[status]' : {
+            'bond_letter_detail[amount]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'bond_letter[issuer_entity_id]' : {
+            'bond_letter_detail[code]' : {
               required : "(*)",
             },
-            'bond_letter[receptor_entity_id]' : {
+            'bond_letter_detail[issu_date]' : {
               required : "(*)",
             },
-            'bond_letter[concept]' : {
+            'bond_letter_detail[expiration_date]' : {
               required : "(*)",
             },
-            'bond_letter[status]' : {
+            'bond_letter_detail[amount]' : {
               required :  "(*)",
             }
           },

@@ -16,30 +16,21 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Emitido por
             %section.col-md-6
-              %select#issuer_entity_id.select2.form-control{:name => "bond_letter[issuer_entity_id]"}
-                %option{:value => nil, :disabled => true, :selected => true} Seleccione
-                - @issuer.each do |ph|
-                  %option{:value => "#{ph.id}", :selected => ph.id==@letters.issuer_entity_id}
-                    = ph.ruc + " - " + ph.name
-
+              %input#issuer_entity_id.form-control{"name" =>"bond_letter[issuer_entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
 
           .row{"style"=>"margin-bottom:1%;"}
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} A Cargo de 
             %section.col-md-6
-              %select#receptor_entity_id.select2.form-control{:name => "bond_letter[receptor_entity_id]"}
-                %option{:value => nil, :disabled => true, :selected => true} Seleccione
-                - @receptor.each do |ph|
-                  %option{:value => "#{ph.id}", :selected => ph.id==@letters.receptor_entity_id}
-                    = ph.ruc + " - " + ph.name              
+              %input#receptor_entity_id.form-control{"name" =>"bond_letter[receptor_entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}           
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Concepto
             %section.col-md-6
               %select#concept.select2.form-control{:name => "bond_letter[concept]"}
                 %option{:value => nil, :disabled => true, :selected => true} Seleccione
-                %option{:value => "0", :selected => 0==@letters.concept.to_i} Fiel Cumplimiento
-                %option{:value => "1", :selected => 1==@letters.concept.to_i} Adelanto
+                %option{:value => "0"} Fiel Cumplimiento
+                %option{:value => "1"} Adelanto
                 
           .row#concept_type_advance{"style"=>"display:none"}
             %section.col-md-5
@@ -52,6 +43,7 @@
               %label{"style"=>"font-size:14px;"} Estado
             %section.col-md-6
               %select#state.select2.form-control{:name => 'bond_letter[status]'}
+                %option{:value => nil, :disabled => true, :selected => true} Seleccione
                 %option{:value => "0"} Cerrado
                 %option{:value => "1"} Activo
 
@@ -70,6 +62,53 @@
   });
 
   $(document).ready(function (){
+    $('#issuer_entity_id').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_issuer_general_expenses_bond_letters_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#receptor_entity_id').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_receptor_general_expenses_bond_letters_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
 
     $('#bond_letter_new').attr("tabindex","");
 

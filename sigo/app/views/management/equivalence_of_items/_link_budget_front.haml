@@ -26,7 +26,6 @@
               %thead
                 %tr
                   %th Partidas Venta
-                  %th Acciones
               %tbody
                 - result_credit = get_credit(@saleitembybudgets[0].budget_id)
                 - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
@@ -51,11 +50,6 @@
                       -else
                         %strong
                           = title
-                    %td
-                      -if itembudget.measured.to_f > 0
-                        %center
-                          %a{:href=>"javascript:viewassigment2('#{itembudget.id.to_s}')"}
-                            Ver Asignaciones
       .col-md-6
         .content-load
           .items-panel
@@ -153,6 +147,7 @@
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item_management_equivalence_of_items_path}', 'items_table', str_item, 0, 'POST');
+    add_item4(elemento);
   }
 
   function add_item2(elemento){
@@ -161,12 +156,49 @@
     append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
   }
 
+  function add_item4(elemento){
+    str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
+
+    append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+  }
+
+  function add_item4(elemento){
+    $('#items_table2').find("tr:gt(0)").remove();
+    var url="#{complete_management_equivalence_of_items_path}";
+    var form_token="#{form_authenticity_token}";
+    var default_value=0;
+    var str_html = "";
+    var table = document.getElementById("items_table2");
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { item_id: elemento, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.combo, function(key, value){
+        var row = table.insertRow(value.number);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        cell1.innerHTML = value.order;
+        cell2.innerHTML = value.subbudgetdetail;
+        cell3.innerHTML = value.measured;
+        cell4.innerHTML = value.percentage;
+        cell5.innerHTML = "";
+      });
+    });
+  }
+
   function add_item3(elemento,porcentaje){
     percent = document.getElementById("equivalence_of_items_goalitembybudget_"+porcentaje+"_percentage").value;
     str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: $('#saleitembybudget_item').val(), percentage: percent};
 
     append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
     $("#tr" + porcentaje).remove();
+    $('#items_table2').find("tr:gt(0)").remove();
   }
 
   $('#backlist-entity').click(function(){
