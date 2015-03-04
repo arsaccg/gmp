@@ -41,7 +41,12 @@ class Management::EquivalenceOfItemsController < ApplicationController
     @goalitems = EquivalenceOfItem.where("sale_item_by_budget_id = ?",params[:item_id])
     number = 0
     @goalitems.each do |x|
-      @combo << { 'id' => 0, 'order' => 1, 'subbudgetdetail' => 2, 'measured' => 3, 'percentage' => 4, 'number' => number}
+      @goalitembybudget = Itembybudget.find(x.target_item_by_budget_id)
+      if @goalitembybudget.price != nil
+        @combo << { 'id' => @goalitembybudget.id, 'order' => @goalitembybudget.order, 'subbudgetdetail' => @goalitembybudget.subbudgetdetail, 'measured' => @goalitembybudget.measured*@goalitembybudget.price, 'percentage' => x.percentage, 'number' => number}
+      else
+        @combo << { 'id' => @goalitembybudget.id, 'order' => @goalitembybudget.order, 'subbudgetdetail' => @goalitembybudget.subbudgetdetail, 'measured' => @goalitembybudget.measured, 'percentage' => x.percentage, 'number' => number}
+      end
       number = number+1
     end
     render json: {:combo => @combo}
