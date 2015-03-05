@@ -99,6 +99,15 @@ class Management::EquivalenceOfItemsController < ApplicationController
     render :json => equivalences
   end
 
+  def delete_link
+    puts "******************************"
+    goalitembybudget = Itembybudget.find(params[:sale_id])
+    saleitembybudget = Itembybudget.find(params[:target_id])
+    equivalence = EquivalenceOfItem.where("sale_item_by_budget_id = ? AND target_item_by_budget_id = ?",params[:target_id],params[:sale_id]).first
+    destroy = EquivalenceOfItem.destroy(equivalence.id)
+    render :json => equivalence
+  end
+
   def get_itembybudget_assigned
     str_id = params[:itembybudget]
     @itembybudget = EquivalenceOfItem.where("target_item_by_budget_id = ?",str_id)
