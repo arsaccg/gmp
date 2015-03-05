@@ -736,10 +736,12 @@ ArsacLogistica::Application.routes.draw do
         get 'new_bond_letter_detail'
         post 'create_bond_letter_detail'
         post 'type_advances'
+        post 'display_issuer'
+        post 'display_receptor'
       end
       member do
         get 'edit_bond_letter_detail'
-        put 'update_bond_letter_detail'
+        patch 'update_bond_letter_detail'
         delete 'destroy_bond_letter_detail'
         post 'show_summary_table'
       end

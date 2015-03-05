@@ -8,10 +8,11 @@
           %strong REGISTRO DE CARTA FIANZA
     .modal-body
     
-      = form_for @letter_detail, url: update_bond_letter_detail_general_expenses_bond_letter_path, as: :put, html: { class: "smart-form", id: "update_bond_letter_detail" } do |f|    
+      = form_for @letter_detail, url: update_bond_letter_detail_general_expenses_bond_letter_path, as: :patch, html: { class: "smart-form", id: "update_bond_letter_detail" } do |f|    
 
         %fieldset
           =hidden_field_tag "bond_letter_detail[bond_letter_id]", "#{@letter_detail.bond_letter_id.to_i.to_s}"
+          =hidden_field_tag "bond_letter_detail[id]", "#{@letter_detail.id.to_i.to_s}"
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} N° DE CARTA
@@ -28,7 +29,7 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Fecha de Vencimiento
             %section.col-md-6
-              = text_field_tag 'bond_letter_detail[expiration_date]', @letter_detail.expiration_date, class: "form-control" ,  as: :string, type: "date"
+              = text_field_tag 'bond_letter_detail[expiration_date]', @letter_detail.expiration_date.strftime("%Y-%m-%d"), class: "form-control",  as: :string, type: "date"
                 
           .row
             %section.col-md-5
@@ -47,19 +48,23 @@
               .form-group
                 .col-md-12
                   %label.radio-inline
-                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "si", checked: @letter_detail.retention.to_f > 0.0, :onchange => "retention_amount('si');"}
+                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "si", checked: @letter_detail.retention_amount.to_f > 0.0, :onchange => "retention_amount('si');"}
                     %span Si
                   %label.radio-inline
-                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "no", checked: @letter_detail.retention.to_f == 0.0, :onchange => "retention_amount('no');"}
+                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "no", checked: @letter_detail.retention_amount.to_f == 0.0, :onchange => "retention_amount('no');"}
                     %span No
           .row#si_edit{:style => "display:none;"}
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Retencion
             %section.col-md-6
-              .col-md-4
-                = text_field_tag 'bond_letter_detail[retention]', @letter_detail.retention, class: "form-control", onkeypress: "return isNumber(event);"
-              .col-md-1
-                = text_field_tag 'porcentaje', '%', class: "form-control", :readonly => true, :style => "margin-left:5px; text-align:center;"
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_amount]', @letter_detail.retention_amount, class: "form-control", onkeypress: "return isNumber(event);"
+                  %i.icon-append.fa.fa-dollar
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_percentage]', @letter_detail.retention_percentage, class: "form-control", :style => "margin-left:5px;", onkeypress: "return isNumber(event);"
+                  %i.icon-append %            
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Tasa
@@ -68,7 +73,7 @@
                 
 
         %footer
-          %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
+          %button.btn.btn-primary#update_form{type: "button", "style"=>"float:right;"}
             %i.fa.fa-save
               Guardar
           %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
@@ -78,13 +83,13 @@
 
   $("#new2").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
-    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_detail_edit', data2, null, 'GET');
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_edit', data2, null, 'GET');
   });
 
   $(document).ready(function (){
 
-    $('#bond_letter_detail_edit').attr("tabindex","");
-    if(#{@letter_detail.retention.to_f} > 0.0){
+    $('#bond_letter_edit').attr("tabindex","");
+    if(#{@letter_detail.retention_amount.to_f} > 0.0){
       retention_amount('si');
     }
     $("#concept").change(function() {
@@ -98,10 +103,12 @@
     submit_form($('form#update_bond_letter_detail'))
   });
 
-  $("#smart-mod-eg1").click(function(e) {
+  $("#update_form").click(function(e) {
+    console.log("entro astmar")
     $('form#update_bond_letter_detail').submit();
+    console.log("luego submit")
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
-    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_detail_edit', data2, null, 'GET');
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_edit', data2, null, 'GET');
   });
 
   function submit_form(form_element){
@@ -111,32 +118,32 @@
           // Rules for form validation
           ignore: '',
           rules : {
-            'bond_letter[issuer_entity_id]' : {
+            'bond_letter_detail[code]' : {
               required : true,
             },
-            'bond_letter[receptor_entity_id]' : {
+            'bond_letter_detail[issu_date]' : {
               required : true,
             },
-            'bond_letter[concept]' : {
+            'bond_letter_detail[expiration_date]' : {
               required : true,
             },
-            'bond_letter[status]' : {
+            'bond_letter_detail[amount]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'bond_letter[issuer_entity_id]' : {
+            'bond_letter_detail[code]' : {
               required : "(*)",
             },
-            'bond_letter[receptor_entity_id]' : {
+            'bond_letter_detail[issu_date]' : {
               required : "(*)",
             },
-            'bond_letter[concept]' : {
+            'bond_letter_detail[expiration_date]' : {
               required : "(*)",
             },
-            'bond_letter[status]' : {
+            'bond_letter_detail[amount]' : {
               required :  "(*)",
             }
           },
@@ -170,15 +177,18 @@
   }
 
   function retention_amount(type){
-    console.log(type);
     if(type =="si"){
       $('#si_edit').attr("style","display:block");
-      $('#bond_letter_detail_retention').prop("disabled", false);
-      $('#bond_letter_detail_retention').val("#{@letter_detail.retention}");
+      $('#bond_letter_detail_retention_amount').prop("disabled", false);
+      $('#bond_letter_detail_retention_amount').val("#{@letter_detail.retention_amount}");
+      $('#bond_letter_detail_retention_percentage').prop("disabled", false);
+      $('#bond_letter_detail_retention_percentage').val("#{@letter_detail.retention_percentage}");      
     }
     if(type=="no"){
       $('#si_edit').attr("style","display:none");
-      $('#bond_letter_detail_retention').attr("disabled","true");
-      $('#bond_letter_detail_retention').val(null);
+      $('#bond_letter_detail_retention_amount').attr("disabled","true");
+      $('#bond_letter_detail_retention_amount').val(null);
+      $('#bond_letter_detail_retention_percentage').attr("disabled","true");
+      $('#bond_letter_detail_retention_percentage').val(null);
     }
   }  

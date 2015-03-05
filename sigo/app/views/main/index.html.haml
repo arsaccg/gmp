@@ -75,10 +75,11 @@
                   %h4= "Centro de Costos de " + company.name
                 .modal-body{ 'style' => 'overflow:hidden' }
                   - company.cost_centers.each do |cc|
-                    .col-sm-12.col-md-12.col-lg-12
-                      %h1= cc.name
-                      %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
-                        Ingresar
+                    - if cc.users.where("user_id = " + @user.id.to_s).count > 0
+                      .col-sm-12.col-md-12.col-lg-12
+                        %h1= cc.name
+                        %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
+                          Ingresar
           :javascript
             $("a#btn-#{company.id}").click(function(){
               $('#modal-#{company.id}').modal('show');
@@ -105,10 +106,11 @@
                   %h4= "Centro de Costos de " + company.name
                 .modal-body{ 'style' => 'overflow:hidden' }
                   - company.cost_centers.each do |cc|
-                    .col-sm-12.col-md-12.col-lg-12
-                      %h1= cc.name
-                      %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
-                        Ingresar
+                    - if cc.users.where("user_id = " + @user.id.to_s).count > 0
+                      .col-sm-12.col-md-12.col-lg-12
+                        %h1= cc.name
+                        %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
+                          Ingresar
           :javascript
             $("a#btn-#{company.id}").click(function(){
               $('#modal-#{company.id}').modal('show');

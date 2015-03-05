@@ -33,7 +33,7 @@
       %select.form-control#group-selected{ :name => "group_selected" }
         - @categories.each do |cat|
           %option{:value => "#{cat.id}"}
-            = cat.name + " (COD. " + cat.code + ")"
+            = cat.code + " - " + cat.name
     .col-sm-1
       %br
       %button.btn.btn-info.btn-mini{:onclick => "javascript:show_info_category();"}

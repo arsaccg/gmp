@@ -58,10 +58,10 @@
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
-                              %i.fa.fa-folder-open
+                              %i.fa.fa-money
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'bond_letter('+cc.id.to_s+');'}
-                              Cartas Fianza                                
+                              %i.fa.fa-envelope                             
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
@@ -106,10 +106,10 @@
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
-                              %i.fa.fa-folder-open
+                              %i.fa.fa-money
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'bond_letter('+cc.id.to_s+');'}
-                              Cartas Fianza                              
+                              %i.fa.fa-envelope                              
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
@@ -154,10 +154,10 @@
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
-                              %i.fa.fa-folder-open
+                              %i.fa.fa-money
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'bond_letter('+cc.id.to_s+');'}
-                              Cartas Fianza                              
+                              %i.fa.fa-envelope                              
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
@@ -201,10 +201,10 @@
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
-                              %i.fa.fa-folder-open
+                              %i.fa.fa-money
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'bond_letter('+cc.id.to_s+');'}
-                              Cartas Fianza                                
+                              %i.fa.fa-envelope                                
                         %td
                           %span
                             %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
@@ -959,12 +959,12 @@
 
   function bond_letter_detail_new(cc_id, bl_id){
     data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id, bl: bl_id};
-    load_modal_ajax('#{new_bond_letter_detail_general_expenses_bond_letters_path}', 'bond_letter_detail_new', 'bond_letter_index', data, null, 'GET');
+    load_modal_ajax('#{new_bond_letter_detail_general_expenses_bond_letters_path}', 'bond_letter_new', 'bond_letter_index', data, null, 'GET');
   }
 
   function bond_letter_detail_edit(cc_id,bl_id){
     data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id};
-    load_modal_ajax('/general_expenses/bond_letters/'+bl_id+'/edit_bond_letter_detail', 'bond_letter_detail_edit', 'bond_letter_index', data, null, 'GET');
+    load_modal_ajax('/general_expenses/bond_letters/'+bl_id+'/edit_bond_letter_detail', 'bond_letter_edit', 'bond_letter_index', data, null, 'GET');
   }    
 
   function load_operating_result(cost_center_id){

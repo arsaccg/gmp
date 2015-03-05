@@ -23,7 +23,7 @@
         %td= bld.issu_date.strftime("%d/%m/%Y").to_s
         %td= bld.expiration_date.strftime("%d/%m/%Y %H:%M:%S").to_s
         %td= number_to_currency(bld.amount.to_f, unit: 'S/. ', precision: 2)
-        %td= (number_to_currency bld.amount.to_f*bld.retention.to_f/100, unit: 'S/.', precision: 2).to_s + " ("+ bld.retention.to_f.to_s + " %)"
+        %td= (number_to_currency bld.retention_amount.to_f, unit: 'S/.', precision: 2).to_s + " ("+ bld.retention_percentage.to_f.to_s + " %)"
         %td= number_to_currency(bld.issuance_cost.to_f, unit: 'S/. ', precision: 2)
         %td= number_to_currency bld.rate.to_f, unit: 'S/. ', precision: 2
         %td

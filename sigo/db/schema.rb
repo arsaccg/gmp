@@ -13,6 +13,40 @@
 
 ActiveRecord::Schema.define(version: 20150302182628) do
 
+  create_table "TmpRepInv", id: false, force: true do |t|
+    t.integer "input"
+    t.integer "warehouse_id"
+    t.string  "warehouse_name", limit: 256
+    t.integer "year"
+    t.integer "period"
+    t.date    "issue_date"
+    t.integer "article_id"
+    t.string  "article_code",   limit: 12
+    t.string  "article_name",   limit: 256
+    t.string  "article_symbol", limit: 256
+    t.decimal "amount",                     precision: 18, scale: 4
+    t.decimal "unit_cost",                  precision: 18, scale: 4
+  end
+
+  create_table "TmpRepInvGroup", id: false, force: true do |t|
+    t.integer "warehouse_id"
+    t.string  "warehouse_name", limit: 256
+    t.integer "year"
+    t.integer "period"
+    t.date    "issue_date"
+    t.integer "article_id"
+    t.string  "article_code",   limit: 12
+    t.string  "article_name",   limit: 256
+    t.string  "article_symbol", limit: 256
+    t.decimal "i_amount",                   precision: 18, scale: 4
+    t.decimal "i_unit_cost",                precision: 18, scale: 4
+    t.decimal "i_total_cost",               precision: 18, scale: 4
+    t.decimal "o_amount",                   precision: 18, scale: 4
+    t.decimal "o_unit_cost",                precision: 18, scale: 4
+    t.decimal "o_total_cost",               precision: 18, scale: 4
+  end
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
+
   create_table "account_accountants", force: true do |t|
     t.string   "code"
     t.string   "name"
@@ -340,6 +374,48 @@ ActiveRecord::Schema.define(version: 20150302182628) do
     t.integer "budget_id"
   end
 
+<<<<<<< HEAD
+=======
+  create_table "articles_from_cost_center_25", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_26", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_27", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   create_table "articles_from_cost_center_3", force: true do |t|
     t.integer "article_id"
     t.string  "code"
@@ -449,11 +525,19 @@ ActiveRecord::Schema.define(version: 20150302182628) do
     t.datetime "expiration_date"
     t.float    "amount"
     t.float    "issuance_cost"
+<<<<<<< HEAD
     t.float    "retention"
+=======
+    t.float    "retention_amount"
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
     t.float    "rate"
     t.integer  "bond_letter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+<<<<<<< HEAD
+=======
+    t.float    "retention_percentage"
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   end
 
   create_table "bond_letters", force: true do |t|
@@ -1301,7 +1385,11 @@ ActiveRecord::Schema.define(version: 20150302182628) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+<<<<<<< HEAD
     t.float    "percentage"
+=======
+    t.float    "percentage",      default: 0.0
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
     t.string   "unit"
   end
 
@@ -2573,6 +2661,27 @@ ActiveRecord::Schema.define(version: 20150302182628) do
     t.integer "status"
   end
 
+<<<<<<< HEAD
+=======
+  create_table "total_hours_per_week_per_cost_center_25", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_26", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_27", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   create_table "total_hours_per_week_per_cost_center_3", force: true do |t|
     t.integer "week_id"
     t.float   "total"
@@ -3102,6 +3211,27 @@ ActiveRecord::Schema.define(version: 20150302182628) do
     t.date   "end_date"
   end
 
+<<<<<<< HEAD
+=======
+  create_table "weeks_for_cost_center_25", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_26", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_27", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   create_table "weeks_for_cost_center_3", force: true do |t|
     t.string "name"
     t.date   "start_date"
