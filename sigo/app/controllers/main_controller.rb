@@ -19,6 +19,7 @@ class MainController < ApplicationController
       end
       redirect_to :action => :home
     else
+      @user = current_user
       render layout: false
     end
   end
@@ -33,8 +34,13 @@ class MainController < ApplicationController
       @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
       @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name rescue nil
       if !@company.nil? && !@cost_center_name.nil?
-        @others_cost_centers = ActiveRecord::Base.connection.execute("SELECT cc. id, cc.name FROM cost_centers_users ccu, companies com, cost_centers cc WHERE cc.company_id = com.id
-AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
+        @others_cost_centers = ActiveRecord::Base.connection.execute("
+          SELECT cc. id, cc.name 
+          FROM cost_centers_users ccu, cost_centers cc 
+          WHERE cc.company_id = " + @company.id.to_s + "
+          AND ccu.cost_center_id = cc.id 
+          AND cc.status = 'A'
+          AND ccu.user_id = " + current_user.id.to_s)
         @total_pending = OrderOfService.where(" state LIKE 'issued' ").count + PurchaseOrder.where(" state LIKE 'issued' ").count + DeliveryOrder.where(" state LIKE 'issued' ").count + OrderOfService.where(" state LIKE 'revised' ").count + PurchaseOrder.where(" state LIKE 'revised' ").count + DeliveryOrder.where(" state LIKE 'revised' ").count
         @calidad = TypeOfQaQc.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s)
         @supplier = TypeOfQaQcSupplier.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
