@@ -11,7 +11,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141009223256) do
+ActiveRecord::Schema.define(version: 20150302074816) do
+
+  create_table "TmpRepInv", id: false, force: true do |t|
+    t.integer "input"
+    t.integer "warehouse_id"
+    t.string  "warehouse_name", limit: 256
+    t.integer "year"
+    t.integer "period"
+    t.date    "issue_date"
+    t.integer "article_id"
+    t.string  "article_code",   limit: 12
+    t.string  "article_name",   limit: 256
+    t.string  "article_symbol", limit: 256
+    t.decimal "amount",                     precision: 18, scale: 4
+    t.decimal "unit_cost",                  precision: 18, scale: 4
+  end
+
+  create_table "TmpRepInvGroup", id: false, force: true do |t|
+    t.integer "warehouse_id"
+    t.string  "warehouse_name", limit: 256
+    t.integer "year"
+    t.integer "period"
+    t.date    "issue_date"
+    t.integer "article_id"
+    t.string  "article_code",   limit: 12
+    t.string  "article_name",   limit: 256
+    t.string  "article_symbol", limit: 256
+    t.decimal "i_amount",                   precision: 18, scale: 4
+    t.decimal "i_unit_cost",                precision: 18, scale: 4
+    t.decimal "i_total_cost",               precision: 18, scale: 4
+    t.decimal "o_amount",                   precision: 18, scale: 4
+    t.decimal "o_unit_cost",                precision: 18, scale: 4
+    t.decimal "o_total_cost",               precision: 18, scale: 4
+  end
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -28,6 +61,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "payment_date"
   end
 
   create_table "afp_details", force: true do |t|
@@ -56,6 +90,15 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "top"
     t.float    "c_variable"
     t.string   "type_of_afp"
+  end
+
+  create_table "amortization_by_valorizations", force: true do |t|
+    t.integer  "code"
+    t.string   "kind"
+    t.integer  "valorization_id"
+    t.float    "amount"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "arbitration_documents", force: true do |t|
@@ -97,9 +140,6 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.string   "category_id"
   end
 
-<<<<<<< HEAD
-  create_table "articles_from_cost_center_4", force: true do |t|
-=======
   add_index "articles", ["category_id"], name: "category_id", using: :btree
   add_index "articles", ["type_of_article_id"], name: "type_of_article_id", using: :btree
   add_index "articles", ["unit_of_measurement_id"], name: "unit_of_measurement_id", using: :btree
@@ -125,6 +165,136 @@ ActiveRecord::Schema.define(version: 20141009223256) do
   add_index "articles_from_cost_center_1", ["type_of_article_id"], name: "type_of_article_id", using: :btree
   add_index "articles_from_cost_center_1", ["unit_of_measurement_id"], name: "unit_of_measurement_id", using: :btree
 
+  create_table "articles_from_cost_center_10", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_11", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_12", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_13", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_14", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_15", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_16", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_17", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_18", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_19", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
   create_table "articles_from_cost_center_2", force: true do |t|
     t.integer "article_id"
     t.string  "code"
@@ -138,8 +308,189 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer "budget_id"
   end
 
+  create_table "articles_from_cost_center_20", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_21", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_22", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_23", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_24", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_25", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_26", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_27", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
   create_table "articles_from_cost_center_3", force: true do |t|
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_4", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_5", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_6", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_7", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_8", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_9", force: true do |t|
     t.integer "article_id"
     t.string  "code"
     t.integer "type_of_article_id"
@@ -208,9 +559,23 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "article_id"
+    t.string   "name"
+    t.integer  "category_id"
+    t.date     "change_date"
+    t.integer  "cost_center_id"
   end
 
   add_index "category_of_workers", ["article_id"], name: "article_id", using: :btree
+
+  create_table "category_of_workers_concepts", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "category_of_worker_id"
+    t.integer  "concept_id"
+    t.string   "amount"
+    t.string   "type_concept"
+    t.string   "concept_code"
+  end
 
   create_table "center_of_attentions", force: true do |t|
     t.string   "name"
@@ -226,6 +591,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "professional_id"
     t.integer  "work_id"
     t.integer  "charge_id"
+    t.string   "contractor"
     t.date     "start_date"
     t.date     "finish_date"
     t.integer  "other_work_id"
@@ -284,6 +650,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
     t.string   "address"
+    t.string   "short_name"
   end
 
   create_table "companies_users", force: true do |t|
@@ -335,6 +702,18 @@ ActiveRecord::Schema.define(version: 20141009223256) do
   add_index "concept_details", ["concept_id"], name: "concept_id", using: :btree
   add_index "concept_details", ["subconcept_id"], name: "subconcept_id", using: :btree
 
+  create_table "concept_valorizations", force: true do |t|
+    t.integer  "concept_id"
+    t.date     "date_week"
+    t.integer  "cost_center_id"
+    t.integer  "concept_reference_id"
+    t.string   "amount"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "formula"
+    t.integer  "type_worker"
+  end
+
   create_table "concepts", force: true do |t|
     t.string   "name"
     t.float    "percentage"
@@ -343,8 +722,18 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "top"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type_concept"
+    t.string   "type_obrero"
     t.integer  "status"
+    t.string   "type_empleado"
+    t.integer  "company_id"
+    t.string   "token"
+  end
+
+  create_table "concepts_type_of_payslips", force: true do |t|
+    t.integer  "concept_id"
+    t.integer  "type_of_payslip_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "contest_documents", force: true do |t|
@@ -375,11 +764,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
   end
 
-<<<<<<< HEAD
-=======
   add_index "contract_documents", ["work_id"], name: "work_id", using: :btree
 
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   create_table "contract_types", force: true do |t|
     t.string   "description"
     t.string   "shortdescription"
@@ -464,6 +850,10 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.binary   "igv",        limit: 1
     t.date     "date_max"
     t.date     "date_min"
+    t.string   "latitude"
+    t.string   "longitude"
+    t.string   "speciality"
+    t.boolean  "active"
   end
 
   add_index "cost_centers", ["company_id"], name: "company_id", using: :btree
@@ -521,6 +911,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.text     "description"
     t.integer  "cost_center_id"
     t.integer  "lock_version",   default: 0, null: false
+    t.string   "code"
   end
 
   add_index "delivery_orders", ["cost_center_id"], name: "cost_center_id", using: :btree
@@ -602,6 +993,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "file_update_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type_of_cost_center"
   end
 
   create_table "entities", force: true do |t|
@@ -638,6 +1030,18 @@ ActiveRecord::Schema.define(version: 20141009223256) do
   add_index "entities_type_entities", ["entity_id"], name: "entity_id", using: :btree
   add_index "entities_type_entities", ["type_entity_id"], name: "type_entity_id", using: :btree
 
+  create_table "entity_banks", force: true do |t|
+    t.integer  "entity_id"
+    t.integer  "bank_id"
+    t.integer  "money_id"
+    t.string   "account_type"
+    t.string   "account_number"
+    t.string   "account_detraction"
+    t.string   "cci"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "entity_cost_center_details", force: true do |t|
     t.integer  "cost_center_detail_id"
     t.integer  "entity_id"
@@ -660,6 +1064,15 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "document_file_size"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "equivalence_of_items", force: true do |t|
+    t.integer  "sale_item_by_budget_id"
+    t.integer  "target_item_by_budget_id"
+    t.float    "percentage"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   create_table "exchange_of_rates", force: true do |t|
@@ -686,10 +1099,23 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "approved_mgg"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
   end
 
   create_table "extra_calculations", force: true do |t|
     t.string   "concept"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "extra_information_for_payslips", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "concept_id"
+    t.float    "amount"
+    t.string   "week"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -746,6 +1172,11 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
   end
 
+  create_table "formules", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "general_expense_details", force: true do |t|
     t.integer  "general_expense_id"
     t.string   "type_article"
@@ -753,16 +1184,9 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "people"
     t.float    "participation"
     t.float    "time"
-<<<<<<< HEAD
-    t.float    "salary"
-    t.float    "parcial"
-    t.float    "amount"
-    t.float    "cost"
-=======
     t.string   "parcial"
     t.float    "amount"
     t.string   "cost"
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -772,11 +1196,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-<<<<<<< HEAD
-=======
     t.string   "total"
     t.string   "code_phase"
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   create_table "graphers", force: true do |t|
@@ -786,6 +1207,13 @@ ActiveRecord::Schema.define(version: 20141009223256) do
 
   create_table "health_centers", force: true do |t|
     t.string   "enterprise"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "holidays", force: true do |t|
+    t.date     "date_holiday"
+    t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -803,7 +1231,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.string   "ownitem"
     t.string   "cod_input"
     t.float    "quantity"
-    t.float    "price",          limit: 14
+    t.string   "price"
     t.float    "aprox"
     t.string   "order"
     t.float    "measured"
@@ -859,6 +1287,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type_of_cost_center"
   end
 
   create_table "invoice_documents", force: true do |t|
@@ -920,6 +1349,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.float    "percentage",      default: 0.0
+    t.string   "unit"
   end
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
@@ -985,6 +1416,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "document_update_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type_of_cost_center"
   end
 
   create_table "law_and_regulations_type_of_law_and_regulations", force: true do |t|
@@ -1002,6 +1434,33 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "day"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "loans", force: true do |t|
+    t.string   "person"
+    t.date     "loan_date"
+    t.string   "loan_type"
+    t.float    "amount"
+    t.string   "description"
+    t.string   "refund_type"
+    t.string   "check_number"
+    t.date     "check_date"
+    t.string   "state"
+    t.date     "refund_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_beneficiary_id"
+    t.integer  "cost_center_lender_id"
+    t.string   "loan_doc"
+    t.string   "loan_doc_file_name"
+    t.string   "loan_doc_content_type"
+    t.integer  "loan_doc_file_size"
+    t.datetime "loan_doc_update_at"
+    t.string   "refund_doc"
+    t.string   "refund_doc_file_name"
+    t.string   "refund_doc_content_type"
+    t.integer  "refund_doc_file_size"
+    t.datetime "refund_doc_update_at"
   end
 
   create_table "majors", force: true do |t|
@@ -1097,20 +1556,21 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "sector_id"
     t.integer  "phase_id"
     t.integer  "unit_of_measurement_id"
-    t.integer  "amount"
-    t.float    "unit_price"
+    t.float    "amount"
+    t.string   "unit_price"
     t.boolean  "igv"
-    t.float    "unit_price_igv"
+    t.string   "unit_price_igv"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_of_service_id"
     t.boolean  "received"
-    t.float    "unit_price_before_igv"
-    t.float    "discount_before"
-    t.float    "discount_after"
-    t.float    "quantity_igv"
+    t.string   "unit_price_before_igv"
+    t.string   "discount_before"
+    t.string   "discount_after"
+    t.string   "quantity_igv"
     t.integer  "lock_version",           default: 0, null: false
+    t.integer  "working_group_id"
   end
 
   add_index "order_of_service_details", ["article_id"], name: "article_id", using: :btree
@@ -1132,7 +1592,11 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "money_id"
     t.float    "exchange_of_rate"
     t.date     "date_of_service"
-    t.integer  "lock_version",         default: 0, null: false
+    t.integer  "lock_version",         default: 0,    null: false
+    t.string   "code"
+    t.integer  "user_id_historic"
+    t.date     "date_of_elimination"
+    t.boolean  "status",               default: true, null: false
   end
 
   add_index "order_of_services", ["cost_center_id"], name: "cost_center_id", using: :btree
@@ -1203,12 +1667,9 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "total_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
-<<<<<<< HEAD
     t.integer  "block"
-=======
+    t.integer  "cost_center_id"
     t.integer  "lock_version",             default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   add_index "part_of_equipments", ["cost_center_id"], name: "cost_center_id", using: :btree
@@ -1223,14 +1684,11 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.date     "date_of_creation"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
     t.integer  "block"
     t.integer  "blockweekly"
-<<<<<<< HEAD
-=======
     t.integer  "cost_center_id"
     t.integer  "lock_version",     default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
+    t.integer  "payroll_used",     default: 0, null: false
   end
 
   add_index "part_people", ["cost_center_id"], name: "cost_center_id", using: :btree
@@ -1279,6 +1737,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "lock_version",     default: 0, null: false
+    t.string   "he_25"
+    t.string   "he_35"
   end
 
   add_index "part_worker_details", ["cost_center_id"], name: "cost_center_id", using: :btree
@@ -1291,13 +1751,16 @@ ActiveRecord::Schema.define(version: 20141009223256) do
   create_table "part_workers", force: true do |t|
     t.string   "number_part"
     t.date     "date_of_creation"
-    t.integer  "company_id"
+    t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "lock_version",     default: 0, null: false
+    t.integer  "lock_version",     default: 0,     null: false
+    t.integer  "payroll_used",     default: 0,     null: false
+    t.boolean  "blockweekly",      default: false, null: false
+    t.boolean  "blockpayslip",     default: false, null: false
   end
 
-  add_index "part_workers", ["company_id"], name: "company_id", using: :btree
+  add_index "part_workers", ["cost_center_id"], name: "company_id", using: :btree
 
   create_table "part_works", force: true do |t|
     t.integer  "working_group_id"
@@ -1306,10 +1769,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sector_id"
-    t.integer  "cost_center_id"
-<<<<<<< HEAD
     t.integer  "block"
-=======
+    t.integer  "cost_center_id"
     t.integer  "lock_version",         default: 0, null: false
   end
 
@@ -1323,7 +1784,54 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "igv"
     t.datetime "created_at"
     t.datetime "updated_at"
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
+    t.string   "percent_detraction"
+    t.string   "detraction"
+    t.integer  "cost_center_id"
+    t.string   "perception"
+    t.string   "total"
+    t.string   "sub_total"
+    t.string   "guarantee_fund_n1"
+    t.string   "other_discounts"
+    t.string   "article_code"
+    t.string   "type_payment"
+  end
+
+  create_table "payroll_details", force: true do |t|
+    t.integer  "payroll_id"
+    t.integer  "concept_id"
+    t.float    "amount"
+    t.string   "type_con"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "payrolls", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "payslips", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "cost_center_id"
+    t.string   "week"
+    t.integer  "days"
+    t.float    "normal_hours"
+    t.integer  "subsidized_day"
+    t.float    "subsidized_hour"
+    t.date     "last_worked_day"
+    t.float    "he_60"
+    t.string   "code"
+    t.float    "he_100"
+    t.text     "ing_and_amounts",    limit: 2147483647
+    t.string   "month"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "des_and_amounts",    limit: 2147483647
+    t.text     "aport_and_amounts",  limit: 2147483647
+    t.integer  "company_id"
+    t.integer  "type_of_payslip_id"
   end
 
   create_table "phases", force: true do |t|
@@ -1347,6 +1855,37 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
     t.integer  "folder_id"
   end
+
+  create_table "plutus_accounts", force: true do |t|
+    t.string   "name"
+    t.string   "type"
+    t.boolean  "contra"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "plutus_accounts", ["name", "type"], name: "index_plutus_accounts_on_name_and_type", using: :btree
+
+  create_table "plutus_amounts", force: true do |t|
+    t.string  "type"
+    t.integer "account_id"
+    t.integer "entry_id"
+    t.decimal "amount",     precision: 20, scale: 10
+  end
+
+  add_index "plutus_amounts", ["account_id", "entry_id"], name: "index_plutus_amounts_on_account_id_and_entry_id", using: :btree
+  add_index "plutus_amounts", ["entry_id", "account_id"], name: "index_plutus_amounts_on_entry_id_and_account_id", using: :btree
+  add_index "plutus_amounts", ["type"], name: "index_plutus_amounts_on_type", using: :btree
+
+  create_table "plutus_entries", force: true do |t|
+    t.string   "description"
+    t.integer  "commercial_document_id"
+    t.string   "commercial_document_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "plutus_entries", ["commercial_document_id", "commercial_document_type"], name: "index_entries_on_commercial_doc", using: :btree
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
@@ -1392,34 +1931,53 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "current_igv"
     t.float    "current_unit_price"
     t.float    "net_price_after_igv"
-<<<<<<< HEAD
-=======
-    t.integer  "lock_version",          default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
+    t.integer  "lock_version",          default: 0,   null: false
+    t.string   "article_code"
+    t.string   "article_name"
+    t.string   "unit_of_measurement"
+    t.float    "amount_perception",     default: 0.0, null: false
+    t.string   "discount_before_igv",   default: "0", null: false
+    t.string   "discount_after_igv",    default: "0", null: false
   end
 
   add_index "provision_details", ["account_accountant_id"], name: "account_accountant_id", using: :btree
   add_index "provision_details", ["order_detail_id"], name: "order_detail_id", using: :btree
   add_index "provision_details", ["provision_id"], name: "provision_id", using: :btree
 
+  create_table "provision_direct_extra_calculations", force: true do |t|
+    t.integer  "provision_direct_purchase_detail_id"
+    t.integer  "extra_calculation_id"
+    t.float    "value"
+    t.string   "operation"
+    t.string   "type"
+    t.integer  "lock_version"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "apply"
+  end
+
   create_table "provision_direct_purchase_details", force: true do |t|
     t.integer  "article_id"
     t.integer  "sector_id"
     t.integer  "phase_id"
     t.integer  "amount"
-    t.float    "price"
-    t.float    "unit_price_before_igv"
+    t.string   "price"
+    t.string   "unit_price_before_igv"
     t.boolean  "igv"
-    t.float    "quantity_igv"
-    t.float    "discount_after"
-    t.float    "discount_before"
+    t.string   "quantity_igv"
+    t.string   "discount_after"
+    t.string   "discount_before"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "provision_id"
     t.integer  "account_accountant_id"
-    t.float    "unit_price_igv"
+    t.string   "unit_price_igv"
     t.integer  "lock_version",          default: 0, null: false
+    t.integer  "flag"
+    t.string   "type_order"
+    t.integer  "order_id"
+    t.integer  "order_detail_id"
   end
 
   add_index "provision_direct_purchase_details", ["article_id", "sector_id", "phase_id", "provision_id", "account_accountant_id"], name: "article_id", using: :btree
@@ -1436,6 +1994,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
     t.integer  "cost_center_id"
     t.integer  "lock_version",              default: 0, null: false
+    t.string   "number_of_guide"
   end
 
   add_index "provisions", ["cost_center_id"], name: "cost_center_id", using: :btree
@@ -1445,24 +2004,21 @@ ActiveRecord::Schema.define(version: 20141009223256) do
 
   create_table "purchase_order_details", force: true do |t|
     t.integer  "delivery_order_detail_id"
-    t.float    "unit_price"
+    t.string   "unit_price"
     t.boolean  "igv"
-    t.float    "unit_price_igv"
+    t.string   "unit_price_igv"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "purchase_order_id"
-    t.integer  "amount"
+    t.float    "amount"
     t.boolean  "received"
     t.boolean  "received_provision"
-    t.float    "unit_price_before_igv"
-    t.float    "quantity_igv"
-    t.float    "discount_after"
-    t.float    "discount_before"
-<<<<<<< HEAD
-=======
+    t.string   "unit_price_before_igv"
+    t.string   "quantity_igv"
+    t.string   "discount_after"
+    t.string   "discount_before"
     t.integer  "lock_version",             default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   add_index "purchase_order_details", ["delivery_order_detail_id", "purchase_order_id"], name: "delivery_order_detail_id", using: :btree
@@ -1497,6 +2053,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "exchange_of_rate"
     t.integer  "entity_id"
     t.integer  "lock_version",         default: 0, null: false
+    t.string   "code"
   end
 
   add_index "purchase_orders", ["money_id", "method_of_payment_id", "user_id", "cost_center_id", "entity_id"], name: "money_id", using: :btree
@@ -1627,6 +2184,26 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
   end
 
+  create_table "report_valorizations", force: true do |t|
+    t.integer  "valorization_id"
+    t.string   "order"
+    t.string   "description"
+    t.float    "price"
+    t.float    "con_measured"
+    t.float    "con_amount"
+    t.float    "pre_measured"
+    t.float    "pre_amount"
+    t.float    "act_measured"
+    t.float    "act_amount"
+    t.float    "acc_measured"
+    t.float    "acc_amount"
+    t.float    "rem_measured"
+    t.float    "rem_amount"
+    t.float    "advance"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sc_valuations", force: true do |t|
     t.string   "name"
     t.date     "start_date"
@@ -1667,6 +2244,16 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "otherdiscount"
     t.float    "accumulated_otherdiscount"
     t.integer  "cost_center_id"
+  end
+
+  create_table "schedule_of_workers", force: true do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "state"
+    t.integer  "number_workers"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sectors", force: true do |t|
@@ -1830,6 +2417,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "subcontract_equipment_id"
     t.string   "code"
     t.integer  "lock_version",             default: 0, null: false
+    t.string   "state"
   end
 
   create_table "subcontract_equipments", force: true do |t|
@@ -1890,6 +2478,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "document_update_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type_of_cost_center"
   end
 
   create_table "technical_libraries_type_of_technical_libraries", force: true do |t|
@@ -1909,6 +2498,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "document_update_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type_of_cost_center"
   end
 
   create_table "testimony_of_consortium_documents", force: true do |t|
@@ -1927,6 +2517,168 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "theoretical_value"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_1", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_10", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_11", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_12", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_13", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_14", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_15", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_16", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_17", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_18", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_19", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_2", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_20", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_21", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_22", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_23", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_24", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_25", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_26", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_27", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_3", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_4", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_5", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_6", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_7", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_8", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
+  end
+
+  create_table "total_hours_per_week_per_cost_center_9", force: true do |t|
+    t.integer "week_id"
+    t.float   "total"
+    t.integer "status"
   end
 
   create_table "trainings", force: true do |t|
@@ -2022,6 +2774,20 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
   end
 
+  create_table "type_of_payslips", force: true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "for_worker_employee"
+    t.integer  "type_of_worker_id"
+    t.integer  "type_of_payslips_id"
+    t.string   "type_operation"
+    t.string   "name_operation"
+    t.string   "type_converted_operation"
+    t.integer  "cost_center_id"
+  end
+
   create_table "type_of_qa_qc_qualities", force: true do |t|
     t.string   "name"
     t.string   "preffix"
@@ -2085,6 +2851,15 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "updated_at"
   end
 
+  create_table "type_of_workers", force: true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "prefix"
+    t.string   "worker_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "type_workdays", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -2132,6 +2907,15 @@ ActiveRecord::Schema.define(version: 20141009223256) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  create_table "valorization_by_categories", force: true do |t|
+    t.integer  "valorization_id"
+    t.string   "category_id"
+    t.float    "amount"
+    t.integer  "budget_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "valorization_docs", force: true do |t|
     t.string   "name"
     t.string   "description"
@@ -2152,6 +2936,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "actual_measured"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "accumulated_measured"
   end
 
   create_table "valorizations", force: true do |t|
@@ -2180,8 +2965,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "initial_amortization_number"
     t.float    "initial_amortization_percentage"
     t.float    "bill"
-    t.float    "billigv"
-    t.float    "totalbill"
+    t.string   "billigv"
+    t.string   "totalbill"
     t.float    "retention"
     t.float    "detraction"
     t.float    "fuel_discount"
@@ -2190,22 +2975,23 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "advances"
     t.float    "accumulated_amortization"
     t.float    "balance"
-    t.float    "net_payment"
+    t.string   "net_payment"
     t.float    "accumulated_valuation"
     t.float    "accumulated_initial_amortization_number"
     t.float    "accumulated_bill"
     t.float    "accumulated_billigv"
     t.float    "accumulated_totalbill"
-    t.float    "accumulated_retention"
-    t.float    "accumulated_detraction"
+    t.string   "accumulated_retention"
+    t.string   "accumulated_detraction"
     t.float    "accumulated_fuel_discount"
     t.float    "accumulated_other_discount"
-    t.float    "accumulated_net_payment"
+    t.string   "accumulated_net_payment"
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "code"
     t.integer  "subcontract_equipment_id"
+    t.boolean  "locked"
   end
 
   create_table "warehouse_order_details", force: true do |t|
@@ -2276,11 +3062,71 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state"
+    t.string   "number_workers"
+    t.integer  "cost_center_id"
   end
 
-<<<<<<< HEAD
-=======
   create_table "weeks_for_cost_center_1", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_10", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_11", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_12", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_13", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_14", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_15", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_16", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_17", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_18", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_19", force: true do |t|
     t.string "name"
     t.date   "start_date"
     t.date   "end_date"
@@ -2292,8 +3138,91 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.date   "end_date"
   end
 
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
+  create_table "weeks_for_cost_center_20", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_21", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_22", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_23", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_24", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_25", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_26", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_27", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
   create_table "weeks_for_cost_center_3", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_4", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_5", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_6", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_7", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_8", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_9", force: true do |t|
     t.string "name"
     t.date   "start_date"
     t.date   "end_date"
@@ -2356,6 +3285,15 @@ ActiveRecord::Schema.define(version: 20141009223256) do
 
   add_index "worker_center_of_studies", ["worker_id"], name: "worker_id", using: :btree
 
+  create_table "worker_contract_details", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "worker_contract_id"
+    t.integer  "concept_id"
+    t.float    "amount"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "worker_contracts", force: true do |t|
     t.integer  "article_id"
     t.float    "camp"
@@ -2372,8 +3310,6 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.string   "typeofcontract"
     t.date     "end_date_2"
     t.integer  "contract_type_id"
-<<<<<<< HEAD
-=======
     t.string   "reason_for_termination"
     t.float    "viatical"
     t.float    "bonus"
@@ -2385,7 +3321,6 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
     t.integer  "lock_version",           default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   add_index "worker_contracts", ["article_id", "worker_id", "contract_type_id"], name: "article_id", using: :btree
@@ -2407,8 +3342,8 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.float    "salary"
     t.string   "bossincharge"
     t.string   "exitreason"
-    t.integer  "start_date"
-    t.integer  "end_date"
+    t.date     "start_date"
+    t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
@@ -2440,10 +3375,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "health_regime"
-<<<<<<< HEAD
-=======
     t.integer  "lock_version",     default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   add_index "worker_healths", ["health_center_id", "worker_id", "health_regime"], name: "health_center_id", using: :btree
@@ -2459,17 +3391,23 @@ ActiveRecord::Schema.define(version: 20141009223256) do
 
   add_index "worker_otherstudies", ["worker_id"], name: "worker_id", using: :btree
 
+  create_table "worker_rent_fifth_categories", force: true do |t|
+    t.integer  "worker_id"
+    t.float    "previous_salary"
+    t.float    "rent"
+    t.date     "date_last_rent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "workers", force: true do |t|
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position_worker_id"
-<<<<<<< HEAD
-    t.integer  "cost_center_id"
-=======
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
     t.integer  "entity_id"
     t.string   "email"
+    t.integer  "cost_center_id"
     t.string   "address"
     t.string   "district"
     t.string   "province"
@@ -2547,14 +3485,11 @@ ActiveRecord::Schema.define(version: 20141009223256) do
     t.string   "unionized"
     t.string   "state"
     t.string   "income_fifth_category"
-<<<<<<< HEAD
-    t.string   "afpnumber"
-=======
     t.string   "lastgrade"
     t.integer  "position_wg_id"
     t.string   "number_position"
     t.integer  "lock_version",                              default: 0, null: false
->>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
+    t.integer  "type_of_worker_id"
   end
 
   add_index "workers", ["position_worker_id", "entity_id", "cost_center_id"], name: "position_worker_id", using: :btree
@@ -2576,7 +3511,7 @@ ActiveRecord::Schema.define(version: 20141009223256) do
 
   create_table "works", force: true do |t|
     t.string   "specialty"
-    t.string   "name",                                 limit: 500
+    t.string   "name"
     t.float    "amount_of_contract"
     t.string   "participation_of_arsac"
     t.date     "date_signature_of_contract"
