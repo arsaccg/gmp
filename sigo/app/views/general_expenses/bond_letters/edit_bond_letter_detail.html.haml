@@ -1,0 +1,194 @@
+.modal-dialog#modalid{ style: "width: 50%;" }
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong REGISTRO DE CARTA FIANZA
+    .modal-body
+    
+      = form_for @letter_detail, url: update_bond_letter_detail_general_expenses_bond_letter_path, as: :patch, html: { class: "smart-form", id: "update_bond_letter_detail" } do |f|    
+
+        %fieldset
+          =hidden_field_tag "bond_letter_detail[bond_letter_id]", "#{@letter_detail.bond_letter_id.to_i.to_s}"
+          =hidden_field_tag "bond_letter_detail[id]", "#{@letter_detail.id.to_i.to_s}"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} N° DE CARTA
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[code]', @letter_detail.code, placeholder: "N° Cartas", class: "form-control"
+
+
+          .row{"style"=>"margin-bottom:1%;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Emisión
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[issu_date]', @letter_detail.issu_date, class: "form-control" , as: :string, type: "date"
+          .row{"style"=>"margin-bottom:1%;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Vencimiento
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[expiration_date]', @letter_detail.expiration_date.strftime("%Y-%m-%d"), class: "form-control",  as: :string, type: "date"
+                
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Monto
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[amount]', @letter_detail.amount, class: "form-control", onkeypress: "return isNumber(event);"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Costo de Emisión
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[issuance_cost]', @letter_detail.issuance_cost, class: "form-control", onkeypress: "return isNumber(event);"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Retención
+            %section.col-md-6
+              .form-group
+                .col-md-12
+                  %label.radio-inline
+                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "si", checked: @letter_detail.retention_amount.to_f > 0.0, :onchange => "retention_amount('si');"}
+                    %span Si
+                  %label.radio-inline
+                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "no", checked: @letter_detail.retention_amount.to_f == 0.0, :onchange => "retention_amount('no');"}
+                    %span No
+          .row#si_edit{:style => "display:none;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Retencion
+            %section.col-md-6
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_amount]', @letter_detail.retention_amount, class: "form-control", onkeypress: "return isNumber(event);"
+                  %i.icon-append.fa.fa-dollar
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_percentage]', @letter_detail.retention_percentage, class: "form-control", :style => "margin-left:5px;", onkeypress: "return isNumber(event);"
+                  %i.icon-append %            
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Tasa
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[rate]', @letter_detail.rate, class: "form-control", onkeypress: "return isNumber(event);"              
+                
+
+        %footer
+          %button.btn.btn-primary#update_form{type: "button", "style"=>"float:right;"}
+            %i.fa.fa-save
+              Guardar
+          %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
+            Salir
+
+:javascript
+
+  $("#new2").click(function() {
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_edit', data2, null, 'GET');
+  });
+
+  $(document).ready(function (){
+
+    $('#bond_letter_edit').attr("tabindex","");
+    if(#{@letter_detail.retention_amount.to_f} > 0.0){
+      retention_amount('si');
+    }
+    $("#concept").change(function() {
+        // foo is the id of the other select box 
+        if ($(this).val() == "1") {
+          $("#concept_type_advance").show();
+        }else{
+          $("#concept_type_advance").hide();
+        } 
+    });
+    submit_form($('form#update_bond_letter_detail'))
+  });
+
+  $("#update_form").click(function(e) {
+    console.log("entro astmar")
+    $('form#update_bond_letter_detail').submit();
+    console.log("luego submit")
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_edit', data2, null, 'GET');
+  });
+
+  function submit_form(form_element){
+    form_element.ajaxForm({
+      beforeSubmit: function() {
+        form_element.validate({
+          // Rules for form validation
+          ignore: '',
+          rules : {
+            'bond_letter_detail[code]' : {
+              required : true,
+            },
+            'bond_letter_detail[issu_date]' : {
+              required : true,
+            },
+            'bond_letter_detail[expiration_date]' : {
+              required : true,
+            },
+            'bond_letter_detail[amount]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'bond_letter_detail[code]' : {
+              required : "(*)",
+            },
+            'bond_letter_detail[issu_date]' : {
+              required : "(*)",
+            },
+            'bond_letter_detail[expiration_date]' : {
+              required : "(*)",
+            },
+            'bond_letter_detail[amount]' : {
+              required :  "(*)",
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return form_element.valid();
+      },
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+        console.log(error);
+      }
+    })
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function retention_amount(type){
+    if(type =="si"){
+      $('#si_edit').attr("style","display:block");
+      $('#bond_letter_detail_retention_amount').prop("disabled", false);
+      $('#bond_letter_detail_retention_amount').val("#{@letter_detail.retention_amount}");
+      $('#bond_letter_detail_retention_percentage').prop("disabled", false);
+      $('#bond_letter_detail_retention_percentage').val("#{@letter_detail.retention_percentage}");      
+    }
+    if(type=="no"){
+      $('#si_edit').attr("style","display:none");
+      $('#bond_letter_detail_retention_amount').attr("disabled","true");
+      $('#bond_letter_detail_retention_amount').val(null);
+      $('#bond_letter_detail_retention_percentage').attr("disabled","true");
+      $('#bond_letter_detail_retention_percentage').val(null);
+    }
+  }  

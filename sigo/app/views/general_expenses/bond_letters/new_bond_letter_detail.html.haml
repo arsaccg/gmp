@@ -1,0 +1,183 @@
+.modal-dialog#modalid{ style: "width: 50%;" }
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong REGISTRO DE CARTA FIANZA
+    .modal-body
+    
+      = form_for @letter_detail, url: create_bond_letter_detail_general_expenses_bond_letters_path, as: :post, html: { class: "smart-form", id: "create_bond_letter_detail" } do |f|    
+
+        %fieldset
+          =hidden_field_tag "bond_letter_detail[bond_letter_id]", "#{@bl.to_i.to_s}"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} N° DE CARTA
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[code]', nil, placeholder: "N° Cartas", class: "form-control"
+
+
+          .row{"style"=>"margin-bottom:1%;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Emisión
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[issu_date]', nil, class: "form-control" , as: :string, type: "date"
+          .row{"style"=>"margin-bottom:1%;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Vencimiento
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control",  as: :string, type: "date"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Monto
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[amount]', nil, class: "form-control", onkeypress: "return isNumber(event);"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Costo de Emisión
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[issuance_cost]', nil, class: "form-control", onkeypress: "return isNumber(event);"
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Retención
+            %section.col-md-6
+              .form-group
+                .col-md-12
+                  %label.radio-inline
+                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "si", :onchange => "retention_amount('si');"}
+                    %span Si
+                  %label.radio-inline
+                    %input.radiobox{:name =>'retention', :type => 'radio', :value => "no", :onchange => "retention_amount('no');"}
+                    %span No
+          .row#si{:style => "display:none;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Retencion
+            %section.col-md-6
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_amount]', nil, class: "form-control", onkeypress: "return isNumber(event);"
+                  %i.icon-append.fa.fa-dollar
+              .col-md-6
+                .input-group
+                  = text_field_tag 'bond_letter_detail[retention_percentage]', nil, class: "form-control", :style => "margin-left:5px;", onkeypress: "return isNumber(event);"
+                  %i.icon-append %
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Tasa
+            %section.col-md-6
+              = text_field_tag 'bond_letter_detail[rate]', nil, class: "form-control", onkeypress: "return isNumber(event);"              
+                
+
+        %footer
+          %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
+            %i.fa.fa-save
+              Guardar
+          %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
+            Salir
+
+:javascript
+
+  $("#new2").click(function() {
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_new', data2, null, 'GET');
+  });
+
+  $(document).ready(function (){
+    /*$('#dateTimePicker').datetimepicker();*/            
+    $('#bond_letter_new').attr("tabindex","");
+
+    $("#concept").change(function() {
+        // foo is the id of the other select box 
+        if ($(this).val() == "1") {
+          $("#concept_type_advance").show();
+        }else{
+          $("#concept_type_advance").hide();
+        } 
+    });
+    submit_form($('form#create_bond_letter_detail'))
+  });
+
+  $("#smart-mod-eg1").click(function(e) {
+    $('form#create_bond_letter_detail').submit();
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_new', data2, null, 'GET');
+  });
+
+  function submit_form(form_element){
+    form_element.ajaxForm({
+      beforeSubmit: function() {
+        form_element.validate({
+          // Rules for form validation
+          ignore: '',
+          rules : {
+            'bond_letter_detail[code]' : {
+              required : true,
+            },
+            'bond_letter_detail[issu_date]' : {
+              required : true,
+            },
+            'bond_letter_detail[expiration_date]' : {
+              required : true,
+            },
+            'bond_letter_detail[amount]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'bond_letter_detail[code]' : {
+              required : "(*)",
+            },
+            'bond_letter_detail[issu_date]' : {
+              required : "(*)",
+            },
+            'bond_letter_detail[expiration_date]' : {
+              required : "(*)",
+            },
+            'bond_letter_detail[amount]' : {
+              required :  "(*)",
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return form_element.valid();
+      },
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+        console.log(error);
+      }
+    })
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function retention_amount(type){
+    console.log(type);
+    if(type =="si"){
+      $('#si').attr("style","display:block");
+      $('#bond_letter_detail_retention').prop("disabled", false);
+    }
+    if(type=="no"){
+      $('#si').attr("style","display:none");
+      $('#bond_letter_detail_retention').attr("disabled","true");
+    }
+  }  

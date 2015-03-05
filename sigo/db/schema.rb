@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20150302074816) do
+=======
+ActiveRecord::Schema.define(version: 20150304210201) do
+>>>>>>> 5e84871afbae478e2245905ff2db40aa666e595a
 
   create_table "TmpRepInv", id: false, force: true do |t|
     t.integer "input"
@@ -513,6 +517,31 @@ ActiveRecord::Schema.define(version: 20150302074816) do
     t.string   "account_number"
     t.string   "account_detraction"
     t.string   "cci"
+  end
+
+  create_table "bond_letter_details", force: true do |t|
+    t.string   "code"
+    t.date     "issu_date"
+    t.datetime "expiration_date"
+    t.float    "amount"
+    t.float    "issuance_cost"
+    t.float    "retention_amount"
+    t.float    "rate"
+    t.integer  "bond_letter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "retention_percentage"
+  end
+
+  create_table "bond_letters", force: true do |t|
+    t.integer  "cost_center_id"
+    t.integer  "issuer_entity_id"
+    t.integer  "receptor_entity_id"
+    t.integer  "concept"
+    t.integer  "advance_id"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "book_works", force: true do |t|

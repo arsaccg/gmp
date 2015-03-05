@@ -107,6 +107,11 @@ class Logistics::StockInputsController < ApplicationController
       ids1 << x.purchase_order_detail_id
     end
     head.update_attributes(stock_input_parameters)
+
+    @period = head.issue_date.strftime("%Y%m")
+    @year = head.issue_date.strftime("%Y")
+    head.update_attributes(:period => @period, :year => @year)
+
     head.stock_input_details.each do |x|
       @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
       sum = 0

@@ -1,0 +1,39 @@
+%a{href: "javascript:delete_item('show_detail')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
+%h2{ :style => 'margin-top: 0;' }
+  -if @letter.concept.to_i == 0
+    = 'Fiel Cumplimiento - A cargo de: ' + CostCenter.find(@letter.cost_center_id).company.name.to_s
+  -elsif @letter.concept.to_i == 1
+    = 'ADELANTO - ' + Advance.find(@letter.advance_id).advance_type.to_s + ' - A cargo de: ' + CostCenter.find(@letter.cost_center_id).company.name.to_s
+
+%table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:100%;"}
+  %thead.panel-heading{"style"=>"background-color:#4BACC6;"}
+    %tr{"style"=>"height:25px"}
+      %th{"style"=>"text-align:center;font-weight:bold;"} N° CARTA FIANZA
+      %th{"style"=>"text-align:center;font-weight:bold;"} FECHA EMISION 
+      %th{"style"=>"text-align:center;font-weight:bold;"} FECHA VENCIMIENTO
+      %th{"style"=>"text-align:center;font-weight:bold;"} MONTO
+      %th{"style"=>"text-align:center;font-weight:bold;"} RETENCION
+      %th{"style"=>"text-align:center;font-weight:bold;"} COSTO DE EMISION
+      %th{"style"=>"text-align:center;font-weight:bold;"} TASA
+      %th{"style"=>"text-align:center;font-weight:bold;"} ACCIONES
+  %tbody#items_table
+    - @letter.bond_letter_details.each do |bld|
+      %tr
+        %td= bld.code.to_s
+        %td= bld.issu_date.strftime("%d/%m/%Y").to_s
+        %td= bld.expiration_date.strftime("%d/%m/%Y %H:%M:%S").to_s
+        %td= number_to_currency(bld.amount.to_f, unit: 'S/. ', precision: 2)
+        %td= (number_to_currency bld.retention_amount.to_f, unit: 'S/.', precision: 2).to_s + " ("+ bld.retention_percentage.to_f.to_s + " %)"
+        %td= number_to_currency(bld.issuance_cost.to_f, unit: 'S/. ', precision: 2)
+        %td= number_to_currency bld.rate.to_f, unit: 'S/. ', precision: 2
+        %td
+          %button.btn.btn-warning.btn-mini
+            %span{"style"=>"width=20px;text-align:center"}
+              %a{href: 'javascript:void(0);', :onclick => 'bond_letter_detail_edit('+"#{@cc.id.to_s}"+","+"#{bld.id.to_s}"+');', "style"=>" color: white;"}
+                Editar        
+
+:javascript
+
+  function delete_item(code){
+    $("#" + code).empty();
+  }

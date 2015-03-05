@@ -18,6 +18,9 @@ gem 'spreadsheet', '~> 0.9.7'
 # Gem PrawnTo
 gem "prawnto_2", :require => "prawnto"
 
+# Gem Datetiem picker
+gem 'jquery-datetimepicker-rails'
+
 # Gem Wicked PDF
 gem 'wicked_pdf'
 gem "wkhtmltopdf-binary"
