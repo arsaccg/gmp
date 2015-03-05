@@ -157,6 +157,11 @@ class Logistics::StockOutputsController < ApplicationController
   def update
     head = StockInput.find(params[:id])
     head.update_attributes(stock_input_parameters)
+
+    @period = head.issue_date.strftime("%Y%m")
+    @year = head.issue_date.strftime("%Y")
+    head.update_attributes(:period => @period, :year => @year)
+    
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index
   end
