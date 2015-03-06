@@ -199,6 +199,6 @@ class GeneralExpenses::BondLettersController < ApplicationController
     params.require(:bond_letter).permit(:cost_center_id, :issuer_entity_id, :receptor_entity_id, :advance_id, :status, :concept)
   end
   def letter_details_params
-    params.require(:bond_letter_detail).permit(:bond_letter_id, :code, :issu_date, :expiration_date, :amount, :issuance_cost, :retention_amount, :retention_percentage, :rate)
+    params.require(:bond_letter_detail).permit(:bond_letter_id, :code, :issu_date, :expiration_date, :amount, :issuance_cost, :retention_amount, :retention_percentage, :rate, :document)
   end    
 end

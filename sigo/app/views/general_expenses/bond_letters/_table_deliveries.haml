@@ -30,7 +30,10 @@
           %button.btn.btn-warning.btn-mini
             %span{"style"=>"width=20px;text-align:center"}
               %a{href: 'javascript:void(0);', :onclick => 'bond_letter_detail_edit('+"#{@cc.id.to_s}"+","+"#{bld.id.to_s}"+');', "style"=>" color: white;"}
-                Editar        
+                Editar
+          - if bld.document.exists?
+            %a.btn.btn-info.btn-xs{:href =>"#{bld.document.url}", :target => "_blank",:style=>" margin-left: 5px; "}
+              %i.fa.fa-clipboard
 
 :javascript
 

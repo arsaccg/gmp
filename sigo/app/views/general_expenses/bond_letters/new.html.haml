@@ -55,6 +55,7 @@
             Salir
 
 :javascript
+  $('#bond_letter_new').attr("tabindex","");
 
   $("#new2").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
@@ -110,8 +111,6 @@
       escapeMarkup: function (m) { return m; }
     });
 
-    $('#bond_letter_new').attr("tabindex","");
-
     $("#concept").change(function() {
         // foo is the id of the other select box 
         if ($(this).val() == "1") {
@@ -127,6 +126,7 @@
   });
 
   $("#smart-mod-eg1").click(function(e) {
+    $("#smart-mod-eg1").attr("disabled",true);
     $('form#create_bond_letter').submit();
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
     load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_new', data2, null, 'GET');
