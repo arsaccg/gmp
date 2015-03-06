@@ -95,8 +95,17 @@ class Management::EquivalenceOfItemsController < ApplicationController
       sale_item_by_budget.save
       destroy = EquivalenceOfItem.destroy(eq.id)
     end
-    flash[:notice] = "Se ha eliminado correctamente el banco seleccionado."
+    flash[:notice] = "Se ha eliminado correctamente el enlace seleccionado."
     render :json => equivalences
+  end
+
+  def delete_link
+    puts "******************************"
+    goalitembybudget = Itembybudget.find(params[:target_id])
+    saleitembybudget = Itembybudget.find(params[:sale_id])
+    equivalence = EquivalenceOfItem.where("sale_item_by_budget_id = ? AND target_item_by_budget_id = ?",params[:sale_id],params[:target_id]).first
+    destroy = EquivalenceOfItem.destroy(equivalence.id)
+    render :json => equivalence
   end
 
   def get_itembybudget_assigned

@@ -771,6 +771,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_item'
         post 'add_item2'
         post 'complete'
+        post 'delete_link'
         get 'get_itembybudget_assigned'
         get 'get_itembybudget2_assigned'
       end

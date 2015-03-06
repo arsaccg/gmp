@@ -19,6 +19,18 @@
             %section.col-md-6
               = text_field_tag 'bond_letter_detail[code]', @letter_detail.code, placeholder: "N° Cartas", class: "form-control"
 
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Adjunto
+            %section.col-md-6
+              = file_field_tag 'bond_letter_detail[document]', class: 'btn btn-default'
+              %p.help-block
+                - if @letter_detail.document.exists?
+                  = 'Archivo subido: ' + File.basename(@letter_detail.document.path, File.extname(@letter_detail.document.path))
+                - else
+                  Subir el archivo correspondiente                
+              %p{"style"=>"color:red;font-weight:bold;"} Solo se admiten archivos tipo pdf e imagen. 
+              %p{"style"=>"color:red;font-weight:bold;"} Si ingresa otro tipo la carta no se guardará
 
           .row{"style"=>"margin-bottom:1%;"}
             %section.col-md-5
@@ -76,12 +88,12 @@
           %button.btn.btn-primary#update_form{type: "button", "style"=>"float:right;"}
             %i.fa.fa-save
               Guardar
-          %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
+          %button.btn.btn-danger#update_detail_bond_letter{"data-dismiss" => "modal", type: "button"}
             Salir
 
 :javascript
 
-  $("#new2").click(function() {
+  $("#update_detail_bond_letter").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
     load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_edit', data2, null, 'GET');
   });
@@ -104,9 +116,8 @@
   });
 
   $("#update_form").click(function(e) {
-    console.log("entro astmar")
+    $("#update_form").attr("disabled",true);
     $('form#update_bond_letter_detail').submit();
-    console.log("luego submit")
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
     load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_edit', data2, null, 'GET');
   });

@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20150302074816) do
-=======
-ActiveRecord::Schema.define(version: 20150304210201) do
->>>>>>> 5e84871afbae478e2245905ff2db40aa666e595a
+ActiveRecord::Schema.define(version: 20150302182628) do
 
   create_table "TmpRepInv", id: false, force: true do |t|
     t.integer "input"
@@ -49,6 +45,7 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.decimal "o_unit_cost",                precision: 18, scale: 4
     t.decimal "o_total_cost",               precision: 18, scale: 4
   end
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -377,6 +374,8 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.integer "budget_id"
   end
 
+<<<<<<< HEAD
+=======
   create_table "articles_from_cost_center_25", force: true do |t|
     t.integer "article_id"
     t.string  "code"
@@ -416,6 +415,7 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.integer "budget_id"
   end
 
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   create_table "articles_from_cost_center_3", force: true do |t|
     t.integer "article_id"
     t.string  "code"
@@ -525,12 +525,19 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.datetime "expiration_date"
     t.float    "amount"
     t.float    "issuance_cost"
+<<<<<<< HEAD
+    t.float    "retention"
+=======
     t.float    "retention_amount"
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
     t.float    "rate"
     t.integer  "bond_letter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+<<<<<<< HEAD
+=======
     t.float    "retention_percentage"
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   end
 
   create_table "bond_letters", force: true do |t|
@@ -1378,7 +1385,11 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+<<<<<<< HEAD
+    t.float    "percentage"
+=======
     t.float    "percentage",      default: 0.0
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
     t.string   "unit"
   end
 
@@ -2650,6 +2661,8 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.integer "status"
   end
 
+<<<<<<< HEAD
+=======
   create_table "total_hours_per_week_per_cost_center_25", force: true do |t|
     t.integer "week_id"
     t.float   "total"
@@ -2668,6 +2681,7 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.integer "status"
   end
 
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   create_table "total_hours_per_week_per_cost_center_3", force: true do |t|
     t.integer "week_id"
     t.float   "total"
@@ -3197,6 +3211,8 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.date   "end_date"
   end
 
+<<<<<<< HEAD
+=======
   create_table "weeks_for_cost_center_25", force: true do |t|
     t.string "name"
     t.date   "start_date"
@@ -3215,6 +3231,7 @@ ActiveRecord::Schema.define(version: 20150304210201) do
     t.date   "end_date"
   end
 
+>>>>>>> a4fae7ddff96cf571d4ac5cef49f968c000c9220
   create_table "weeks_for_cost_center_3", force: true do |t|
     t.string "name"
     t.date   "start_date"

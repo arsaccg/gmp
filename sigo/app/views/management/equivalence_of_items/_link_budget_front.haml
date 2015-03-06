@@ -19,7 +19,7 @@
 
     %br
     .row
-      .col-md-6
+      .col-md-5
         .content-load
           .items-panel
             %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
@@ -50,16 +50,26 @@
                       -else
                         %strong
                           = title
-      .col-md-6
+      .col-md-7
         .content-load
           .items-panel
             %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
               %thead
                 %tr
+                  %th(colspan="5")
+                  %th
+                    .btn-group
+                      %a(class="btn btn-warning btn-xs" href="javascript:filter_color('color-class-yellow');" style="height: 10px;")
+                      %a(class="btn btn-danger btn-xs" href="javascript:filter_color('color-class-red');" style="height: 10px;")
+                      %a(class="btn btn-success btn-xs" href="javascript:filter_color('color-class-green');" style="height: 10px;")
+                      %a(class="btn btn-default btn-xs" href="javascript:filter_reset();" style="height: 10px;")
+                %tr
                   %th Partidas Meta
                   %th Acciones
+                  %th Unidad
                   %th Metrado
                   %th Precio
+                  %th Porcentage
               %tbody
                 - result_credit = get_credit(@goalitembybudgets[0].budget_id)
                 - itemwbs = itemswbs_from_budget(@goalitembybudgets[0].budget_id)
@@ -79,7 +89,7 @@
                       = itembudget.order        
                       -if itembudget.measured.to_f > 0
                         -title_parsed = URI.escape(title.gsub('\'', '_'))
-                        %a{:href=>"javascript:add_item2('#{itembudget.id.to_s}')"}
+                        %a{:href=>"javascript:add_item2('#{itembudget.id.to_s}')",:ondblclick=>"javascript:add_percentage_straight(#{itembudget.id},#{100-itembudget.percentage.to_f})"}
                           = title
                       -else
                         %strong
@@ -89,6 +99,8 @@
                         %center
                           %a{:href=>"javascript:viewassigment('#{itembudget.id.to_s}')"}
                             Ver Asignaciones
+                    %td
+                      = itembudget.unit
                     -if itembudget.measured.to_f > 0
                       %td(style="text-align: right;")
                         = number_with_delimiter(number_with_precision itembudget.measured.to_f, :precision => 2)
@@ -96,6 +108,8 @@
                         = number_to_currency(number_with_precision(itembudget.price, :precision => 2).to_s , :unit=>'S/. ') rescue ""
                     -else
                       %td(colspan="2")
+                    %td
+                      = itembudget.percentage
     .row{style: "display: none"}
       .col-lg-12
         %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-sale" aria-describedby="data-table_info")
@@ -130,6 +144,10 @@
     %i.fa.fa-arrow-left>
     Retornar al listado
 
+  %button.btn.btn-sm.btn-primary.btn-prev#clear{type: "button"}
+    %i.fa.fa-arrow-left>
+    Limpiar
+
   
 :javascript
   var selected_item;
@@ -151,6 +169,7 @@
   }
 
   function add_item2(elemento){
+    console.log("hola");
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
@@ -163,7 +182,7 @@
   }
 
   function add_item4(elemento){
-    $('#items_table2').find("tr:gt(0)").remove();
+    limpiartabla();
     var url="#{complete_management_equivalence_of_items_path}";
     var form_token="#{form_authenticity_token}";
     var default_value=0;
@@ -177,6 +196,12 @@
     }).done(function( data ) {
       newOptions = [];
       $.each(data.combo, function(key, value){
+        var bt = document.createElement('button');
+        bt.setAttribute('onclick','delete_equivalence('+value.id+')');
+        bt.name = 'addBt';
+        bt.id = 'addBt';
+        var t = document.createTextNode("X");
+        bt.appendChild(t);
         var row = table.insertRow(value.number);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -187,9 +212,16 @@
         cell2.innerHTML = value.subbudgetdetail;
         cell3.innerHTML = value.measured;
         cell4.innerHTML = value.percentage;
-        cell5.innerHTML = "";
+        cell5.appendChild(bt);
       });
     });
+  }
+
+  function limpiartabla(){
+    console.log("limpia");
+    $('#items_table2').find("tr:gt(0)").remove();
+    var table = document.getElementById("items_table2");
+    table.innerHTML = "";
   }
 
   function add_item3(elemento,porcentaje){
@@ -201,12 +233,30 @@
     $('#items_table2').find("tr:gt(0)").remove();
   }
 
+  function add_percentage_straight(elemento,porcentaje){
+    percent = porcentaje;
+    str_item = {authenticity_token: "#{form_authenticity_token}", sale_id:elemento, target_id:  $('#saleitembybudget_item').val(), percentage: percent};
+
+    append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+    add_item4($('#saleitembybudget_item').val());
+  }
+
   $('#backlist-entity').click(function(){
     load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
   });
 
+  $('#clean').click(function(){
+    limpiartabla();
+  });
+
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function delete_equivalence(codigo){
+    str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: codigo, target_id: $('#saleitembybudget_item').val()};
+    append_url_ajax('#{delete_link_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+    add_item4($('#saleitembybudget_item').val());
   }
 
   $('#save').click(function(){
@@ -234,4 +284,21 @@
   function viewassigment2(id){
     $('#myModal').modal('show');
     load_url_ondiv('#{get_itembybudget2_assigned_management_equivalence_of_items_path}?itembybudget=' + id, 'modal-body')
+  }
+
+  function filter_color(str_color)
+  {
+    $(".color-class-yellow").fadeOut();
+    $(".color-class-red").fadeOut();
+    $(".color-class-green").fadeOut();
+    $(".color-title").fadeOut();
+    $("." + str_color).fadeIn();
+  }
+
+  function filter_reset()
+  {
+    $(".color-class-yellow").fadeIn();
+    $(".color-class-red").fadeIn();
+    $(".color-class-green").fadeIn();
+    $(".color-title").fadeIn();
   }
