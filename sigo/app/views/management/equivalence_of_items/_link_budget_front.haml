@@ -144,6 +144,10 @@
     %i.fa.fa-arrow-left>
     Retornar al listado
 
+  %button.btn.btn-sm.btn-primary.btn-prev#clear{type: "button"}
+    %i.fa.fa-arrow-left>
+    Limpiar
+
   
 :javascript
   var selected_item;
@@ -165,6 +169,7 @@
   }
 
   function add_item2(elemento){
+    console.log("hola");
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
@@ -177,7 +182,7 @@
   }
 
   function add_item4(elemento){
-    $('#items_table2').find("tr:gt(0)").remove();
+    limpiartabla();
     var url="#{complete_management_equivalence_of_items_path}";
     var form_token="#{form_authenticity_token}";
     var default_value=0;
@@ -212,6 +217,13 @@
     });
   }
 
+  function limpiartabla(){
+    console.log("limpia");
+    $('#items_table2').find("tr:gt(0)").remove();
+    var table = document.getElementById("items_table2");
+    table.innerHTML = "";
+  }
+
   function add_item3(elemento,porcentaje){
     percent = document.getElementById("equivalence_of_items_goalitembybudget_"+porcentaje+"_percentage").value;
     str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: $('#saleitembybudget_item').val(), percentage: percent};
@@ -223,15 +235,18 @@
 
   function add_percentage_straight(elemento,porcentaje){
     percent = porcentaje;
-    str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: $('#saleitembybudget_item').val(), percentage: percent};
+    str_item = {authenticity_token: "#{form_authenticity_token}", sale_id:elemento, target_id:  $('#saleitembybudget_item').val(), percentage: percent};
 
     append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
-    $("#tr" + porcentaje).remove();
-    $('#items_table2').find("tr:gt(0)").remove();
+    add_item4($('#saleitembybudget_item').val());
   }
 
   $('#backlist-entity').click(function(){
     load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
+  });
+
+  $('#clean').click(function(){
+    limpiartabla();
   });
 
   function delete_item(code){
