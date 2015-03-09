@@ -36,6 +36,13 @@
               %input#expenses.form-control{placeholder: "Gastos", onkeypress: "return isNumber(event);"}
               %span.input-group-addon
                 %i.icon-append.fa.fa-superscript
+          %section.col-md-4
+            %label Gastos de G.D.G
+            %select.form-control#phase
+              %option{:value=>nil, :disabled => true, :selected => true } SERVICIOS GENERALES
+              - @phases.each do |phase|
+                %option{:value => "#{phase.id}"}
+                  = phase.code.to_s + ' ' + phase.name
         %br
         %br
 
@@ -49,7 +56,7 @@
 :javascript
   $("#smart-mod-eg1").click(function(e) {
     if($('#name').val()!='' && $('#percentage').val()!= '' && $('#amount').val()!= '' && $('#expenses').val()!=''){
-      data = { authenticity_token: "#{form_authenticity_token}", name: $('#name').val(), percentage: $('#percentage').val(), amount: $('#amount').val(), expenses: $('#expenses').val(), cc_id: $('#cc').val()};
+      data = { authenticity_token: "#{form_authenticity_token}", name: $('#name').val(), percentage: $('#percentage').val(), amount: $('#amount').val(), expenses: $('#expenses').val(), cc_id: $('#cc').val(), phase_id: $('#phase').val()};
       data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
       load_url_ajax('#{create_expense_general_expenses_diverse_expenses_of_managements_path}', 'gdgn', data, null, 'POST');
       load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdgn', data2, null, 'GET');

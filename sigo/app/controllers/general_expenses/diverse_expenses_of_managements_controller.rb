@@ -20,6 +20,7 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
   def new
     @cc = CostCenter.find(params[:cc_id].to_s)
     @gdg = DiverseExpensesOfManagement.new
+    @phases = Phase.where("code LIKE '94__'")
     render layout: false
   end
 
@@ -31,6 +32,7 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
     gdg.amount = params[:amount]
     gdg.expenses = params[:expenses]
     gdg.cost_center_id = params[:cc_id]
+    gdg.phase_id = params[:phase_id]
     gdg.total_delivered = 0
     if gdg.save
       gdg.errors.messages.each do |attribute, error|
@@ -46,6 +48,7 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
   def edit
     @gdg = DiverseExpensesOfManagement.find(params[:id])
     @action = 'edit'
+    @phases = Phase.where("code LIKE '94__'")
     render layout: false
   end
 
@@ -105,7 +108,7 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
 
   private
   def gdg_parameters
-    params.require(:diverse_expenses_of_management).permit(:name, :percentage, :amount, :expenses, :total_delivered, diverse_expenses_of_management_details_attributes: [
+    params.require(:diverse_expenses_of_management).permit(:name, :percentage, :phase_id, :amount, :expenses, :total_delivered, diverse_expenses_of_management_details_attributes: [
         :id, 
         :diverse_expenses_of_management_id,
         :amount,

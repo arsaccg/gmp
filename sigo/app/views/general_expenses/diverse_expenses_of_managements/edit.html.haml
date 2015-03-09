@@ -42,6 +42,13 @@
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
                 = text_field_tag '',"#{@gdg.amount.to_f - @gdg.total_delivered.to_f}" , class: "form-control quantity", :required => true, :readonly =>true  
+            .col-md-2
+              %label Fases
+              %select.form-control#phase
+                %option{:value=>nil, :disabled => true, :selected => true } SERVICIOS GENERALES
+                - @phases.each do |phase|
+                  %option{:value => "#{phase.id}", :selected => phase.id==@gdg.phase_id.to_i}
+                    = phase.code.to_s + ' ' + phase.name                
         %br
         %br
         %footer
