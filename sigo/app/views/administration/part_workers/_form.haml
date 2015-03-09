@@ -96,7 +96,7 @@
                           %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][cost_center_id]", :style => 'width:100%;padding: 0;border: none;'}
                             %option{:value => "0", :selected => true, :disabled => true} Seleccionar Centro de Costo
                             - @costcenters.each do |costcenters|
-                              %option{:value => "#{costcenters.id}"}
+                              %option{:value => "#{costcenters.id}", :selected => costcenters.id==@cc.to_i}
                                 = costcenters.name
                       %td.he-25
                         %div

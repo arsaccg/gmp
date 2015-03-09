@@ -43,6 +43,7 @@ class Administration::PartWorkersController < ApplicationController
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @costcenters = CostCenter.where("company_id = ?",@company)
+    @cc = get_company_cost_center('cost_center')
     render layout: false
   end
 
@@ -84,6 +85,7 @@ class Administration::PartWorkersController < ApplicationController
     @action = 'edit'
     @company = get_company_cost_center('company')
     @workers = Worker.all
+    @cc = get_company_cost_center('cost_center')
     render layout: false
   end
 
