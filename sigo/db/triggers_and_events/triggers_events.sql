@@ -1,9 +1,5 @@
 DELIMITER $$
 
---
--- Triggers
---
-
 DROP TRIGGER IF EXISTS `after_article_insert`$$
 CREATE TRIGGER `after_article_insert`
   AFTER INSERT ON `system_sigo_dev`.`articles`
@@ -19,13 +15,13 @@ CREATE TRIGGER `before_article_update`
   FOR EACH ROW BEGIN
 
   UPDATE `system_bi`.`articles`
-  	SET name = NEW.name,
-  		description = NEW.description,
-  		code = NEW.code,
-  		type_of_article_id = NEW.type_of_article_id,
-  		unit_of_measurement_id = NEW.unit_of_measurement_id,
-  		category_id = NEW.category_id
-  WHERE code = OLD.code
+    SET name = NEW.name,
+      description = NEW.description,
+      code = NEW.code,
+      type_of_article_id = NEW.type_of_article_id,
+      unit_of_measurement_id = NEW.unit_of_measurement_id,
+      category_id = NEW.category_id
+  WHERE code = OLD.code;
 END$$
 
 DROP TRIGGER IF EXISTS `after_category_insert`$$
@@ -43,9 +39,9 @@ CREATE TRIGGER `before_category_update`
   FOR EACH ROW BEGIN
 
   UPDATE `system_bi`.`categories`
-  	SET name = NEW.name,
-  		code = NEW.code
-  WHERE id = OLD.id
+    SET name = NEW.name,
+      code = NEW.code
+  WHERE id = OLD.id;
 END$$
 
 --
