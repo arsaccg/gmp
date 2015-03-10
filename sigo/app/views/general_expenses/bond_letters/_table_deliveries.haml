@@ -19,7 +19,11 @@
   %tbody#items_table
     - @letter.bond_letter_details.each do |bld|
       %tr
-        %td= bld.code.to_s
+        %td
+          = bld.code.to_s
+          - if bld.document.exists?
+            %a.btn.btn-info.btn-xs{:href =>"#{bld.document.url}", :target => "_blank",:style=>" margin-left: 5px; "}
+              %i.fa.fa-clipboard
         %td= bld.issu_date.strftime("%d/%m/%Y").to_s
         %td= bld.expiration_date.strftime("%d/%m/%Y %H:%M:%S").to_s
         %td= number_to_currency(bld.amount.to_f, unit: 'S/. ', precision: 2)
@@ -27,13 +31,8 @@
         %td= number_to_currency(bld.issuance_cost.to_f, unit: 'S/. ', precision: 2)
         %td= number_to_currency bld.rate.to_f, unit: 'S/. ', precision: 2
         %td
-          %button.btn.btn-warning.btn-mini
-            %span{"style"=>"width=20px;text-align:center"}
-              %a{href: 'javascript:void(0);', :onclick => 'bond_letter_detail_edit('+"#{@cc.id.to_s}"+","+"#{bld.id.to_s}"+');', "style"=>" color: white;"}
-                Editar
-          - if bld.document.exists?
-            %a.btn.btn-info.btn-xs{:href =>"#{bld.document.url}", :target => "_blank",:style=>" margin-left: 5px; "}
-              %i.fa.fa-clipboard
+          %a{"style"=>"margin-right: 5px;", class: 'btn btn-warning btn-xs', "data-original-title" => 'Editar', "data-placement" => 'top', :onclick => 'bond_letter_detail_edit('+"#{@cc.id.to_s}"+","+"#{bld.id.to_s}"+');', "rel"=>"tooltip"}
+            %i.fa.fa-edit              
 
 :javascript
 

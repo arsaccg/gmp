@@ -122,7 +122,7 @@ class GeneralExpenses::BondLettersController < ApplicationController
     type_ent = TypeEntity.find_by_preffix('P').id
     if !params[:element].nil?
       articles = ActiveRecord::Base.connection.execute("
-            SELECT ent.id, ent.name, ent.ruc
+            SELECT DISTINCT ent.id, ent.name, ent.ruc
             FROM entities ent, entities_type_entities ete
             WHERE ete.type_entity_id = "+type_ent.to_s+"
             AND ete.entity_id = ent.id
@@ -130,7 +130,7 @@ class GeneralExpenses::BondLettersController < ApplicationController
           )      
     else
       articles = ActiveRecord::Base.connection.execute("
-            SELECT ent.id, ent.name, ent.ruc
+            SELECT DISTINCT ent.id, ent.name, ent.ruc
             FROM entities ent, entities_type_entities ete
             WHERE ete.type_entity_id = "+type_ent.to_s+"
             AND ete.entity_id = ent.id
@@ -156,7 +156,7 @@ class GeneralExpenses::BondLettersController < ApplicationController
     receptor = TypeEntity.find_by_preffix("C").id
     if !params[:element].nil?
       articles = ActiveRecord::Base.connection.execute("
-            SELECT ent.id, ent.name, ent.ruc
+            SELECT DISTINCT ent.id, ent.name, ent.ruc
             FROM entities ent, entities_type_entities ete
             WHERE ete.type_entity_id IN ("+type_ent.to_s+","+receptor.to_s+")
             AND ete.entity_id = ent.id
@@ -164,7 +164,7 @@ class GeneralExpenses::BondLettersController < ApplicationController
           )      
     else
       articles = ActiveRecord::Base.connection.execute("
-            SELECT ent.id, ent.name, ent.ruc
+            SELECT DISTINCT ent.id, ent.name, ent.ruc
             FROM entities ent, entities_type_entities ete
             WHERE ete.type_entity_id IN ("+type_ent.to_s+","+receptor.to_s+")
             AND ete.entity_id = ent.id

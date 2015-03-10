@@ -519,7 +519,7 @@ class Payslip < ActiveRecord::Base
     headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA', 'HE 25%','HE 35%']
     total_days = week_end.to_date.strftime('%d').to_i
     @i = 1
-    @comp_name = Company.find(company).short_name
+    @comp_name = CostCenter.find(company).company.short_name
     uit = FinancialVariable.find_by_name("UIT").value
     @result[0] = headers
     if ing.include?(1)
@@ -535,7 +535,7 @@ class Payslip < ActiveRecord::Base
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
       FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-      WHERE pp.company_id = "+company.to_s+"
+      WHERE pp.cost_center_id = " + company.to_s + "
       AND ppd.part_worker_id = pp.id
       AND ppd.assistance =  'si'
       AND pp.date_of_creation BETWEEN '" + week_start.to_s + "' AND  '" + week_end.to_s + "'

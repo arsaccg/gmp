@@ -92,19 +92,17 @@
                 -else
                   Cerrado
               %td
-                %button.btn.btn-primary.btn-mini
-                  %span{"style"=>"width=20px;text-align:center"}
-                    %a{href: 'javascript:void(0);', :onclick => 'bond_letter_detail_new('+"#{@cc.id.to_s}"+","+"#{bl.id.to_s}"+');', "style"=>" color: white;"}
-                      Agregar C.F              
+                %a{"style"=>"margin-right: 5px;", class: 'btn btn-info btn-xs', "data-original-title" => 'Editar', "data-placement" => 'top', :onclick => 'bond_letter_detail_new('+"#{@cc.id.to_s}"+","+"#{bl.id.to_s}"+');', "rel"=>"tooltip"}
+                  %i.fa.fa-envelope
 
-                %button.btn.btn-warning.btn-mini
-                  %span{"style"=>"width=20px;text-align:center"}
-                    %a{href: 'javascript:void(0);', :onclick => 'bond_letter_edit('+"#{@cc.id.to_s}"+","+"#{bl.id.to_s}"+');', "style"=>" color: white;"}
-                      Editar
+                %a{"style"=>"margin-right: 5px;", class: 'btn btn-warning btn-xs', "data-original-title" => 'Editar', "data-placement" => 'top', :onclick => 'bond_letter_edit('+"#{@cc.id.to_s}"+","+"#{bl.id.to_s}"+');', "rel"=>"tooltip"}
+                  %i.fa.fa-edit
+               
 
       %div#show_detail
+
       %footer
-        %button.btn.btn-danger#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
+        %button.btn.btn-danger#new{"data-dismiss" => "modal", type: "button", "style"=>"margin-left:95%;"}
           Salir
 
 

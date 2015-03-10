@@ -367,7 +367,7 @@ class Payrolls::PayslipsController < ApplicationController
       end
       d = d.strftime('%Y-%m-%d')
       
-      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.id, tpay.type_of_worker_id, @month)
+      @partes = Payslip.generate_payroll_empleados(@cc.id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.id, tpay.type_of_worker_id, @month)
       if @partes.count > 1
         @mensaje = "empleado"
       end
