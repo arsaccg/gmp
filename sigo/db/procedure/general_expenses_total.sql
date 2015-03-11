@@ -92,15 +92,22 @@ BEGIN
     BLOCK3: BEGIN
       DECLARE done3 INT DEFAULT FALSE;
       DECLARE stock_outputs CURSOR FOR 
-        SELECT LEFT( art.code, 2 ) AS code_article, SUM( sid.amount ) 
-        FROM stock_inputs si, stock_input_details sid, articles art
-        WHERE si.input = 0
-        AND si.cost_center_id = v_id
-        AND si.status =  'A'
-        AND si.issue_date = CURDATE( ) 
-        AND sid.stock_input_id = si.id
-        AND sid.article_id = art.id
-        GROUP BY code_article;
+        SELECT LEFT( art.code, 2 ) as code_article , (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_outputs.amount)
+        FROM articles art, purchase_orders po, purchase_order_details pod, delivery_order_details dod, 
+             (SELECT art.id AS article_id, SUM( sid.amount ) AS amount
+              FROM stock_inputs si, stock_input_details sid, articles art
+              WHERE si.input =0
+              AND si.cost_center_id = v_id
+              AND si.status =  'A'
+              AND sid.stock_input_id = si.id
+              AND sid.article_id = art.id
+              GROUP BY art.id) AS stock_outputs
+        WHERE dod.article_id = stock_outputs.article_id
+        AND art.id = dod.article_id
+        AND pod.delivery_order_detail_id = dod.id
+        AND po.id = pod.purchase_order_id
+        AND po.cost_center_id = v_id
+        GROUP BY art.id;
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done3 = TRUE;
       OPEN stock_outputs;
       read_loop3: LOOP
