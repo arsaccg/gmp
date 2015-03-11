@@ -401,7 +401,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND po.state =  'approved'
       AND po.cost_center_id = #{cc}
       AND pod.delivery_order_detail_id = dod.id
-      AND pod.received = 1
       AND dod.sector_id IN (#{sector})
       AND art.unit_of_measurement_id = u.id
       AND dod.article_id = art.id

@@ -1,7 +1,7 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `general_expenses_valorization`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `general_expenses_valorization`()
+DROP PROCEDURE IF EXISTS `general_expenses_total`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `general_expenses_total`()
 BEGIN
   DECLARE done INT DEFAULT FALSE;
 
