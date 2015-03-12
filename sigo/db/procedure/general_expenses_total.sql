@@ -60,7 +60,7 @@ BEGIN
         FROM general_expense_details ged, general_expenses ge
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
-        AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) = CURDATE( )
+        AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( )
         AND ge.code_phase = 90
         GROUP BY (ged.type_article);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done2 = TRUE;
@@ -100,6 +100,7 @@ BEGIN
               AND si.cost_center_id = v_id
               AND si.status =  'A'
               AND sid.stock_input_id = si.id
+              AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( )
               AND sid.article_id = art.id
               GROUP BY art.id) AS stock_outputs
         WHERE dod.article_id = stock_outputs.article_id
@@ -141,7 +142,7 @@ BEGIN
         FROM order_of_service_details osd, phases p, order_of_services os, articles art
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
-        AND os.date_of_service = CURDATE( ) 
+        AND os.date_of_service BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( )
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
         AND p.code LIKE  '90__'
@@ -184,7 +185,7 @@ BEGIN
             AND cost_center_id = v_id) AS Adelanto
         WHERE p.cost_center_id = v_id
         AND p.type_of_payslip_id NOT IN (Adelanto.id)
-        AND DATE_FORMAT( p.created_at,  '%Y-%m-%d' ) = CURDATE( );
+        AND DATE_FORMAT( p.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( );
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done5 = TRUE;
       OPEN payroll;
       read_loop5: LOOP
@@ -243,6 +244,8 @@ BEGIN
 
   END LOOP;
   CLOSE cost_centers;
+  INSERT INTO `actual_consumption_cost_actual_january`(`general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,`general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,`general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,`general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,`general_exp_equip_valoriz`,`general_exp_equip_meta`,`general_exp_equip_meta`)
+  VALUES (v_hand_work, r_hand_work, m_hand_work, v_materials, r_materials, m_materials, v_subcontract, r_subcontract, m_subcontract, v_service, r_service, m_service, v_equipment, r_equipment, m_equipment );
 END $$
 
 DELIMITER ;

@@ -56,6 +56,7 @@ CREATE EVENT IF NOT EXISTS `import_actual_values`
 	  -- EVERY 5 SECOND
 	  COMMENT 'Import Actual Values from ERP to BI'
 	DO
+    EXECUTE general_expenses_total
     -- SELECT Testing for Inserting Table
 		INSERT INTO `system_bi`.`actual_values_january`
 		SELECT null, 'code', 'name', 'unit', '123', '321', '312', '453', '123', '321', '312', '453', '123', '321', '312', '453' FROM DUAL
