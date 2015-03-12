@@ -14,6 +14,7 @@ class Reports::ConsumptioncostsController < ApplicationController
   def consult
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
+  	@magic_result = ConsumptionCost.apply_all_consult
   	render(partial: 'table', :layout => false)
   end
 end

@@ -37,3 +37,10 @@ production:
   encoding: utf8
   host: localhost
 
+external:
+  adapter: mysql2
+  database: system_bi
+  username: root
+  password: abc@123*
+  encoding: utf8
+  host: localhost
