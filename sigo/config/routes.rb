@@ -326,6 +326,11 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :reportofthemonths
+    resources :consumptioncosts do
+      collection do
+        post 'consult'
+      end
+    end
   end
 
   namespace :production do

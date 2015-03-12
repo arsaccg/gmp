@@ -137,6 +137,10 @@
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
                 %i.fa.fa-lg.fa-fw.fa-home
                 Dashboard
+            %li
+              %a{href: "#{reports_consumptioncosts_path}", title: "Costo por Consumo"}
+                %i.fa.fa-lg.fa-fw.fa-home
+                Costo por Consumo
           - if (current_user.has_role? :director) || (current_user.has_role? :users)
             %li
               %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}

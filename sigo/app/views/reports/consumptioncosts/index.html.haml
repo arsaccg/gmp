@@ -1,0 +1,42 @@
+#content-inside
+  .row
+    .col-xs-6.col-sm-6.col-md-4.col-lg-4
+      .col-xs-6.col-sm-6.col-md-6.col-lg-6
+        %label Seleccionar Periodo:
+        %select#selected-month.form-control{:name => 'selected_month'}
+          - @dates.each do |d|
+            %option{:value => "#{d[1]}-#{d[0]}"}= d[1].to_s + '-' + d[0].to_s
+      .col-xs-6.col-sm-6.col-md-6.col-lg-6
+        %label{:style => 'visibility:hidden; width: 100%;'}
+        %button#search-cost.btn.btn-primary{type: "button"}
+          %i.fa.fa-search
+            Consultar
+    .col-md-4.col-lg-4
+    .col-xs-6.col-sm-6.col-md-4.col-lg-4
+      %label Configuración
+      
+  - if flash[:notice] != nil
+    .alert.alert-success.fade.in{"style" => "clear:both"}
+      %button.close{"data-dismiss" => "alert"}
+        ×
+      %i.fa-fw.fa.fa-check
+      %strong Éxito
+      = flash[:notice]
+  - if flash[:error] != nil
+    .alert.alert-danger.fade.in
+      %button.close{"data-dismiss" => "alert"}
+        ×
+      %i.fa-fw.fa.fa-times
+      %strong Error!
+      = flash[:error]
+  %br
+  .row
+    #table-cost.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      
+:javascript
+  
+  $('#search-cost').click(function(){
+    month = $('#selected-month').val()
+    params = { date: month, authenticity_token: "#{form_authenticity_token}" }
+    load_url_ajax("#{consult_reports_consumptioncosts_path}", 'table-cost', params, 'avoid-opacity', 'POST')
+  });
