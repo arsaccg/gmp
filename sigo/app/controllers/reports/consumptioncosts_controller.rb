@@ -12,6 +12,8 @@ class Reports::ConsumptioncostsController < ApplicationController
   end
 
   def consult
+    @month = Date.parse(params[:date] + '-01').strftime('%B %Y')
+    p I18n.t('July')
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
   	@magic_result = ConsumptionCost.apply_all_consult
