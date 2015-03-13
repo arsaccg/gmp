@@ -92,7 +92,7 @@ BEGIN
     BLOCK3: BEGIN
       DECLARE done3 INT DEFAULT FALSE;
       DECLARE stock_outputs CURSOR FOR 
-        SELECT LEFT( art.code, 2 ) as code_article , (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_outputs.amount)
+        SELECT LEFT( art.code, 2 ) as code_article , (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount)
         FROM articles art, purchase_orders po, purchase_order_details pod, delivery_order_details dod, 
              (SELECT art.id AS article_id, SUM( sid.amount ) AS amount
               FROM stock_inputs si, stock_input_details sid, articles art
@@ -102,8 +102,8 @@ BEGIN
               AND sid.stock_input_id = si.id
               AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( )
               AND sid.article_id = art.id
-              GROUP BY art.id) AS stock_outputs
-        WHERE dod.article_id = stock_outputs.article_id
+              GROUP BY art.id) AS stock_output
+        WHERE dod.article_id = stock_output.article_id
         AND art.id = dod.article_id
         AND pod.delivery_order_detail_id = dod.id
         AND po.id = pod.purchase_order_id
@@ -117,19 +117,19 @@ BEGIN
           LEAVE read_loop3;
         END IF;
         IF v_type_article = "01" THEN
-          SET r_hand_work = v_amount;
+          SET r_hand_work = v_amount + r_hand_work;
         END IF;
         IF v_type_article = "02" THEN
-          SET r_materials = v_amount;
+          SET r_materials = v_amount + r_materials;
         END IF;
         IF v_type_article = "03" THEN
-          SET r_equipment = v_amount;
+          SET r_equipment = v_amount + r_equipment;
         END IF;        
         IF v_type_article = "04" THEN
-          SET r_subcontract = v_amount;
+          SET r_subcontract = v_amount + r_subcontract;
         END IF;
         IF v_type_article = "05" THEN
-          SET r_service = v_amount;
+          SET r_service = v_amount + r_service;
         END IF;              
       END LOOP;
       CLOSE stock_outputs;
@@ -142,7 +142,7 @@ BEGIN
         FROM order_of_service_details osd, phases p, order_of_services os, articles art
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
-        AND os.date_of_service BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( )
+        AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( CURDATE( ),  '%Y-%m' ), "-01" ) AND CURDATE( )
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
         AND p.code LIKE  '90__'
@@ -177,7 +177,7 @@ BEGIN
     BLOCK5: BEGIN
       DECLARE done5 INT DEFAULT FALSE;
       DECLARE payroll CURSOR FOR 
-        SELECT SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))) AS Neto
+        SELECT IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
         FROM payslips p,
            (SELECT id
             FROM type_of_payslips
@@ -206,7 +206,7 @@ BEGIN
              (SELECT b.id, b.general_expenses
               FROM budgets b
               WHERE b.cost_center_id = v_id
-              AND b.type_of_budget = v_id
+              AND b.type_of_budget = 1
            ) AS budget
         WHERE v.valorization_id = va.id
         AND va.budget_id = budget.id
@@ -242,15 +242,31 @@ BEGIN
       CLOSE valorizacion;       
     END BLOCK6;
 
+    INSERT INTO `system_bi`.`actual_consumption_cost_actual_january`(
+      `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
+      `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
+      `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
+      `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
+      `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`)
+    VALUES (IFNULL(v_hand_work,0), IFNULL(r_hand_work,0), IFNULL(m_hand_work,0), IFNULL(v_materials,0), IFNULL(r_materials,0), IFNULL(m_materials,0), IFNULL(v_subcontract,0), IFNULL(r_subcontract,0), IFNULL(m_subcontract,0), IFNULL(v_service,0), IFNULL(r_service,0), IFNULL(m_service,0), IFNULL(v_equipment,0), IFNULL(r_equipment,0), IFNULL(m_equipment,0) );
+
+    SET m_hand_work = 0.0;
+    SET m_materials = 0.0;
+    SET m_equipment = 0.0;
+    SET m_subcontract = 0.0;
+    SET m_service = 0.0;
+    SET v_hand_work = 0.0;
+    SET v_materials = 0.0;
+    SET v_equipment = 0.0;
+    SET v_subcontract = 0.0;
+    SET v_service = 0.0;
+    SET r_hand_work = 0.0;
+    SET r_materials = 0.0;
+    SET r_equipment = 0.0;
+    SET r_subcontract = 0.0;
+    SET r_service = 0.0;
   END LOOP;
   CLOSE cost_centers;
-  INSERT INTO `system_bi`.`actual_consumption_cost_actual_january`(
-    `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
-    `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
-    `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
-    `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
-    `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`)
-  VALUES (IFNULL(v_hand_work,0), IFNULL(r_hand_work,0), IFNULL(m_hand_work,0), IFNULL(v_materials,0), IFNULL(r_materials,0), IFNULL(m_materials,0), IFNULL(v_subcontract,0), IFNULL(r_subcontract,0), IFNULL(m_subcontract,0), IFNULL(v_service,0), IFNULL(r_service,0), IFNULL(m_service,0), IFNULL(v_equipment,0), IFNULL(r_equipment,0), IFNULL(m_equipment,0) );
 END $$
 
 DELIMITER ;
