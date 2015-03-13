@@ -86,7 +86,7 @@ BEGIN
         FROM diverse_expenses_of_managements dem, diverse_expenses_of_management_details demd
         WHERE dem.cost_center_id =1
         AND dem.id = demd.diverse_expenses_of_management_id
-        AND DATE_FORMAT( dem.delivered_date,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
+        AND DATE_FORMAT( dem.created_at,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
         GROUP BY LEFT(dem.article_code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donedem = TRUE;
       OPEN meta;
@@ -177,7 +177,7 @@ BEGIN
         AND osd.article_id = art.id
         AND p.code > '90__'
         AND os.state =  'approved'
-        AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
+        AND DATE_FORMAT( os.date_of_issue,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
         GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneos = TRUE;
       OPEN order_of_services;
@@ -231,12 +231,12 @@ BEGIN
 
   END LOOP;
   CLOSE cost_centers;
-  INSERT INTO `actual_consumption_cost_actual_january`
+  INSERT INTO `system_bi`.`actual_consumption_cost_actual_january`
     (`gen_serv_mo_costreal`, `gen_serv_mo_meta`,
     `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
     `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
     `gen_serv_service_costreal`, `gen_serv_service_meta`,
-    `gen_serv_equip_meta`,`gen_serv_equip_meta`)
+    `gen_serv_equip_costreal`,`gen_serv_equip_meta`)
   VALUES (real_hand_work, meta_hand_work, 
     real_materials, meta_materials, 
     real_subcontract, meta_subcontract, 
