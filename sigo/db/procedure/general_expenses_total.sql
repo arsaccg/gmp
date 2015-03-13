@@ -201,9 +201,9 @@ BEGIN
     BLOCK6: BEGIN
       DECLARE done6 INT DEFAULT FALSE;
       DECLARE valorizacion CURSOR FOR 
-        SELECT LEFT( im.item_code, 2 ) AS type_article, SUM( i.measured * i.price )*budget.general_expense
+        SELECT LEFT( im.item_code, 2 ) AS type_article, SUM( i.measured * i.price )*budget.general_expenses
         FROM valorizations va, valorizationitems v, itembybudgets i, items im, 
-             (SELECT b.id, b.general_expense
+             (SELECT b.id, b.general_expenses
               FROM budgets b
               WHERE b.cost_center_id = v_id
               AND b.type_of_budget = v_id
@@ -244,8 +244,13 @@ BEGIN
 
   END LOOP;
   CLOSE cost_centers;
-  INSERT INTO `actual_consumption_cost_actual_january`(`general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,`general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,`general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,`general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,`general_exp_equip_valoriz`,`general_exp_equip_meta`,`general_exp_equip_meta`)
-  VALUES (v_hand_work, r_hand_work, m_hand_work, v_materials, r_materials, m_materials, v_subcontract, r_subcontract, m_subcontract, v_service, r_service, m_service, v_equipment, r_equipment, m_equipment );
+  INSERT INTO `system_bi`.`actual_consumption_cost_actual_january`(
+    `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
+    `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
+    `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
+    `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
+    `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`)
+  VALUES (IFNULL(v_hand_work,0), IFNULL(r_hand_work,0), IFNULL(m_hand_work,0), IFNULL(v_materials,0), IFNULL(r_materials,0), IFNULL(m_materials,0), IFNULL(v_subcontract,0), IFNULL(r_subcontract,0), IFNULL(m_subcontract,0), IFNULL(v_service,0), IFNULL(r_service,0), IFNULL(m_service,0), IFNULL(v_equipment,0), IFNULL(r_equipment,0), IFNULL(m_equipment,0) );
 END $$
 
 DELIMITER ;
