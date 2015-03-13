@@ -117,8 +117,19 @@ BEGIN
     BLOCKSI: BEGIN
       DECLARE donesi INT DEFAULT FALSE;
       DECLARE stock_outputs CURSOR FOR 
-        SELECT LEFT(art.code, 2), SUM(sid.amount)
-        FROM stock_inputs si, stock_input_details sid, phases p, articles art
+        SELECT LEFT(art.code, 2), (SUM(sid.amount)*stock_output_prices.price)
+        FROM stock_inputs si, stock_input_details sid, phases p, articles art,
+            (SELECT art.id AS artid, ((
+            pod.unit_price_igv - IFNULL( pod.discount_after, 0 ) ) * dod.amount) AS price
+            FROM purchase_orders po, purchase_order_details pod, articles art, delivery_order_details dod, phases p
+            WHERE po.id = pod.purchase_order_id
+            AND po.cost_center_id =1
+            AND pod.delivery_order_detail_id = dod.id
+            AND dod.article_id = art.id
+            AND po.state =  'approved'
+            AND dod.phase_id = p.id
+            AND p.code >  '90__'
+            GROUP BY art.id) AS stock_output_prices
         WHERE si.id = sid.stock_input_id
         AND si.input = 0
         AND si.status =  'A'
@@ -126,6 +137,7 @@ BEGIN
         AND sid.article_id = art.id
         AND sid.phase_id = p.id
         AND p.code > '90__'
+        AND art.id = stock_output_prices.artid
         AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN '2015-08-01' AND '2015-08-31'
         GROUP BY LEFT(art.code, 2)
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donesi = TRUE;
@@ -219,6 +231,17 @@ BEGIN
 
   END LOOP;
   CLOSE cost_centers;
+  INSERT INTO `actual_consumption_cost_actual_january`
+    (`gen_serv_mo_costreal`, `gen_serv_mo_meta`,
+    `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
+    `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
+    `gen_serv_service_costreal`, `gen_serv_service_meta`,
+    `gen_serv_equip_meta`,`gen_serv_equip_meta`)
+  VALUES (real_hand_work, meta_hand_work, 
+    real_materials, meta_materials, 
+    real_subcontract, meta_subcontract, 
+    real_service, meta_service, 
+    real_equipment, meta_equipment );
 END $$
 
 DELIMITER ;
