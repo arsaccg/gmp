@@ -52,7 +52,7 @@ BEGIN
         AND ge.id = ged.general_expense_id
         AND ge.code_phase >90
         AND DATE_FORMAT( ge.created_at,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
-        GROUP BY ged.type_article
+        GROUP BY ged.type_article;
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donege = TRUE;
       OPEN meta;
       read_loop2: LOOP
@@ -87,7 +87,7 @@ BEGIN
         WHERE dem.cost_center_id =1
         AND dem.id = demd.diverse_expenses_of_management_id
         AND DATE_FORMAT( dem.delivered_date,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
-        GROUP BY LEFT(dem.article_code, 2)
+        GROUP BY LEFT(dem.article_code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donedem = TRUE;
       OPEN meta;
       read_loop2: LOOP
@@ -139,7 +139,7 @@ BEGIN
         AND p.code > '90__'
         AND art.id = stock_output_prices.artid
         AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
-        GROUP BY LEFT(art.code, 2)
+        GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donesi = TRUE;
       OPEN stock_outputs;
       read_loop3: LOOP
@@ -178,7 +178,7 @@ BEGIN
         AND p.code > '90__'
         AND os.state =  'approved'
         AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
-        GROUP BY LEFT(art.code, 2)
+        GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneos = TRUE;
       OPEN order_of_services;
       read_loop4: LOOP
@@ -216,7 +216,7 @@ BEGIN
              AND cost_center_id = 1) AS Adelanto
         WHERE p.cost_center_id = 1
         AND DATE_FORMAT( p.last_worked_day,  '%Y-%m-%d' ) BETWEEN '2014-12-01' AND '2014-12-31'
-        AND p.type_of_payslip_id NOT IN (Adelanto.id)
+        AND p.type_of_payslip_id NOT IN (Adelanto.id);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donepay = TRUE;
       OPEN payroll;
       read_loop5: LOOP
