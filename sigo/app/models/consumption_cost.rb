@@ -46,6 +46,7 @@ class ConsumptionCost < ActiveRecord::Base
           `sector_id` int(11) NOT NULL,
           `working_group_id` int(11) NOT NULL,
           `measured_meta` varchar(255) NOT NULL,
+          `insertion_date` date DEFAULT NULL,
           PRIMARY KEY (`id`)
         )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
       )
@@ -122,7 +123,8 @@ class ConsumptionCost < ActiveRecord::Base
           `gen_serv_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `gen_serv_service_valoriz` varchar(255) COLLATE utf8_bin NOT NULL
+          `gen_serv_service_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
+          `insertion_date` date DEFAULT NULL
         )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
       )
       create_tables_actual_consumption_cost_actual = connection.execute(
@@ -222,6 +224,7 @@ class ConsumptionCost < ActiveRecord::Base
           `sector_id` int(11) NOT NULL,
           `working_group_id` int(11) NOT NULL,
           `measured_meta` varchar(255) NOT NULL,
+          `insertion_date` date DEFAULT NULL,
           PRIMARY KEY (`id`)
         )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
       )
