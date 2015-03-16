@@ -11,6 +11,10 @@
         %button#search-cost.btn.btn-primary{type: "button"}
           %i.fa.fa-search
             Consultar
+        %label{:style => 'visibility:hidden; width: 100%;'}
+        %button#create-tables.btn.btn-primary{type: "button"}
+          %i.fa.fa-search
+            Crear Tablas
     .col-md-4.col-lg-4
     .col-xs-6.col-sm-6.col-md-4.col-lg-4
       %label Configuración
@@ -39,4 +43,9 @@
     month = $('#selected-month').val()
     params = { date: month, authenticity_token: "#{form_authenticity_token}" }
     load_url_ajax("#{consult_reports_consumptioncosts_path}", 'table-cost', params, 'avoid-opacity', 'POST')
+  });
+
+  $('#create-tables').click(function(){
+    var parameters = { authenticity_token: "#{form_authenticity_token}" };
+    load_url_ajax("#{create_tables_missing_reports_consumptioncosts_path}", 'content', parameters, 'avoid-opacity', 'POST');
   });

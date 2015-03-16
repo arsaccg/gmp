@@ -329,6 +329,7 @@ ArsacLogistica::Application.routes.draw do
     resources :consumptioncosts do
       collection do
         post 'consult'
+        post 'create_tables_missing'
       end
     end
   end

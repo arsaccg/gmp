@@ -19,4 +19,13 @@ class Reports::ConsumptioncostsController < ApplicationController
     @magic_result_gen_serv = ConsumptionCost.apply_all_gen_serv
   	render(partial: 'table', :layout => false)
   end
+
+  def create_tables_missing
+    cost_centers = CostCenter.all
+    cost_centers.each do |cc|
+      create_tables = ConsumptionCost.create_tables_new_costcenter(cc.id,cc.start_date,cc.end_date)
+    end
+    flash[:notice] = "Se han creado las tablas de los centros de costo."
+    redirect_to :action => :index
+  end
 end
