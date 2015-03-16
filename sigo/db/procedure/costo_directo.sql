@@ -63,7 +63,7 @@ BEGIN
 
 		END IF;
 
-	  END LOOP;
+	  END LOOP read_loop_ibb;
 	  CLOSE itembybudgets;
 
 	END BLOCK;
@@ -73,7 +73,7 @@ BEGIN
 
 	-- END BLOCK2;
 
-  END LOOP;
+  END LOOP read_loop;
   CLOSE valorizations;
   
   SELECT real_cost_hand_work, real_cost_materials, real_cost_equipment, real_cost_subcontract, real_cost_service FROM DUAL;
