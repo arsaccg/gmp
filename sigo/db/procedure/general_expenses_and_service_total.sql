@@ -38,6 +38,7 @@ BEGIN
   DECLARE v_id INTEGER;
   DECLARE v_amount DOUBLE;
   DECLARE v_type_article TEXT;
+  DECLARE table_for_insertion TEXT;
 
   DECLARE cost_centers CURSOR FOR 
     SELECT id FROM cost_centers WHERE active = 1 AND status = "A";
@@ -453,31 +454,35 @@ BEGIN
       CLOSE payroll;       
     END BLOCKPAY; 
 
-    INSERT INTO `system_bi`.`actual_consumption_cost_actual_january`(
-      `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
-      `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
-      `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
-      `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
-      `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`,
-      `gen_serv_mo_costreal`, `gen_serv_mo_meta`,
-      `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
-      `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
-      `gen_serv_service_costreal`, `gen_serv_service_meta`,
-      `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
-      `insertion_date`)
-    VALUES (
-      IFNULL(v_hand_work,0), IFNULL(r_hand_work,0), IFNULL(m_hand_work,0), 
-      IFNULL(v_materials,0), IFNULL(r_materials,0), IFNULL(m_materials,0), 
-      IFNULL(v_subcontract,0), IFNULL(r_subcontract,0), IFNULL(m_subcontract,0), 
-      IFNULL(v_service,0), IFNULL(r_service,0), IFNULL(m_service,0), 
-      IFNULL(v_equipment,0), IFNULL(r_equipment,0), IFNULL(m_equipment,0),
-      IFNULL(real_hand_work,0), IFNULL(meta_hand_work,0), 
-      IFNULL(real_materials,0), IFNULL(meta_materials,0), 
-      IFNULL(real_subcontract,0), IFNULL(meta_subcontract,0), 
-      IFNULL(real_service,0), IFNULL(meta_service,0), 
-      IFNULL(real_equipment,0), IFNULL(meta_equipment,0),
-      DATE_ADD(CURDATE(), INTERVAL -1 DAY)
-      );
+    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+      "`(`general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
+            `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
+            `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
+            `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
+            `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`,
+            `gen_serv_mo_costreal`, `gen_serv_mo_meta`,
+            `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
+            `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
+            `gen_serv_service_costreal`, `gen_serv_service_meta`,
+            `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
+            `insertion_date`)
+          VALUES (",
+            IFNULL(v_hand_work,0),",", IFNULL(r_hand_work,0), ",",IFNULL(m_hand_work,0), 
+            ",",IFNULL(v_materials,0), ",",IFNULL(r_materials,0), ",",IFNULL(m_materials,0), 
+            ",",IFNULL(v_subcontract,0), ",",IFNULL(r_subcontract,0), ",",IFNULL(m_subcontract,0), 
+            ",",IFNULL(v_service,0), ",",IFNULL(r_service,0), ",",IFNULL(m_service,0), 
+            ",",IFNULL(v_equipment,0), ",",IFNULL(r_equipment,0), ",",IFNULL(m_equipment,0),
+            ",",IFNULL(real_hand_work,0), ",",IFNULL(meta_hand_work,0), 
+            ",",IFNULL(real_materials,0), ",",IFNULL(meta_materials,0), 
+            ",",IFNULL(real_subcontract,0), ",",IFNULL(meta_subcontract,0), 
+            ",",IFNULL(real_service,0), ",",IFNULL(meta_service,0), 
+            ",",IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0),",","
+            DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+            );");
+    PREPARE stmt FROM @SQL;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
 
     SET m_hand_work = 0.0;
     SET m_materials = 0.0;
