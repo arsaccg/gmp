@@ -1,4 +1,3 @@
-use local_system_sigo;
 
 DELIMITER $$
 -- COSTO DIRECTO / VALORIZADO - VENTA
@@ -273,6 +272,69 @@ BEGIN
       END LOOP read_loop5;
       CLOSE payroll;       
     END BLOCK5;
+  
+  SELECT real_cost_hand_work, real_cost_materials, real_cost_equipment, real_cost_subcontract, real_cost_service FROM DUAL;
+
+END $$
+
+-- COSTO DIRECTO / PROGRAMADO
+DROP PROCEDURE IF EXISTS `costo_directo_programado_por_mes`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_programado_por_mes`()
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+
+  DECLARE real_cost_hand_work FLOAT(10,2);
+  DECLARE real_cost_materials FLOAT(10,2);
+  DECLARE real_cost_equipment FLOAT(10,2);
+  DECLARE real_cost_subcontract FLOAT(10,2);
+  DECLARE real_cost_service FLOAT(10,2);
+
+  DECLARE v_code CHAR(120);
+  DECLARE v_measured FLOAT(10,2);
+  DECLARE v_value FLOAT(10,2);
+
+  DECLARE distributions CURSOR FOR -- ESTO SACA DATOS CON ibb.id REPETIDOS
+	SELECT d.code as 'Code Article', d.measured as 'Amount', di.value as 'Price' 
+	FROM distributions d, distribution_items di 
+	WHERE di.distribution_id = d.id 
+	AND di.month BETWEEN '2014-07-01' AND '2014-07-31' -- Dato de Entrada
+	AND d.cost_center_id = 1; -- Dato de Entrada
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN distributions;
+  read_loop: LOOP
+    FETCH distributions INTO v_code, v_measured, v_value;
+	IF done THEN
+      LEAVE read_loop;
+    END IF;
+	
+	IF(v_code LIKE '01%') THEN
+		SET @real_cost_hand_work = IFNULL(v_measured, 0.0)*IFNULL(v_value, 0.0);
+		SET real_cost_hand_work  = IFNULL(real_cost_hand_work, 0) + @real_cost_hand_work;
+	END IF;
+	
+	IF(v_code LIKE '02%') THEN
+		SET @real_cost_materials = IFNULL(v_measured, 0.0)*IFNULL(v_value, 0.0);
+		SET real_cost_materials  = IFNULL(real_cost_materials, 0) + IFNULL(@real_cost_materials, 0);
+	END IF;
+
+	IF(v_code LIKE '03%') THEN
+		SET @real_cost_equipment = IFNULL(v_measured, 0.0)*IFNULL(v_value, 0.0);
+		SET real_cost_equipment  = IFNULL(real_cost_equipment, 0) + IFNULL(@real_cost_equipment, 0);
+	END IF;
+
+	IF(v_code LIKE '04%') THEN
+		SET @real_cost_subcontract = IFNULL(v_measured, 0.0)*IFNULL(v_value, 0.0);
+		SET real_cost_subcontract  = IFNULL(real_cost_subcontract, 0) + IFNULL(@real_cost_subcontract, 0);
+	END IF;
+
+	IF(v_code LIKE '05%') THEN
+		SET @real_cost_service = IFNULL(v_measured, 0.0)*IFNULL(v_value, 0.0);
+		SET real_cost_service  = IFNULL(real_cost_service, 0) + IFNULL(@real_cost_service, 0);
+	END IF;
+
+  END LOOP read_loop;
+  CLOSE distributions;
   
   SELECT real_cost_hand_work, real_cost_materials, real_cost_equipment, real_cost_subcontract, real_cost_service FROM DUAL;
 
