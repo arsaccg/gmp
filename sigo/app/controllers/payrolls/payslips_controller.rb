@@ -67,6 +67,8 @@ class Payrolls::PayslipsController < ApplicationController
       pay.month = params[:payslip][''+reg.to_s+'']['month']
       pay.des_and_amounts = params[:payslip][''+reg.to_s+'']['des_and_amounts'].to_json
       pay.aport_and_amounts = params[:payslip][''+reg.to_s+'']['aport_and_amounts'].to_json
+      pay.date_begin = params[:payslip][''+reg.to_s+'']['date_begin']
+      pay.date_end = params[:payslip][''+reg.to_s+'']['date_end']
       if pay.save
         flash[:notice] = "Se ha creado correctamente."
       else
@@ -366,6 +368,8 @@ class Payrolls::PayslipsController < ApplicationController
         @month = "Diciembre - " + d.strftime("%Y").to_s
       end
       d = d.strftime('%Y-%m-%d')
+      @date_begin = inicio
+      @date_end = d
       
       @partes = Payslip.generate_payroll_empleados(@cc.id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.id, tpay.type_of_worker_id, @month)
       if @partes.count > 1
@@ -396,6 +400,8 @@ class Payrolls::PayslipsController < ApplicationController
         wg = 0
       end
       if wg != 0
+        @date_begin = semana[2].strftime('%Y-%m-%d')
+        @date_end = semana[3].to_date.end_of_month.strftime('%Y-%m-%d')
         @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
         @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
         if @partes.class == Array

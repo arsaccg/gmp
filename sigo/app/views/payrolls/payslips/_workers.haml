@@ -17,6 +17,8 @@
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][cost_center_id]', @cc.id.to_s
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][week]', @week.to_s
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][type_of_payslip_id]', @tipo.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][date_begin]', @date_begin
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][date_end]', @date_end
                 = pars[1].to_s
               %td
                 = pars[2].to_s

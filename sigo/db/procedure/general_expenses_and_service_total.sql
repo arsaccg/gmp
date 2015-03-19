@@ -322,26 +322,80 @@ BEGIN
 
     BLOCK5dc: BEGIN
       DECLARE done5dc INT DEFAULT FALSE;
+      DECLARE done5dcpw INT DEFAULT FALSE;
+
+      DECLARE v_worker INT;
+      DECLARE v_total_h FLOAT(10,2);
+      DECLARE v_neto FLOAT(10,2);
+      DECLARE v_date_begin DATE;
+      DECLARE v_date_end DATE;
+      -- part_people
       DECLARE payrolldc CURSOR FOR 
-        SELECT IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
-        FROM payslips p,
-           (SELECT id
-            FROM type_of_payslips
-            WHERE name LIKE  "Adelanto%"
-            AND cost_center_id = v_id) AS Adelanto -- DATA ENTRADA
-        WHERE p.cost_center_id = v_id
-        AND p.type_of_payslip_id NOT IN (Adelanto.id)
-        AND DATE_FORMAT( p.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY); -- DATA ENTRADA
-        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done5dc = TRUE;
+        SELECT ppd.worker_id, SUM(ppd.total_hours), payslips_worker.Neto, payslips_worker.date_begin, payslips_worker.date_end 
+        FROM part_people pp, part_person_details ppd, phases p,
+          (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
+           FROM payslips p
+           WHERE p.cost_center_id = v_id
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           GROUP BY p.worker_id) AS payslips_worker
+        WHERE ppd.part_person_id = pp.id
+        AND payslips_worker.worker_id = ppd.worker_id
+        AND pp.blockweekly = 1
+        AND pp.cost_center_id = v_id
+        AND ppd.phase_id = p.id
+        AND pp.date_of_creation BETWEEN payslips_worker.date_begin AND payslips_worker.date_end
+        GROUP BY ppd.worker_id;
+      -- part_people
+
+      -- part_workers      
+      DECLARE payrollpwdc CURSOR FOR 
+        SELECT pwd.worker_id, SUM( 8.5 ), payslips_worker.Neto, payslips_worker.date_begin, payslips_worker.date_end 
+        FROM part_workers pw, part_worker_details pwd,
+          (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
+           FROM payslips p
+           WHERE p.cost_center_id = v_id
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           GROUP BY p.worker_id) AS payslips_worker
+        WHERE pw.cost_center_id = v_id
+        AND pw.id = pwd.part_worker_id
+        AND payslips_worker.worker_id = pwd.worker_id
+        AND pwd.assistance =  'si'
+        AND pw.blockweekly = 1
+        AND pw.date_of_creation BETWEEN payslips_worker.date_begin AND payslips_worker.date_end
+        GROUP BY pwd.worker_id;
+      -- part_workers
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done5dc = TRUE;        
+
+      -- part_people
       OPEN payrolldc;
       read_loop5dc: LOOP
-        FETCH payrolldc INTO v_amount;
+        FETCH payrolldc INTO v_worker, v_total_h, v_neto, v_date_begin, v_date_end;
         IF done5dc THEN
           LEAVE read_loop5dc;
         END IF;
-        SET real_cost_hand_work = IFNULL(v_amount, 0) + IFNULL(real_cost_hand_work, 0);
+        SET @real_cost_hand_work = (SELECT SUM(ppd.total_hours) FROM part_people pp, part_person_details ppd, phases p WHERE ppd.part_person_id = pp.id AND ppd.worker_id = v_worker AND pp.blockweekly = 1 AND pp.cost_center_id = v_id AND ppd.phase_id = p.id AND pp.date_of_creation BETWEEN v_date_begin AND v_date_end AND p.code < '90__' GROUP BY ppd.worker_id);
+        IF @real_cost_hand_work != NULL THEN
+          SET real_cost_hand_work = real_cost_hand_work + v_total_h/@real_cost_hand_work*v_neto;
+        END IF;
       END LOOP read_loop5dc;
-      CLOSE payrolldc;       
+      CLOSE payrolldc;
+      -- part_people
+      SET done5dc = 0;
+      -- part_workers
+      OPEN payrollpwdc;
+      read_loop5dcpw: LOOP
+        FETCH payrollpwdc INTO v_worker, v_total_h, v_neto, v_date_begin, v_date_end;
+        IF done5dc THEN
+          LEAVE read_loop5dcpw;
+        END IF;
+        SET @real_cost_hand_work = (SELECT SUM(8.5) FROM part_workers pw, part_worker_details pwd, phases p WHERE pwd.part_worker_id = pp.id AND pwd.worker_id = v_worker AND pw.blockweekly = 1 AND pw.cost_center_id = v_id AND pwd.phase_id = p.id AND pw.date_of_creation BETWEEN v_date_begin AND v_date_end AND p.code < '90__' GROUP BY pwd.worker_id);
+        IF @real_cost_hand_work != NULL THEN
+          SET real_cost_hand_work = real_cost_hand_work + v_total_h/@real_cost_hand_work*v_neto;
+        END IF;
+      END LOOP read_loop5dcpw;
+      CLOSE payrollpwdc;
+      -- part_workers
+
     END BLOCK5dc;
     -- COSTO DIRECTO REAL    
 
@@ -478,26 +532,79 @@ BEGIN
     -- PAYROLLS
     BLOCK5: BEGIN
       DECLARE done5 INT DEFAULT FALSE;
+      DECLARE done5pw INT DEFAULT FALSE;     
+      DECLARE v_worker INT;
+      DECLARE v_total_h FLOAT(10,2);
+      DECLARE v_neto FLOAT(10,2);
+      DECLARE v_date_begin DATE;
+      DECLARE v_date_end DATE;
+
+      -- part_people
       DECLARE payroll CURSOR FOR 
-        SELECT IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
-        FROM payslips p,
-           (SELECT id
-            FROM type_of_payslips
-            WHERE name LIKE  "Adelanto%"
-            AND cost_center_id = v_id) AS Adelanto
-        WHERE p.cost_center_id = v_id
-        AND p.type_of_payslip_id NOT IN (Adelanto.id)
-        AND DATE_FORMAT( p.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY);
+        SELECT ppd.worker_id, SUM(ppd.total_hours), payslips_worker.Neto, payslips_worker.date_begin, payslips_worker.date_end 
+        FROM part_people pp, part_person_details ppd, phases p,
+          (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
+           FROM payslips p
+           WHERE p.cost_center_id = v_id
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           GROUP BY p.worker_id) AS payslips_worker
+        WHERE ppd.part_person_id = pp.id
+        AND payslips_worker.worker_id = ppd.worker_id
+        AND pp.blockweekly = 1
+        AND pp.cost_center_id = v_id
+        AND ppd.phase_id = p.id
+        AND pp.date_of_creation BETWEEN payslips_worker.date_begin AND payslips_worker.date_end
+        GROUP BY ppd.worker_id;
+      -- part_people
+
+      -- part_workers
+      DECLARE payrollpw CURSOR FOR 
+        SELECT pwd.worker_id, SUM( 8.5 ), payslips_worker.Neto, payslips_worker.date_begin, payslips_worker.date_end 
+        FROM part_workers pw, part_worker_details pwd,
+          (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
+           FROM payslips p
+           WHERE p.cost_center_id = v_id
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           GROUP BY p.worker_id) AS payslips_worker
+        WHERE pw.cost_center_id = v_id
+        AND pw.id = pwd.part_worker_id
+        AND payslips_worker.worker_id = pwd.worker_id
+        AND pwd.assistance =  'si'
+        AND pw.blockweekly = 1
+        AND pw.date_of_creation BETWEEN payslips_worker.date_begin AND payslips_worker.date_end
+        GROUP BY pwd.worker_id;
+      -- part_workers
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done5 = TRUE;
+
+      -- part_people
       OPEN payroll;
       read_loop5: LOOP
-        FETCH payroll INTO v_amount;
+        FETCH payroll INTO v_worker, v_total_h, v_neto, v_date_begin, v_date_end;
         IF done5 THEN
           LEAVE read_loop5;
         END IF;
-        SET r_hand_work = v_amount + r_hand_work;
+        SET @r_hand_work = (SELECT SUM(ppd.total_hours) FROM part_people pp, part_person_details ppd, phases p WHERE ppd.part_person_id = pp.id AND ppd.worker_id = v_worker AND pp.blockweekly = 1 AND pp.cost_center_id = v_id AND ppd.phase_id = p.id AND pp.date_of_creation BETWEEN v_date_begin AND v_date_end AND p.code LIKE  '90__' GROUP BY ppd.worker_id);
+        IF @r_hand_work != NULL THEN
+          SET r_hand_work = r_hand_work + v_total_h/@r_hand_work*v_neto;
+        END IF;
       END LOOP;
-      CLOSE payroll;       
+      CLOSE payroll; 
+      -- part_people      
+      SET done5 = 0;
+      -- part_workers
+      OPEN payrollpw;
+      read_loop5pw: LOOP
+        FETCH payrollpw INTO v_worker, v_total_h, v_neto, v_date_begin, v_date_end;
+        IF done5 THEN
+          LEAVE read_loop5pw;
+        END IF;
+        SET @r_hand_work = (SELECT SUM(8.5) FROM part_workers pw, part_worker_details pwd, phases p WHERE pwd.part_worker_id = pp.id AND pwd.worker_id = v_worker AND pw.blockweekly = 1 AND pw.cost_center_id = v_id AND pwd.phase_id = p.id AND pw.date_of_creation BETWEEN v_date_begin AND v_date_end AND p.code LIKE '90__' GROUP BY pwd.worker_id);
+        IF @r_hand_work != NULL THEN
+          SET r_hand_work = r_hand_work + v_total_h/@r_hand_work*v_neto;
+        END IF;
+      END LOOP read_loop5pw;
+      CLOSE payrollpw;
+      -- part_workers
     END BLOCK5;
     -- PAYROLLS
     -- GASTOS GENERALES REAL
@@ -719,26 +826,79 @@ BEGIN
     -- PAYROLLS
     BLOCKPAY: BEGIN
       DECLARE donepay INT DEFAULT FALSE;
+      DECLARE donepaypw INT DEFAULT FALSE;      
+
+      DECLARE v_worker INT;
+      DECLARE v_total_h FLOAT(10,2);
+      DECLARE v_neto FLOAT(10,2);
+      DECLARE v_date_begin DATE;
+      DECLARE v_date_end DATE;
+      -- part_people
       DECLARE payroll CURSOR FOR 
-        SELECT IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
-        FROM payslips p,
-           (SELECT id
-            FROM type_of_payslips
-            WHERE name LIKE  "Adelanto%"
-            AND cost_center_id = v_id) AS Adelanto
-        WHERE p.cost_center_id = v_id
-        AND p.type_of_payslip_id NOT IN (Adelanto.id)
-        AND DATE_FORMAT( p.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY);        
+        SELECT ppd.worker_id, SUM(ppd.total_hours), payslips_worker.Neto, payslips_worker.date_begin, payslips_worker.date_end 
+        FROM part_people pp, part_person_details ppd, phases p,
+          (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
+           FROM payslips p
+           WHERE p.cost_center_id = v_id
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           GROUP BY p.worker_id) AS payslips_worker
+        WHERE ppd.part_person_id = pp.id
+        AND payslips_worker.worker_id = ppd.worker_id
+        AND pp.blockweekly = 1
+        AND pp.cost_center_id = v_id
+        AND ppd.phase_id = p.id
+        AND pp.date_of_creation BETWEEN payslips_worker.date_begin AND payslips_worker.date_end
+        GROUP BY ppd.worker_id;
+      -- part_people
+      
+      -- part_workers
+      DECLARE payrollpw CURSOR FOR 
+        SELECT pwd.worker_id, SUM( 8.5 ), payslips_worker.Neto, payslips_worker.date_begin, payslips_worker.date_end 
+        FROM part_workers pw, part_worker_details pwd,
+          (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
+           FROM payslips p
+           WHERE p.cost_center_id = v_id
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           GROUP BY p.worker_id) AS payslips_worker
+        WHERE pw.cost_center_id = v_id
+        AND pw.id = pwd.part_worker_id
+        AND payslips_worker.worker_id = pwd.worker_id
+        AND pwd.assistance =  'si'
+        AND pw.blockweekly = 1
+        AND pw.date_of_creation BETWEEN payslips_worker.date_begin AND payslips_worker.date_end
+        GROUP BY pwd.worker_id;
+      -- part_workers
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donepay = TRUE;
+      
+      -- part_people      
       OPEN payroll;
       read_loop11: LOOP
-        FETCH payroll INTO v_amount;
+        FETCH payroll INTO v_worker, v_total_h, v_neto, v_date_begin, v_date_end;
         IF donepay THEN
           LEAVE read_loop11;
         END IF;
-        SET real_hand_work = v_amount + real_hand_work;
+        SET @real_hand_work = (SELECT SUM(ppd.total_hours) FROM part_people pp, part_person_details ppd, phases p WHERE ppd.part_person_id = pp.id AND ppd.worker_id = v_worker AND pp.blockweekly = 1 AND pp.cost_center_id = v_id AND ppd.phase_id = p.id AND pp.date_of_creation BETWEEN v_date_begin AND v_date_end AND p.code > '91__' GROUP BY ppd.worker_id);
+        IF @real_hand_work != NULL THEN
+          SET real_hand_work = real_hand_work + v_total_h/@real_hand_work*v_neto;
+        END IF;
       END LOOP;
-      CLOSE payroll;       
+      CLOSE payroll;  
+      -- part_people
+      SET donepay = 0;
+      -- part_workers
+      OPEN payrollpw;
+      read_loop5pw: LOOP
+        FETCH payrollpw INTO v_worker, v_total_h, v_neto, v_date_begin, v_date_end;
+        IF donepay THEN
+          LEAVE read_loop5pw;
+        END IF;
+        SET @real_hand_work = (SELECT SUM(8.5) FROM part_workers pw, part_worker_details pwd, phases p WHERE pwd.part_worker_id = pp.id AND pwd.worker_id = v_worker AND pw.blockweekly = 1 AND pw.cost_center_id = v_id AND pwd.phase_id = p.id AND pw.date_of_creation BETWEEN v_date_begin AND v_date_end AND p.code > '91__' GROUP BY pwd.worker_id);
+        IF @real_hand_work != NULL THEN
+          SET real_hand_work = real_hand_work + v_total_h/@real_hand_work*v_neto;
+        END IF;
+      END LOOP read_loop5pw;
+      CLOSE payrollpw;
+      -- part_workers
     END BLOCKPAY; 
     -- PAYROLLS
     -- SERVICIOS GENERALES REAL
@@ -761,21 +921,21 @@ BEGIN
             `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
             `insertion_date`)
           VALUES (",
-            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),
-            ",",IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),
-            ",",IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),
-            ",",IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),
-            ",",IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),
-            ",",IFNULL(v_hand_work,0),",", IFNULL(r_hand_work,0), ",",IFNULL(m_hand_work,0), 
-            ",",IFNULL(v_materials,0), ",",IFNULL(r_materials,0), ",",IFNULL(m_materials,0), 
-            ",",IFNULL(v_subcontract,0), ",",IFNULL(r_subcontract,0), ",",IFNULL(m_subcontract,0), 
-            ",",IFNULL(v_service,0), ",",IFNULL(r_service,0), ",",IFNULL(m_service,0), 
-            ",",IFNULL(v_equipment,0), ",",IFNULL(r_equipment,0), ",",IFNULL(m_equipment,0),
-            ",",IFNULL(real_hand_work,0), ",",IFNULL(meta_hand_work,0), 
-            ",",IFNULL(real_materials,0), ",",IFNULL(meta_materials,0), 
-            ",",IFNULL(real_subcontract,0), ",",IFNULL(meta_subcontract,0), 
-            ",",IFNULL(real_service,0), ",",IFNULL(meta_service,0), 
-            ",",IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0),",","
+            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",",
+            IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",",
+            IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),",",
+            IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),",",
+            IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),",",
+            IFNULL(v_hand_work,0),",", IFNULL(r_hand_work,0), ",",IFNULL(m_hand_work,0), ",",
+            IFNULL(v_materials,0), ",",IFNULL(r_materials,0), ",",IFNULL(m_materials,0), ",",
+            IFNULL(v_subcontract,0), ",",IFNULL(r_subcontract,0), ",",IFNULL(m_subcontract,0), ",",
+            IFNULL(v_service,0), ",",IFNULL(r_service,0), ",",IFNULL(m_service,0), ",",
+            IFNULL(v_equipment,0), ",",IFNULL(r_equipment,0), ",",IFNULL(m_equipment,0),",",
+            IFNULL(real_hand_work,0), ",",IFNULL(meta_hand_work,0), ",",
+            IFNULL(real_materials,0), ",",IFNULL(meta_materials,0), ",",
+            IFNULL(real_subcontract,0), ",",IFNULL(meta_subcontract,0), ",",
+            IFNULL(real_service,0), ",",IFNULL(meta_service,0), ",",
+            IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0),",","
             DATE_ADD(CURDATE(), INTERVAL -1 DAY)
             );");
     PREPARE stmt FROM @SQL;
