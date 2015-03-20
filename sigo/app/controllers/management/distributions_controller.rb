@@ -9,6 +9,7 @@ class Management::DistributionsController < ApplicationController
   def show_form
   	@budget_id = params[:id]
   	@cost_center_id = get_company_cost_center('cost_center')
+    @start_date = CostCenter.find(@cost_center_id).cost_center_detail.start_date_of_work rescue Time.now
   	@distribution = Distribution.select(:code).where('cost_center_id = ? AND budget_id = ?', @cost_center_id, @budget_id).first()
   	render layout: false
   end
@@ -17,7 +18,7 @@ class Management::DistributionsController < ApplicationController
   	if !params[:file].nil?
       @budget = Budget.find(params[:budget_id])
       if @budget.distributions.first.nil?
-        Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:quantity], params[:budget_id])
+        Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:start_date], params[:budget_id])
       else
         @budget.distributions.each do |distro|
           Distribution.destroy(distro.id)
@@ -25,7 +26,7 @@ class Management::DistributionsController < ApplicationController
             DistributionItem.destroy(distro_item.id)
           end
         end
-        Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:quantity], params[:budget_id])
+        Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:start_date], params[:budget_id])
       end
   	end
     redirect_to :action => :import_distributions

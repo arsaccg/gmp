@@ -5,9 +5,9 @@ class Distribution < ActiveRecord::Base
   has_many :distribution_items
   belongs_to :budget
   
-  def self.import_data_from_excel(file, cost_center_id,quantity,budget_id)
+  def self.import_data_from_excel(file, cost_center_id, date, budget_id)
     spreadsheet = open_spreadsheet(file)
-    cost_center_month = CostCenter.find(cost_center_id).start_date rescue Time.now
+    cost_center_month = date
     aux = cost_center_month
     header = spreadsheet.row(1)
     

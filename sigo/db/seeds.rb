@@ -44,8 +44,6 @@ Company.create(
   end
 end
 
-user = User.create(email: 'mail@joelibaceta.com', password: 'r3dc0d3', dni: '46819233')
-
 Document.create(
   [{ name: 'Ingreso a Almacén',  preffix: 'IWH' },
   { name: 'Salida de Almacén',  preffix: 'OWH' }]

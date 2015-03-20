@@ -6,6 +6,7 @@
       =form_tag do_import_management_distributions_path, multipart: true do
         = hidden_field_tag 'cost_center_id', @cost_center_id
         = hidden_field_tag 'budget_id', @budget_id
+        = hidden_field_tag 'start_date', @start_date
         = file_field_tag :file  
         = submit_tag "Importar"
       %span *Subir el archivo en format CSV
@@ -15,6 +16,7 @@
       =form_tag do_import_management_distributions_path, multipart: true do
         = hidden_field_tag 'cost_center_id', @cost_center_id
         = hidden_field_tag 'budget_id', @budget_id
+        = hidden_field_tag 'start_date', @start_date
         = file_field_tag :file  
         = submit_tag "Importar"
       %span *Subir el archivo en format CSV
