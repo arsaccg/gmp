@@ -942,6 +942,45 @@ BEGIN
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 
+    SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+      "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,
+            `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,
+            `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,
+            `direct_cost_subcont_valoriz`,`direct_cost_subcont_costreal`,`direct_cost_subcont_meta`,
+            `direct_cost_serv_valoriz`,`direct_cost_serv_costreal`,`direct_cost_serv_meta`,
+            `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
+            `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
+            `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
+            `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
+            `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`,
+            `gen_serv_mo_costreal`, `gen_serv_mo_meta`,
+            `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
+            `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
+            `gen_serv_service_costreal`, `gen_serv_service_meta`,
+            `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
+            `insertion_date`)
+          VALUES (",
+            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",",
+            IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",",
+            IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),",",
+            IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),",",
+            IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),",",
+            IFNULL(v_hand_work,0),",", IFNULL(r_hand_work,0), ",",IFNULL(m_hand_work,0), ",",
+            IFNULL(v_materials,0), ",",IFNULL(r_materials,0), ",",IFNULL(m_materials,0), ",",
+            IFNULL(v_subcontract,0), ",",IFNULL(r_subcontract,0), ",",IFNULL(m_subcontract,0), ",",
+            IFNULL(v_service,0), ",",IFNULL(r_service,0), ",",IFNULL(m_service,0), ",",
+            IFNULL(v_equipment,0), ",",IFNULL(r_equipment,0), ",",IFNULL(m_equipment,0),",",
+            IFNULL(real_hand_work,0), ",",IFNULL(meta_hand_work,0), ",",
+            IFNULL(real_materials,0), ",",IFNULL(meta_materials,0), ",",
+            IFNULL(real_subcontract,0), ",",IFNULL(meta_subcontract,0), ",",
+            IFNULL(real_service,0), ",",IFNULL(meta_service,0), ",",
+            IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0),",","
+            DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+            );");
+    PREPARE accvalue FROM @SQLACC;
+    EXECUTE accvalue;
+    DEALLOCATE PREPARE accvalue;
+
     SET val_dir_cost_hand_work = 0.0;
     SET val_dir_cost_materials = 0.0;
     SET val_dir_cost_equipment = 0.0;
