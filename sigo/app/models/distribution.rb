@@ -7,7 +7,7 @@ class Distribution < ActiveRecord::Base
   
   def self.import_data_from_excel(file, cost_center_id, date, budget_id)
     spreadsheet = open_spreadsheet(file)
-    cost_center_month = date
+    cost_center_month = Date.parse(date
     aux = cost_center_month
     header = spreadsheet.row(1)
     

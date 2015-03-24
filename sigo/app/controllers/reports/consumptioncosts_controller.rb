@@ -8,6 +8,24 @@ class Reports::ConsumptioncostsController < ApplicationController
   		@dates << [a.month, a.year]
   	end
   	@dates.uniq!
+
+    # => Config
+    @phase = Phase.select(:id).select(:name).select(:code).where("code LIKE '__'")
+    @subphase = Phase.select(:id).select(:name).select(:code).where("code LIKE '____'")
+
+    @sector = Sector.select(:id).select(:name).select(:code).where("code LIKE '__'")
+    @subsector = Sector.select(:id).select(:name).select(:code).where("code LIKE '____'")
+
+    @working_group = WorkingGroup.select(:id).select(:name)
+    @front_chiefs = Entity.joins(:type_entities).where("type_entities.preffix" => "JF")
+    @master_builders = Entity.joins(:type_entities).where("type_entities.preffix" => "MO")
+    @executors = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+
+    @groups = Category.select(:id).select(:name).select(:code).where("code LIKE '__'")
+    @subgroups = Category.select(:id).select(:name).select(:code).where("code LIKE '____'")
+    @specific = Category.select(:id).select(:name).select(:code).where("code LIKE '____'")
+    @fspecific = Article.select(:id).select(:name).select(:code)
+
   	render layout: false
   end
 

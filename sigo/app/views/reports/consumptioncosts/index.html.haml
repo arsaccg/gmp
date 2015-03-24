@@ -17,7 +17,9 @@
             Crear Tablas
     .col-md-4.col-lg-4
     .col-xs-6.col-sm-6.col-md-4.col-lg-4
-      %label Configuración
+      %button.btn.btn-primary{type: "button", 'data-toggle' => "modal", 'data-target' => "#showconfig"}
+        %i.fa.fa-eye
+          Ver Configuración
       
   - if flash[:notice] != nil
     .alert.alert-success.fade.in{"style" => "clear:both"}
@@ -36,7 +38,263 @@
   %br
   .row
     #table-cost.col-xs-12.col-sm-12.col-md-12.col-lg-12
-      
+
+#showconfig.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalConfigLabel", role: "dialog", tabindex: "-1", keyboard: false, backdrop: 'static'}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button{"class"=>"close", "data-dismiss"=>"modal"}
+          %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
+          %span{"class"=>"sr-only"} Close
+      .modal-body
+        .row
+          %h4{:style => "font-weight: bold;"} Configuración Inicial
+          %br
+          .col-md-12
+            .col-md-4
+              %label Fase
+              %select.form-control{:name => 'selected_phase'}
+                - @phase.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+
+            .col-md-4
+              %label Subfase
+              %select.form-control{:name => 'selected_subphase'}
+                - @subphase.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+          .col-md-12 
+            .col-md-4
+              %label Sector
+              %select.form-control{:name => 'selected_sector'}
+                - @sector.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+
+            .col-md-4
+              %label Subsector
+              %select.form-control{:name => 'selected_subsector'}
+                - @subsector.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+          .col-md-12
+            .col-md-3
+              %label Grupo de Trabajo
+              %select.form-control{:name => 'selected_working_group'}
+                %option{:value => "0"} Seleccione un Grupo de trabajo
+                - @working_group.each do |d|
+                  %option{:value => "#{d.id}"}= d.name
+            .col-md-3
+              %label Jefe de frente
+              %select.form-control{:name => 'selected_jefefrente'}
+                %option{:value => "0"} Seleccione un jefe de frente
+                - @front_chiefs.each do |front_chief|
+                  %option{:value => "#{front_chief.id}"}
+                    = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s
+            .col-md-3
+              %label Ejecutor
+              %select.form-control{:name => 'selected_ejecutor'}
+                %option{:value => "0"} Seleccione un ejecutor
+                - @executors.each do |ex|
+                  %option{:value => "#{ex.id}"}
+                    = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s
+            .col-md-3
+              %label Capataz
+              %select.form-control{:name => 'selected_capataz'}
+                %option{:value => "0"} Seleccione un capataz
+                - @master_builders.each do |master_builder|
+                  %option{:value => "#{master_builder.id}"}
+                    = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s
+          .col-md-12
+            .col-md-3
+              %label Grupo
+              %select.form-control{:name => 'selected_group_article'}
+                - @groups.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+            .col-md-3
+              %label Subgrupo
+              %select.form-control{:name => 'selected_subgroup_article'}
+                - @subgroups.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+            .col-md-3
+              %label Especifico
+              %select.form-control{:name => 'selected_especific_article'}
+                - @specific.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+            .col-md-3
+              %label Especifico final
+              %select.form-control{:name => 'selected_fespecific_article'}
+                - @fspecific.each do |d|
+                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+        %br
+        .row{:style => "border-top: 1px solid #7D7D7D;"}
+          %br
+          %h4{:style => "font-weight: bold;"} Configuración Avanzada
+          %br
+          .col-md-12
+            %h5 Vertical
+            .col-md-6
+            .col-md-5
+              %label.checkbox
+                FASE
+                = check_box_tag 'chbx_phase'
+                %i
+
+              %label.checkbox
+                SUBFASE
+                = check_box_tag 'chbx_subphase'
+                %i
+
+              %label.checkbox
+                SECTOR
+                = check_box_tag 'chbx_sector'
+                %i
+
+              %label.checkbox
+                SUBSECTOR
+                = check_box_tag 'chbx_subsector'
+                %i
+
+              %label.checkbox
+                GRUPO DE TRABAJO
+                = check_box_tag 'chbx_working_group'
+                %i
+
+              %label.checkbox
+                GRUPO
+                = check_box_tag 'chbx_group'
+                %i
+
+              %label.checkbox
+                SUBGRUPO
+                = check_box_tag 'chbx_subgroup'
+                %i
+
+              %label.checkbox
+                ESPECIFICO
+                = check_box_tag 'chbx_specific'
+                %i
+
+          .col-md-12
+            %h5 Horizontal
+            // MOSTRANDO VALORES ACUMULADOS ANTERIORES, ACTUALES O SOLO VALORES ACTUALES (No acumulados)
+            .col-md-4
+              .col-md-12
+                %label.checkbox
+                  ACUMUL. ANTERIOR
+                  = check_box_tag 'chbx_all_previous_accumulates'
+                  %i
+
+                %label.checkbox
+                  Programado
+                  = check_box_tag 'chbx_prev_programado'
+                  %i
+
+                %label.checkbox
+                  Valorizado
+                  = check_box_tag 'chbx_prev_valorizado'
+                  %i
+
+                %label.checkbox
+                  Valor Ganado
+                  = check_box_tag 'chbx_prev_valor_ganado'
+                  %i
+
+                %label.checkbox
+                  Real
+                  = check_box_tag 'chbx_prev_real'
+                  %i
+
+                %label.checkbox
+                  Meta
+                  = check_box_tag 'chbx_prev_meta'
+                  %i
+
+              .col-md-12{:style => "border-top: 1px solid #7D7D7D; border-bottom: 1px solid #7D7D7D;"}
+                %label.checkbox
+                  ACUMULADO ACTUAL
+                  = check_box_tag 'chbx_all_actual_accumulate_values'
+                  %i
+
+                %label.checkbox
+                  Programado
+                  = check_box_tag 'chbx_actual_accumulate_programado'
+                  %i
+
+                %label.checkbox
+                  Valorizado
+                  = check_box_tag 'chbx_actual_accumulate_valorizado'
+                  %i
+
+                %label.checkbox
+                  Valor ganado
+                  = check_box_tag 'chbx_actual_accumulate_valor_ganado'
+                  %i
+
+                %label.checkbox
+                  Real
+                  = check_box_tag 'chbx_actual_accumulate_real'
+                  %i
+
+                %label.checkbox
+                  Meta
+                  = check_box_tag 'chbx_actual_accumulate_meta'
+                  %i
+
+              .col-md-12
+
+                %label.checkbox
+                  ACTUAL
+                  = check_box_tag 'chbx_all_actual_values'
+                  %i
+
+                %label.checkbox
+                  Programado
+                  = check_box_tag 'chbx_actual_programado'
+                  %i
+
+                %label.checkbox
+                  Valorizado
+                  = check_box_tag 'chbx_actual_valorizado'
+                  %i
+
+                %label.checkbox
+                  Valor ganado
+                  = check_box_tag 'chbx_actual_valor_ganado'
+                  %i
+
+                %label.checkbox
+                  Real
+                  = check_box_tag 'chbx_actual_real'
+                  %i
+
+                %label.checkbox
+                  Meta
+                  = check_box_tag 'chbx_actual_meta'
+                  %i
+            // MOSTRANDO CANTIDAD O PARCIALES
+            .col-md-4
+              %h5 Montos
+              %label.checkbox
+                Cantidad
+                = check_box_tag 'chbx_showme_amounts'
+                %i
+
+              %label.checkbox
+                Parcial
+                = check_box_tag 'chbx_showme_partials'
+                %i
+            // MOSTRANDO PROYECCIONES ACTUALES O ANTERIORES
+            .col-md-4
+              %h5 Proyecciones
+              %label.checkbox
+                Actual
+                = check_box_tag 'chbx_showme_actual_forecasts'
+                %i
+
+              %label.checkbox
+                Anterior
+                = check_box_tag 'chbx_showme_previous_forecasts'
+                %i
+
+
 :javascript
   
   $('#search-cost').click(function(){
