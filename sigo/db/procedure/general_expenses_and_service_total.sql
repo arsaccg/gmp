@@ -942,6 +942,79 @@ BEGIN
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 
+    DECLARE name_table CHAR(60);
+    
+    SET @minexists = 0;
+    SET name_table = CONCAT('system_bi.actual_consumption_cost_actual_', v_id, "_", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 MONTH),'%m%Y'));
+    SET @tbl_sql = CONCAT('SELECT COUNT(*) INTO @minexists FROM ', name_table);
+      
+    PREPARE stmt_tbl FROM @tbl_sql;
+    EXECUTE stmt_tbl;
+    DEALLOCATE PREPARE stmt_tbl;
+    
+    IF @minexists > 0 THEN
+      SET @SELECTSQLACT = CONCAT("SELECT * FROM `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+      " INTO @direct_cost_mo_valoriz, @direct_cost_mo_costreal, @direct_cost_mo_meta,
+            @direct_cost_mat_valoriz, @direct_cost_mat_costreal, @direct_cost_mat_meta,
+            @direct_cost_equip_valoriz, @direct_cost_equip_costreal, @direct_cost_equip_meta,
+            @direct_cost_subcont_valoriz, @direct_cost_subcont_costreal, @direct_cost_subcont_meta,
+            @direct_cost_serv_valoriz, @direct_cost_serv_costreal, @direct_cost_serv_meta,
+            @general_exp_mo_valoriz, @general_exp_mo_costreal, @general_exp_mo_meta,
+            @general_exp_mat_valoriz, @general_exp_mat_costreal, @general_exp_mat_meta,
+            @@general_exp_subcont_valoriz, @general_exp_subcont_costreal, @general_exp_subcont_meta,
+            @general_exp_serv_valoriz, @general_exp_serv_costreal, @general_exp_serv_meta,
+            @general_exp_equip_valoriz, @general_exp_equip_costreal, @general_exp_equip_meta,
+            @gen_serv_mo_costreal, @gen_serv_mo_meta,
+            @gen_serv_mat_costreal, @gen_serv_mat_meta,
+            @gen_serv_subcont_costreal, @gen_serv_subcont_meta,
+            @gen_serv_service_costreal, @gen_serv_service_meta,
+            @gen_serv_equip_costreal, @gen_serv_equip_meta");
+      PREPARE stmt_tbl_actual FROM @SELECTSQLACT;
+      EXECUTE stmt_tbl_actual;
+      DEALLOCATE PREPARE stmt_tbl_actual;
+
+      val_dir_cost_hand_work = val_dir_cost_hand_work + @direct_cost_mo_valoriz
+      real_cost_hand_work = real_cost_hand_work + @direct_cost_mo_costreal
+      meta_dir_cost_hand_work = real_cost_hand_work + @direct_cost_mo_meta
+      val_dir_cost_materials = val_dir_cost_materials + @direct_cost_mat_valoriz
+      real_cost_materials = real_cost_materials + @direct_cost_mat_costreal
+      meta_dir_cost_materials = meta_dir_cost_materials + @direct_cost_mat_meta
+      val_dir_cost_equipment = val_dir_cost_equipment + @direct_cost_equip_valoriz
+      real_cost_equipment = real_cost_equipment + @direct_cost_equip_costreal
+      meta_dir_cost_equipment = meta_dir_cost_equipment + @direct_cost_equip_meta
+      val_dir_cost_subcontract = val_dir_cost_subcontract + @direct_cost_subcont_valoriz
+      real_cost_subcontract = real_cost_subcontract + @direct_cost_subcont_costreal
+      meta_dir_cost_subcontract = meta_dir_cost_subcontract + @direct_cost_subcont_meta
+      val_dir_cost_service = val_dir_cost_service + @direct_cost_serv_valoriz
+      real_cost_service = val_dir_cost_service + @direct_cost_serv_costreal
+      meta_dir_cost_service = meta_dir_cost_service + @direct_cost_serv_meta
+      v_hand_work = v_hand_work + @general_exp_mo_valoriz
+      r_hand_work = r_hand_work + @general_exp_mo_costreal
+      m_hand_work = m_hand_work + @general_exp_mo_meta
+      v_materials = v_materials + @general_exp_mat_valoriz
+      r_materials = r_materials + @general_exp_mat_costreal
+      m_materials = m_materials + @general_exp_mat_meta
+      v_subcontract = v_subcontract + @general_exp_subcont_valoriz
+      r_subcontract = r_subcontract + @general_exp_subcont_costreal
+      m_subcontract = m_subcontract + @general_exp_subcont_meta
+      v_service = v_service + @general_exp_serv_valoriz
+      r_service = r_service + @general_exp_serv_costreal
+      m_service = m_service + @general_exp_serv_meta
+      v_equipment = v_equipment + @general_exp_equip_valoriz
+      r_equipment = r_equipment + @general_exp_equip_costreal
+      m_equipment = m_equipment + @general_exp_equip_meta
+      real_hand_work = real_hand_work + @gen_serv_mo_costreal
+      meta_hand_work = meta_hand_work + @gen_serv_mo_meta
+      real_materials = real_materials + @gen_serv_mat_costreal
+      meta_materials = meta_materials + @gen_serv_mat_meta
+      real_subcontract = real_subcontract + @gen_serv_subcont_costreal
+      meta_subcontract = meta_subcontract + @gen_serv_subcont_meta
+      real_service = real_service + @gen_serv_service_costreal
+      meta_service = meta_service + @gen_serv_service_meta
+      real_equipment = real_equipment + @gen_serv_equip_costreal
+      meta_equipment = meta_equipment + @gen_serv_equip_meta
+    END IF;
+
     SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
       "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,
             `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,
