@@ -35,7 +35,7 @@ class Logistics::StockInputsController < ApplicationController
         sum = 0
         total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
         total.each do |tt|
-          sum+=tt.amount.to_i
+          sum+=tt.amount.to_f
         end
         if @pod.amount == sum
           @pod.update_attributes(:received => 1)

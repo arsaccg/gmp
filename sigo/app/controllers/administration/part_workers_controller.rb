@@ -37,7 +37,15 @@ class Administration::PartWorkersController < ApplicationController
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active' and cost_center_id = "+ get_company_cost_center('cost_center').to_s )
+    @workers = ActiveRecord::Base.connection.execute("
+      SELECT w.id
+      FROM workers w, entities e
+      WHERE w.typeofworker LIKE  'empleado'
+      AND w.state LIKE  'active'
+      AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
+      AND e.id = w.entity_id
+      ORDER BY CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ' ', e.name,  ' ', e.second_name ) 
+      ")
     @company = session[:company]
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")

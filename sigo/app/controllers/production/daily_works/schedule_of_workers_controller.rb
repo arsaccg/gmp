@@ -25,7 +25,6 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     end
 
     workers = workers.uniq
-    workers = workers.sort
     index = 1
     valor = 0
 
@@ -216,7 +215,6 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     end
 
     workers = workers.uniq
-    workers = workers.sort
     index = 1
     valor = 0
 
