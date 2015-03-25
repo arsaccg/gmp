@@ -36,6 +36,7 @@
             %tbody
               - if @action == 'new'
                 - @workers.each do |worker|
+                  - worker = Worker.find(worker[0])
                   -contract = worker.worker_contracts.where("status = 1").last
                   -if !contract.nil?
                     %tr
@@ -115,10 +116,10 @@
                     %td=worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s + ', ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s
                     %td.assistance
                       %label.radio-inline
-                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + @reg_n.to_s + '][assistance]', :type => 'radio', :value => "si", onchange: 'activatereasonlack(this);'}
+                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + @reg_n.to_s + '][assistance]', :type => 'radio', :value => "si", onchange: 'activatereasonlack(this);', :checked => oos.assistance=="si"}
                         %span Si
                       %label.radio-inline
-                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + @reg_n.to_s + '][assistance]', :type => 'radio', :value => "no", onchange: 'activatereasonlack(this);'}
+                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + @reg_n.to_s + '][assistance]', :type => 'radio', :value => "no", onchange: 'activatereasonlack(this);', :checked => oos.assistance=="no"}
                         %span No
                     %td.reason.smart-form
                       %div.reason2

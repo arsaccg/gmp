@@ -24,9 +24,10 @@ class Production::WorkerContractsController < ApplicationController
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
     @cost_center = session[:cost_center]
+    num = ActiveRecord::Base.connection.execute("SELECT COUNT( 1 ) FROM workers wo, worker_contracts wc WHERE wo.id = wc.worker_id AND wo.cost_center_id = " + @worker.cost_center_id.to_s)
     if @typeofcontract == 'Contrato'
       @workercontract = WorkerContract.new
-    	@worker_id = params[:worker_id]
+      @worker_id = params[:worker_id]
       @worker = Worker.find_by_id(@worker_id)
     end
     if @typeofcontract == 'Adenda'
@@ -45,9 +46,9 @@ class Production::WorkerContractsController < ApplicationController
       @workercontract.viatical = @workercontract2.viatical.to_i
       @workercontract.start_date = @workercontract2.start_date
       @workercontract.end_date = @workercontract2.end_date
-      if WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Adenda'",params[:worker_id]).count > 0
+      if num.count > 0
         @numberofcontract = @workercontract2.numberofcontract
-        @numberofcontract = @numberofcontract + ' - AD ' + (WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Adenda'",params[:worker_id]).count + 1).to_s.rjust(2, '0')
+        @numberofcontract = @numberofcontract + ' - AD ' + num.first[0].to_i + 1).to_s.rjust(2, '0')
       else
         @numberofcontract = @workercontract2.numberofcontract + ' - AD 01'
       end
@@ -69,9 +70,9 @@ class Production::WorkerContractsController < ApplicationController
       @diff = (@workercontract2.end_date - @workercontract2.start_date).to_i
       @workercontract.start_date = @workercontract2.end_date.to_date + 1.days
       @workercontract.end_date = @workercontract2.end_date.to_date + @diff.days
-      if WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Renovacion'",params[:worker_id]).count > 0
+      if num.count > 0
         @numberofcontract = @workercontract2.numberofcontract
-        @numberofcontract = @numberofcontract + ' - RVN ' + (WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Renovacion'",params[:worker_id]).count + 1).to_s.rjust(2, '0')
+        @numberofcontract = @numberofcontract + ' - RVN ' + num.first[0].to_i + 1).to_s.rjust(2, '0')
       else
         @numberofcontract = @workercontract2.numberofcontract + ' - RVN 01'
       end

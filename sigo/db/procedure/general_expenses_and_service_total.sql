@@ -17,6 +17,12 @@ BEGIN
   DECLARE meta_dir_cost_subcontract FLOAT(10,2);
   DECLARE meta_dir_cost_service FLOAT(10,2);
 
+  DECLARE program_cost_hand_work FLOAT(10,2);
+  DECLARE program_cost_materials FLOAT(10,2);
+  DECLARE program_cost_equipment FLOAT(10,2);
+  DECLARE program_cost_subcontract FLOAT(10,2);
+  DECLARE program_cost_service FLOAT(10,2);
+
   DECLARE real_cost_hand_work FLOAT(10,2);
   DECLARE real_cost_materials FLOAT(10,2);
   DECLARE real_cost_equipment FLOAT(10,2);
@@ -73,6 +79,12 @@ BEGIN
   SET meta_dir_cost_equipment = 0.0;
   SET meta_dir_cost_subcontract = 0.0;
   SET meta_dir_cost_service = 0.0;
+
+  SET program_cost_hand_work = 0.0;
+  SET program_cost_materials = 0.0;
+  SET program_cost_equipment = 0.0;
+  SET program_cost_subcontract = 0.0;
+  SET program_cost_service   = 0.0;
 
   SET real_cost_hand_work = 0.0;
   SET real_cost_materials = 0.0;
@@ -398,6 +410,50 @@ BEGIN
 
     END BLOCK5dc;
     -- COSTO DIRECTO REAL    
+
+    -- COSTO DIRECTO PROGRAMADO
+    BLOCKPROG: BEGIN
+      DECLARE done_program INT DEFAULT FALSE;
+
+      DECLARE v_order CHAR(120);
+      DECLARE v_measured FLOAT(10,2);
+      DECLARE v_budget_id INT;
+
+      DECLARE distributions CURSOR FOR -- ESTO SACA DATOS CON ibb.id REPETIDOS
+      SELECT d.code as 'budgetCode', di.value as 'measured', d.budget_id 'budgetId' 
+      FROM distributions d, distribution_items di 
+      WHERE di.distribution_id = d.id 
+      AND di.month BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+      AND d.cost_center_id = v_id 
+      AND di.value IS NOT NULL;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_program = TRUE;
+
+      OPEN distributions;
+      read_loop_program: LOOP
+        FETCH distributions INTO v_order, v_measured, v_budget_id;
+        IF done_program THEN
+          LEAVE read_loop_program;
+        END IF;
+
+        SET @program_cost_hand_work = (SELECT SUM( ibi.quantity * ibi.price * v_measured ) FROM inputbybudgetanditems AS ibi, itembybudgets AS ib WHERE ibi.cod_input LIKE  '01%' AND ibi.budget_id = v_budget_id AND ib.budget_id = v_budget_id AND ibi.`order` LIKE CONCAT(v_order, '%') AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ));
+        SET program_cost_hand_work  = IFNULL(program_cost_hand_work, 0) + IFNULL(@program_cost_hand_work, 0);
+
+        SET @program_cost_materials = (SELECT SUM( ibi.quantity * ibi.price * v_measured ) FROM inputbybudgetanditems AS ibi, itembybudgets AS ib WHERE ibi.cod_input LIKE  '02%' AND ibi.budget_id = v_budget_id AND ib.budget_id = v_budget_id AND ibi.`order` LIKE CONCAT(v_order, '%') AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ));
+        SET program_cost_materials  = IFNULL(program_cost_materials, 0) + IFNULL(@program_cost_materials, 0);
+
+        SET @program_cost_equipment = (SELECT SUM( ibi.quantity * ibi.price * v_measured ) FROM inputbybudgetanditems AS ibi, itembybudgets AS ib WHERE ibi.cod_input LIKE  '03%' AND ibi.budget_id = v_budget_id AND ib.budget_id = v_budget_id AND ibi.`order` LIKE CONCAT(v_order, '%') AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ));
+        SET program_cost_equipment  = IFNULL(program_cost_equipment, 0) + IFNULL(@program_cost_equipment, 0);
+
+        SET @program_cost_subcontract = (SELECT SUM( ibi.quantity * ibi.price * v_measured ) FROM inputbybudgetanditems AS ibi, itembybudgets AS ib WHERE ibi.cod_input LIKE  '04%' AND ibi.budget_id = v_budget_id AND ib.budget_id = v_budget_id AND ibi.`order` LIKE CONCAT(v_order, '%') AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ));
+        SET program_cost_subcontract  = IFNULL(program_cost_subcontract, 0) + IFNULL(@program_cost_subcontract, 0);
+
+        SET @program_cost_service = (SELECT SUM( ibi.quantity * ibi.price * v_measured ) FROM inputbybudgetanditems AS ibi, itembybudgets AS ib WHERE ibi.cod_input LIKE  '05%' AND ibi.budget_id = v_budget_id AND ib.budget_id = v_budget_id AND ibi.`order` LIKE CONCAT(v_order, '%') AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ));
+        SET program_cost_service  = IFNULL(program_cost_service, 0) + IFNULL(@program_cost_service, 0);
+
+      END LOOP read_loop_program;
+      CLOSE distributions;    
+    END BLOCKPROG;
+    -- COSTO DIRECTO PROGRAMADO    
 
     -- GASTOS GENERALES META
     BLOCK2: BEGIN
@@ -904,11 +960,11 @@ BEGIN
     -- SERVICIOS GENERALES REAL
 
     SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-      "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,
-            `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,
-            `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,
-            `direct_cost_subcont_valoriz`,`direct_cost_subcont_costreal`,`direct_cost_subcont_meta`,
-            `direct_cost_serv_valoriz`,`direct_cost_serv_costreal`,`direct_cost_serv_meta`,
+      "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
+            `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
+            `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
+            `direct_cost_subcont_valoriz`,`direct_cost_subcont_costreal`,`direct_cost_subcont_meta`,`direct_cost_subcont_prog`,
+            `direct_cost_serv_valoriz`,`direct_cost_serv_costreal`,`direct_cost_serv_meta`,`direct_cost_serv_prog`,
             `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
             `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
             `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
@@ -921,11 +977,11 @@ BEGIN
             `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
             `insertion_date`)
           VALUES (",
-            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",",
-            IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",",
-            IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),",",
-            IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),",",
-            IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),",",
+            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",", IFNULL(program_cost_hand_work,0),",",
+            IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",", IFNULL(program_cost_materials,0),",",
+            IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),",", IFNULL(program_cost_equipment,0),",",
+            IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),",", IFNULL(program_cost_subcontract,0),",",
+            IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),",", IFNULL(program_cost_service,0),",",
             IFNULL(v_hand_work,0),",", IFNULL(r_hand_work,0), ",",IFNULL(m_hand_work,0), ",",
             IFNULL(v_materials,0), ",",IFNULL(r_materials,0), ",",IFNULL(m_materials,0), ",",
             IFNULL(v_subcontract,0), ",",IFNULL(r_subcontract,0), ",",IFNULL(m_subcontract,0), ",",
@@ -1016,11 +1072,11 @@ BEGIN
     END IF;
 
     SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-      "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,
-            `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,
-            `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,
-            `direct_cost_subcont_valoriz`,`direct_cost_subcont_costreal`,`direct_cost_subcont_meta`,
-            `direct_cost_serv_valoriz`,`direct_cost_serv_costreal`,`direct_cost_serv_meta`,
+      "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
+            `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
+            `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
+            `direct_cost_subcont_valoriz`,`direct_cost_subcont_costreal`,`direct_cost_subcont_meta`,`direct_cost_subcont_prog`,
+            `direct_cost_serv_valoriz`,`direct_cost_serv_costreal`,`direct_cost_serv_meta`,`direct_cost_serv_prog`,
             `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
             `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
             `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
@@ -1033,11 +1089,11 @@ BEGIN
             `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
             `insertion_date`)
           VALUES (",
-            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",",
-            IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",",
-            IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),",",
-            IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),",",
-            IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),",",
+            IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",", IFNULL(program_cost_hand_work,0),",",
+            IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",", IFNULL(program_cost_materials,0),",",
+            IFNULL(val_dir_cost_equipment,0),",", IFNULL(real_cost_equipment,0), ",",IFNULL(meta_dir_cost_equipment,0),",", IFNULL(program_cost_equipment,0),",",
+            IFNULL(val_dir_cost_subcontract,0),",", IFNULL(real_cost_subcontract,0), ",",IFNULL(meta_dir_cost_subcontract,0),",", IFNULL(program_cost_subcontract,0),",",
+            IFNULL(val_dir_cost_service,0),",", IFNULL(real_cost_service,0), ",",IFNULL(meta_dir_cost_service,0),",", IFNULL(program_cost_service,0),",",
             IFNULL(v_hand_work,0),",", IFNULL(r_hand_work,0), ",",IFNULL(m_hand_work,0), ",",
             IFNULL(v_materials,0), ",",IFNULL(r_materials,0), ",",IFNULL(m_materials,0), ",",
             IFNULL(v_subcontract,0), ",",IFNULL(r_subcontract,0), ",",IFNULL(m_subcontract,0), ",",
@@ -1070,7 +1126,13 @@ BEGIN
     SET real_cost_materials = 0.0;
     SET real_cost_equipment = 0.0;
     SET real_cost_subcontract = 0.0;
-    SET real_cost_service = 0.0;     
+    SET real_cost_service = 0.0;
+
+    SET program_cost_hand_work = 0.0;
+    SET program_cost_materials = 0.0;
+    SET program_cost_equipment = 0.0;
+    SET program_cost_subcontract = 0.0;
+    SET program_cost_service   = 0.0;    
 
     SET m_hand_work = 0.0;
     SET m_materials = 0.0;

@@ -276,9 +276,15 @@ class Production::WorkersController < ApplicationController
     worker = Worker.find(params[:id])
     if worker.worker_afps.count > 0 || worker.typeofworker=="externo"
       worker.register
-      num = Worker.where("typeofworker = '"+worker.typeofworker.to_s+"' AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last
+      num = ActiveRecord::Base.connection.execute("
+          SELECT MAX( CONVERT( number_position, UNSIGNED INTEGER ) ) 
+          FROM workers
+          WHERE typeofworker =  '"+worker.typeofworker.to_s+"'
+          AND number_position IS NOT NULL 
+          AND cost_center_id = " + get_company_cost_center('cost_center').to_s + "
+          ORDER BY workers.id DESC")
       if  !num.nil?
-        worker.update_attributes(:number_position => num.number_position.to_i+1)
+        worker.update_attributes(:number_position => num.first[0].to_i+1)
       else
         worker.update_attributes(:number_position => 1)
       end

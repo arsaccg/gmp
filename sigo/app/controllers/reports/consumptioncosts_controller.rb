@@ -15,7 +15,7 @@ class Reports::ConsumptioncostsController < ApplicationController
 
     @sector = Sector.select(:id).select(:name).select(:code).where("code LIKE '__'")
     @subsector = Sector.select(:id).select(:name).select(:code).where("code LIKE '____'")
-
+    @cc = get_company_cost_center("cost_center")
     @working_group = WorkingGroup.select(:id).select(:name)
     front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
     @front_chiefs = Worker.distinct.where(:id => front_chief_ids) # Jefes de Frentes
@@ -38,8 +38,9 @@ class Reports::ConsumptioncostsController < ApplicationController
     @month = Date.parse(params[:date] + '-01').strftime('%B %Y')
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
-  	@magic_result_ge = ConsumptionCost.apply_all_consult
-    @magic_result_gen_serv = ConsumptionCost.apply_all_gen_serv
+  	@magic_result_ge = ConsumptionCost.apply_all_consult(cost_center_obj.id,Time.now.to_date.strftime("%m%Y"))
+    @magic_result_gen_serv = ConsumptionCost.apply_all_gen_serv(cost_center_obj.id,Time.now.to_date.strftime("%m%Y"))
+    @magic_result_dc = ConsumptionCost.apply_all_direct_cos(cost_center_obj.id, Time.now.to_date.strftime("%m%Y"))
   	render(partial: 'table', :layout => false)
   end
 

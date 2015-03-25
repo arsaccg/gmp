@@ -1,7 +1,7 @@
 class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
-  def self.apply_all_consult
+  def self.apply_all_consult cc_id, date
     array_ge = connection.select_one("
       SELECT 
       '-', `general_exp_mo_valoriz`, '-', `general_exp_mo_costreal`, `general_exp_mo_meta` ,
@@ -9,11 +9,11 @@ class ConsumptionCost < ActiveRecord::Base
       '-', `general_exp_subcont_valoriz`, '-', `general_exp_subcont_costreal`, `general_exp_subcont_meta` ,
       '-', `general_exp_serv_valoriz`, '-', `general_exp_serv_costreal`, `general_exp_serv_meta` ,
       '-', `general_exp_equip_valoriz`, '-', `general_exp_equip_costreal`, `general_exp_equip_meta` 
-    FROM `actual_consumption_cost_actual_january`")
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_ge
   end
 
-  def self.apply_all_gen_serv
+  def self.apply_all_gen_serv cc_id, date
     array_genser = connection.select_one("
       SELECT 
       '-', '-', '-', `gen_serv_mo_costreal`, `gen_serv_mo_meta` ,
@@ -21,9 +21,21 @@ class ConsumptionCost < ActiveRecord::Base
       '-', '-', '-', `gen_serv_subcont_costreal`, `gen_serv_subcont_meta` ,
       '-', '-', '-', `gen_serv_service_costreal`, `gen_serv_service_meta` ,
       '-', '-', '-', `gen_serv_equip_costreal`,`gen_serv_equip_meta` 
-    FROM `actual_consumption_cost_actual_january`")
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_genser
   end
+
+  def self.apply_all_direct_cos cc_id, date
+    array_dc = connection.select_one("
+      SELECT 
+      `direct_cost_mo_prog`, `direct_cost_mo_valoriz`, `direct_cost_mo_valgan`, `direct_cost_mo_costreal`, `direct_cost_mo_meta` ,
+      `direct_cost_mat_prog`, `direct_cost_mat_valoriz`, `direct_cost_mat_valgan`, `direct_cost_mat_costreal`, `direct_cost_mat_meta` ,
+      `direct_cost_subcont_prog`, `direct_cost_subcont_valoriz`, `direct_cost_subcont_valgan`, `direct_cost_subcont_costreal`, `direct_cost_subcont_meta` ,
+      `direct_cost_serv_prog`, `direct_cost_serv_valoriz`, `direct_cost_serv_valgan`, `direct_cost_serv_costreal`, `direct_cost_serv_meta` ,
+      `direct_cost_equip_prog`, `direct_cost_equip_valoriz`, `direct_cost_equip_valgan`, `direct_cost_equip_costreal`, `direct_cost_equip_meta` 
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    return array_dc
+  end  
 
   def self.create_tables_new_costcenter(cost_center_id,start_date,end_date)
     start_date = "2015-01-01".to_date
@@ -46,6 +58,7 @@ class ConsumptionCost < ActiveRecord::Base
           `sector_id` int(11) NOT NULL,
           `working_group_id` int(11) NOT NULL,
           `measured_meta` varchar(255) NOT NULL,
+          `amount` varchar(255) NOT NULL,
           `insertion_date` date DEFAULT NULL,
           PRIMARY KEY (`id`)
         )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
@@ -57,72 +70,76 @@ class ConsumptionCost < ActiveRecord::Base
           `direct_cost_mo_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mo_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mo_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `direct_cost_mo_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mat_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mat_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mat_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mat_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `direct_cost_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_equip_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_equip_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_equip_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
-          `direct_cost_equip_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `direct_cost_equip_meta` varchar(255) COLLATE utf8_bin NOT NULL,  
+          `direct_cost_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_subcont_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_subcont_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_subcont_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_subcont_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `direct_cost_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_serv_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_serv_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_serv_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_serv_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `direct_cost_serv_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mo_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mo_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mo_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mo_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_mo_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mat_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mat_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mat_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_mat_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_equip_prog` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_equip_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_equip_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_equip_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_subcont_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_subcont_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_subcont_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_subcont_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_serv_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_serv_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_serv_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `general_exp_serv_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `general_exp_serv_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mo_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mo_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mo_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mo_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `gen_serv_mo_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mat_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mat_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mat_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_mat_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `gen_serv_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_equip_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_equip_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_equip_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_equip_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `gen_serv_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_subcont_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_subcont_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_subcont_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_subcont_meta` varchar(255) COLLATE utf8_bin NOT NULL,
+          `gen_serv_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_meta` varchar(255) COLLATE utf8_bin NOT NULL,
-          `direct_cost_mo_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `direct_cost_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `direct_cost_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `direct_cost_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `direct_cost_serv_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `general_exp_mo_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `general_exp_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `general_exp_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `general_exp_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `general_exp_serv_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `gen_serv_mo_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `gen_serv_mat_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `gen_serv_equip_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `gen_serv_subcont_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
           `insertion_date` date DEFAULT NULL
         )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
