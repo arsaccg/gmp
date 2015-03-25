@@ -46,7 +46,7 @@
         %button{"class"=>"close", "data-dismiss"=>"modal"}
           %span{"aria-hidden"=>"true"} &times;
           %span{"class"=>"sr-only"} Close
-      }
+      
       .modal-body
         .row
           %h4{:style => "font-weight: bold;"} Configuración Inicial
@@ -54,76 +54,74 @@
           .col-md-12
             .col-md-4
               %label Fase
-              %select.form-control{:name => 'selected_phase'}
+              %select.form-control#phase{:name => 'selected_phase'}
+                %option{:value => "phase", :selected => true} Seleccione
                 - @phase.each do |d|
                   %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
 
             .col-md-4
               %label Subfase
-              %select.form-control{:name => 'selected_subphase'}
-                - @subphase.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              %select.form-control#subphase{:name => 'selected_subphase'}
+                %option{:value => "subphase", :selected => true} Seleccione
           .col-md-12 
             .col-md-4
               %label Sector
-              %select.form-control{:name => 'selected_sector'}
+              %select.form-control#sector{:name => 'selected_sector'}
+                %option{:value => "sector", :selected => true} Seleccione
                 - @sector.each do |d|
                   %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
 
             .col-md-4
               %label Subsector
-              %select.form-control{:name => 'selected_subsector'}
-                - @subsector.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              %select.form-control#subsector{:name => 'selected_subsector'}
+                %option{:value => "subsector", :selected => true} Seleccione
           .col-md-12
             .col-md-3
               %label Grupo de Trabajo
-              %select.form-control{:name => 'selected_working_group'}
-                %option{:value => "0"} Seleccione un Grupo de trabajo
+              %select.form-control#wg{:name => 'selected_working_group'}
+                %option{:value => "wg", :selected => true} Seleccione
                 - @working_group.each do |d|
                   %option{:value => "#{d.id}"}= d.name
             .col-md-3
               %label Jefe de frente
-              %select.form-control{:name => 'selected_jefefrente'}
-                %option{:value => "0"} Seleccione un jefe de frente
+              %select.form-control#jf{:name => 'selected_jefefrente'}
+                %option{:value => "jf", :selected => true} Seleccione
                 - @front_chiefs.each do |front_chief|
                   %option{:value => "#{front_chief.id}"}
-                    = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s
+                    = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s                
             .col-md-3
               %label Ejecutor
-              %select.form-control{:name => 'selected_ejecutor'}
-                %option{:value => "0"} Seleccione un ejecutor
+              %select.form-control#exe{:name => 'selected_ejecutor'}
+                %option{:value => "exe", :selected => true} Seleccione
                 - @executors.each do |ex|
                   %option{:value => "#{ex.id}"}
-                    = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s
+                    = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s                
             .col-md-3
               %label Capataz
-              %select.form-control{:name => 'selected_capataz'}
-                %option{:value => "0"} Seleccione un capataz
+              %select.form-control#cap{:name => 'selected_capataz'}
+                %option{:value => "cap", :selected => true} Seleccione
                 - @master_builders.each do |master_builder|
                   %option{:value => "#{master_builder.id}"}
-                    = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s
+                    = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s          
           .col-md-12
             .col-md-3
               %label Grupo
-              %select.form-control{:name => 'selected_group_article'}
+              %select.form-control#artgru{:name => 'selected_group_article'}
+                %option{:value => "artgru", :selected => true} Seleccione
                 - @groups.each do |d|
                   %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
             .col-md-3
               %label Subgrupo
-              %select.form-control{:name => 'selected_subgroup_article'}
-                - @subgroups.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              %select.form-control#artsubgru{:name => 'selected_subgroup_article'}
+                %option{:value => "artsubgru", :selected => true} Seleccione
             .col-md-3
               %label Especifico
-              %select.form-control{:name => 'selected_especific_article'}
-                - @specific.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              %select.form-control#artspec{:name => 'selected_especific_article'}
+                %option{:value => "artspec", :selected => true} Seleccione
             .col-md-3
               %label Especifico final
-              %select.form-control{:name => 'selected_fespecific_article'}
-                - @fspecific.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              %select.form-control#art{:name => 'selected_fespecific_article'}
+                %option{:value => "art", :selected => true} Seleccione
         %br
         .row{:style => "border-top: 1px solid #7D7D7D;"}
           %br
@@ -308,3 +306,183 @@
     var parameters = { authenticity_token: "#{form_authenticity_token}" };
     load_url_ajax("#{create_tables_missing_reports_consumptioncosts_path}", 'content', parameters, 'avoid-opacity', 'POST');
   });
+
+  $('#phase').change(function(){
+    if($(this).val()=="phase"){
+      $('#subphase').empty();
+      $('#subphase').append($("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected"));
+    }else{
+      complete_subphase("#{get_subphase_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+    }
+  });
+
+  $('#sector').change(function(){
+    if($(this).val()=="sector"){
+      $('#subsector').empty();
+      $('#subsector').append($("<option></option>").attr("value", "subsector").text("Seleccione").attr("selected", "selected"));
+    }else{
+      complete_subsector("#{get_subsector_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+    }
+  });
+
+  $('#artgru').change(function(){
+    if($(this).val()=="artgru"){
+      $('#artsubgru').empty();
+      $('#artsubgru').append($("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected"));
+    }else{
+      complete_artsubgru("#{get_subgroup_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+    }
+  }); 
+
+  $('#artsubgru').change(function(){
+    if($(this).val()=="artsubgru"){
+      $('#artspec').empty();
+      $('#artspec').append($("<option></option>").attr("value", "artspec").text("Seleccione").attr("selected", "selected"));
+    }else{
+      complete_artspec("#{get_specific_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+    }
+  }); 
+
+  $('#artspec').change(function(){
+    if($(this).val()=="artsubgru"){
+      $('#art').empty();
+      $('#art').append($("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected"));
+    }else{
+      complete_art("#{get_art_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+    }
+  }); 
+
+  function complete_subphase(url, phase_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { phase_id: phase_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subphase, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#subphase').empty();
+        $('#subphase').append(
+              $("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#subphase').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+  }
+
+  function complete_subsector(url, sector_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { sector_id: sector_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subsector, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#subsector').empty();
+        $('#subsector').append(
+              $("<option></option>").attr("value", "subsector").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#subsector').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+  }
+
+  function complete_artsubgru(url, group_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { group_id: group_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subgroup, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#artsubgru').empty();
+        $('#artsubgru').append(
+              $("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#artsubgru').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+  }  
+
+  function complete_artspec(url, subgroup_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { subgroup_id: subgroup_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.specific, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#artspec').empty();
+        $('#artspec').append(
+              $("<option></option>").attr("value", "artspec").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#artspec').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+  }
+
+  function complete_art(url, specific_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { specific_id: specific_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.article, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#art').empty();
+        $('#art').append(
+              $("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#art').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+  }    

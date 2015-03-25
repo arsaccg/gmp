@@ -330,6 +330,11 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'consult'
         post 'create_tables_missing'
+        post 'get_subphase'
+        post 'get_subsector'
+        post 'get_subgroup'
+        post 'get_specific'
+        post 'get_art'
       end
     end
   end

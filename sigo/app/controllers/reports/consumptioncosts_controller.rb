@@ -1,4 +1,7 @@
 class Reports::ConsumptioncostsController < ApplicationController
+  before_filter :authenticate_user!
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]  
+
   def index
   	@dates = Array.new
   	cost_center_detail_obj = CostCenter.find(get_company_cost_center('cost_center')).cost_center_detail
@@ -11,10 +14,8 @@ class Reports::ConsumptioncostsController < ApplicationController
 
     # => Config
     @phase = Phase.select(:id).select(:name).select(:code).where("code LIKE '__'")
-    @subphase = Phase.select(:id).select(:name).select(:code).where("code LIKE '____'")
 
     @sector = Sector.select(:id).select(:name).select(:code).where("code LIKE '__'")
-    @subsector = Sector.select(:id).select(:name).select(:code).where("code LIKE '____'")
     @cc = get_company_cost_center("cost_center")
     @working_group = WorkingGroup.select(:id).select(:name)
     front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
@@ -27,9 +28,6 @@ class Reports::ConsumptioncostsController < ApplicationController
     @executors = Entity.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
 
     @groups = Category.select(:id).select(:name).select(:code).where("code LIKE '__'")
-    @subgroups = Category.select(:id).select(:name).select(:code).where("code LIKE '____'")
-    @specific = Category.select(:id).select(:name).select(:code).where("code LIKE '____'")
-    @fspecific = Article.select(:id).select(:name).select(:code)
 
   	render layout: false
   end
@@ -52,4 +50,36 @@ class Reports::ConsumptioncostsController < ApplicationController
     flash[:notice] = "Se han creado las tablas de los centros de costo."
     redirect_to :action => :index
   end
+
+  def get_subphase
+    type = Phase.find(params[:phase_id])
+    subphase = Phase.where("code LIKE '" + type.code + "__'" )
+    render json: {:subphase => subphase}  
+  end
+
+  def get_subsector
+    type = Sector.find(params[:sector_id])
+    subsector = Sector.where("code LIKE '" + type.code + "__' AND cost_center_id = " + get_company_cost_center('cost_center') )
+    render json: {:subsector => subsector}  
+  end
+
+  def get_subgroup
+    type = Category.find(params[:group_id])
+    subgroup = Category.where("code LIKE '" + type.code + "__'")
+    render json: {:subgroup => subgroup}  
+  end
+
+  def get_specific
+    type = Category.find(params[:subgroup_id])
+    specific = Category.where("code LIKE '" + type.code + "__'")
+    render json: {:specific => specific}  
+  end
+
+  def get_art
+    type = Category.find(params[:specific_id])
+    article = Article.where("code LIKE '__" + type.code + "__'")
+    render json: {:article => article}  
+  end    
+
+
 end
