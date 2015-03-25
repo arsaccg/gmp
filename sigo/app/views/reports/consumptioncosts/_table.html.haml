@@ -90,10 +90,15 @@
         %span{:style => 'visibility: hidden;'} ---------
         Mano de Obra
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mo_prog'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mo_valoriz'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mo_valgan'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mo_costreal'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mo_meta'].to_f, :unit => "", :precision => 2
       %td
       %td
       %td
@@ -106,10 +111,15 @@
         %span{:style => 'visibility: hidden;'} ---------
         Material
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mat_prog'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mat_valoriz'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mat_valgan'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mat_costreal'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_mat_meta'].to_f, :unit => "", :precision => 2      
       %td
       %td
       %td
@@ -122,10 +132,15 @@
         %span{:style => 'visibility: hidden;'} ---------
         Equipo
       %td
+        =number_to_currency @magic_result_dc['direct_cost_equip_prog'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_equip_valoriz'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_equip_valgan'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_equip_costreal'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_equip_meta'].to_f, :unit => "", :precision => 2      
       %td
       %td
       %td
@@ -137,11 +152,11 @@
       %td
         %span{:style => 'visibility: hidden;'} ---------
         Subcontrato
-      %td
-      %td
-      %td
-      %td
-      %td
+      %td=number_to_currency @magic_result_dc['direct_cost_subcont_prog'].to_f, :unit => "", :precision => 2
+      %td=number_to_currency @magic_result_dc['direct_cost_subcont_valoriz'].to_f, :unit => "", :precision => 2
+      %td=number_to_currency @magic_result_dc['direct_cost_subcont_valgan'].to_f, :unit => "", :precision => 2
+      %td=number_to_currency @magic_result_dc['direct_cost_subcont_costreal'].to_f, :unit => "", :precision => 2
+      %td=number_to_currency @magic_result_dc['direct_cost_subcont_meta'].to_f, :unit => "", :precision => 2      
       %td
       %td
       %td
@@ -154,10 +169,15 @@
         %span{:style => 'visibility: hidden;'} ---------
         Servicio
       %td
+        =number_to_currency @magic_result_dc['direct_cost_serv_prog'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_serv_valoriz'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_serv_valgan'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_serv_costreal'].to_f, :unit => "", :precision => 2
       %td
+        =number_to_currency @magic_result_dc['direct_cost_serv_meta'].to_f, :unit => "", :precision => 2            
       %td
       %td
       %td
