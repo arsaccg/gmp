@@ -42,10 +42,11 @@
 #showconfig.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalConfigLabel", role: "dialog", tabindex: "-1", keyboard: false, backdrop: 'static'}
   .modal-dialog
     .modal-content
-      .modal-header
+      .modal-header{:style => 'padding-bottom: 26px; border-bottom: 1px solid #7D7D7D;'}
         %button{"class"=>"close", "data-dismiss"=>"modal"}
-          %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
+          %span{"aria-hidden"=>"true"} &times;
           %span{"class"=>"sr-only"} Close
+      }
       .modal-body
         .row
           %h4{:style => "font-weight: bold;"} Configuración Inicial

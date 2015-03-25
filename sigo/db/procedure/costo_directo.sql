@@ -146,7 +146,6 @@ BEGIN
 END $$
 
 -- COSTO DIRECTO / COSTO REAL
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `costo_directo_real_por_mes`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_real_por_mes`()
 BEGIN

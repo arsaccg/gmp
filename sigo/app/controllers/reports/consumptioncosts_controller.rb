@@ -17,9 +17,14 @@ class Reports::ConsumptioncostsController < ApplicationController
     @subsector = Sector.select(:id).select(:name).select(:code).where("code LIKE '____'")
 
     @working_group = WorkingGroup.select(:id).select(:name)
-    @front_chiefs = Entity.joins(:type_entities).where("type_entities.preffix" => "JF")
-    @master_builders = Entity.joins(:type_entities).where("type_entities.preffix" => "MO")
-    @executors = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
+    @front_chiefs = Worker.distinct.where(:id => front_chief_ids) # Jefes de Frentes
+    # PositionWorker.find(1).workers
+    master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).where("cost_center_id ="+@cc.to_s).map(&:master_builder_id)
+    @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
+    # PositionWorker.find(2).workers
+    executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
+    @executors = Entity.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
 
     @groups = Category.select(:id).select(:name).select(:code).where("code LIKE '__'")
     @subgroups = Category.select(:id).select(:name).select(:code).where("code LIKE '____'")
