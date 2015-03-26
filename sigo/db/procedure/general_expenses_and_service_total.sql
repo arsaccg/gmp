@@ -1,7 +1,7 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `general_expenses_and_general_services_total`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `general_expenses_and_general_services_total`()
+DROP PROCEDURE IF EXISTS `SHOWME_VALUES_BI`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOWME_VALUES_BI`()
 BEGIN
   DECLARE done INT DEFAULT FALSE;
 
@@ -424,7 +424,7 @@ BEGIN
       FROM distributions d, distribution_items di 
       WHERE di.distribution_id = d.id 
       AND di.month BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
-      AND d.cost_center_id = v_id 
+      AND d.cost_center_id = v_id
       AND di.value IS NOT NULL;
       DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_program = TRUE;
 
