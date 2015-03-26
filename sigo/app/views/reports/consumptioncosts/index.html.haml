@@ -5,7 +5,7 @@
         %label Seleccionar Periodo:
         %select#selected-month.form-control{:name => 'selected_month'}
           - @dates.each do |d|
-            %option{:value => "#{d[1]}-#{d[0]}"}= d[1].to_s + '-' + d[0].to_s
+            %option{:value => "#{d[1]}-#{d[0].to_s.rjust(2, '0')}"}= d[1].to_s + '-' + d[0].to_s
       .col-xs-6.col-sm-6.col-md-6.col-lg-6
         %label{:style => 'visibility:hidden; width: 100%;'}
         %button#search-cost.btn.btn-primary{type: "button"}

@@ -34,11 +34,12 @@ class Reports::ConsumptioncostsController < ApplicationController
 
   def consult
     @month = Date.parse(params[:date] + '-01').strftime('%B %Y')
+    month = Date.parse(params[:date] + '-01').strftime('%m%Y')
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
-  	@magic_result_ge = ConsumptionCost.apply_all_consult(cost_center_obj.id,Time.now.to_date.strftime("%m%Y"))
-    @magic_result_gen_serv = ConsumptionCost.apply_all_gen_serv(cost_center_obj.id,Time.now.to_date.strftime("%m%Y"))
-    @magic_result_dc = ConsumptionCost.apply_all_direct_cos(cost_center_obj.id, Time.now.to_date.strftime("%m%Y"))
+  	@magic_result_ge = ConsumptionCost.apply_all_consult(cost_center_obj.id,month)
+    @magic_result_gen_serv = ConsumptionCost.apply_all_gen_serv(cost_center_obj.id,month)
+    @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, month)
   	render(partial: 'table', :layout => false)
   end
 

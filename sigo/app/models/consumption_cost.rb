@@ -25,7 +25,7 @@ class ConsumptionCost < ActiveRecord::Base
     return array_genser
   end
 
-  def self.apply_all_direct_cos cc_id, date
+  def self.apply_all_direct_cost cc_id, date
     array_dc = connection.select_one("
       SELECT 
       `direct_cost_mo_prog`, `direct_cost_mo_valoriz`, `direct_cost_mo_valgan`, `direct_cost_mo_costreal`, `direct_cost_mo_meta` ,
