@@ -21,7 +21,7 @@ class ConsumptionCost < ActiveRecord::Base
       '-', '-', '-', `gen_serv_subcont_costreal`, `gen_serv_subcont_meta` ,
       '-', '-', '-', `gen_serv_service_costreal`, `gen_serv_service_meta` ,
       '-', '-', '-', `gen_serv_equip_costreal`,`gen_serv_equip_meta` 
-    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_genser
   end
 
@@ -33,7 +33,7 @@ class ConsumptionCost < ActiveRecord::Base
       `direct_cost_subcont_prog`, `direct_cost_subcont_valoriz`, `direct_cost_subcont_valgan`, `direct_cost_subcont_costreal`, `direct_cost_subcont_meta` ,
       `direct_cost_serv_prog`, `direct_cost_serv_valoriz`, `direct_cost_serv_valgan`, `direct_cost_serv_costreal`, `direct_cost_serv_meta` ,
       `direct_cost_equip_prog`, `direct_cost_equip_valoriz`, `direct_cost_equip_valgan`, `direct_cost_equip_costreal`, `direct_cost_equip_meta` 
-    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_dc
   end  
 
