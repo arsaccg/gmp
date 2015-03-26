@@ -1,7 +1,7 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `general_expenses_and_general_services_total`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `general_expenses_and_general_services_total`()
+DROP PROCEDURE IF EXISTS `SHOWME_VALUES_BI`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOWME_VALUES_BI`()
 BEGIN
   DECLARE done INT DEFAULT FALSE;
 
@@ -63,6 +63,8 @@ BEGIN
   DECLARE v_amount DOUBLE;
   DECLARE v_type_article TEXT;
   DECLARE table_for_insertion TEXT;
+
+  DECLARE name_table TEXT;
 
   DECLARE cost_centers CURSOR FOR 
     SELECT id FROM cost_centers WHERE active = 1 AND status = "A";
@@ -143,7 +145,7 @@ BEGIN
         WHERE b.cost_center_id = v_id
         AND b.type_of_budget = 1
         AND b.id = v.budget_id
-        AND v.valorization_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY);
+        AND v.valorization_date BETWEEN '2015-02-01' AND '2015-02-28';
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_val_dir_cost = TRUE;
 
       OPEN valorizations;
@@ -207,7 +209,7 @@ BEGIN
       SELECT ibb.id, ibb.budget_id, ibb.order
       FROM part_works pw, part_work_details pwd, itembybudgets ibb
       WHERE pw.cost_center_id = v_id 
-      AND pw.date_of_creation BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+      AND pw.date_of_creation BETWEEN '2015-02-01' AND '2015-02-28'
       AND pw.id = pwd.part_work_id
       AND pwd.itembybudget_id = ibb.id;
       DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_meta_dir_cos = TRUE;
@@ -256,7 +258,7 @@ BEGIN
               AND si.cost_center_id = v_id
               AND si.status =  'A'
               AND sid.stock_input_id = si.id
-              AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+              AND si.issue_date BETWEEN '2015-02-01' AND '2015-02-28'
               AND sid.article_id = art.id
               GROUP BY art.id) AS stock_output
         WHERE dod.article_id = stock_output.article_id
@@ -300,7 +302,7 @@ BEGIN
         FROM order_of_service_details osd, phases p, order_of_services os, articles art
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
-        AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND os.date_of_issue BETWEEN '2015-02-01' AND '2015-02-28'
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
         AND p.code  > '0___' AND p.code < '89__'
@@ -348,7 +350,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
            GROUP BY p.worker_id) AS payslips_worker
         WHERE ppd.part_person_id = pp.id
         AND payslips_worker.worker_id = ppd.worker_id
@@ -366,7 +368,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
            GROUP BY p.worker_id) AS payslips_worker
         WHERE pw.cost_center_id = v_id
         AND pw.id = pwd.part_worker_id
@@ -423,8 +425,8 @@ BEGIN
       SELECT d.code as 'budgetCode', di.value as 'measured', d.budget_id 'budgetId' 
       FROM distributions d, distribution_items di 
       WHERE di.distribution_id = d.id 
-      AND di.month BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
-      AND d.cost_center_id = v_id 
+      AND di.month BETWEEN '2015-02-01' AND '2015-02-28'
+      AND d.cost_center_id = v_id
       AND di.value IS NOT NULL;
       DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_program = TRUE;
 
@@ -463,7 +465,7 @@ BEGIN
         FROM general_expense_details ged, general_expenses ge
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
-        AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
         AND ge.code_phase = 90
         GROUP BY (ged.type_article);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done2 = TRUE;
@@ -506,7 +508,7 @@ BEGIN
               AND si.cost_center_id = v_id
               AND si.status =  'A'
               AND sid.stock_input_id = si.id
-              AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+              AND si.issue_date BETWEEN '2015-02-01' AND '2015-02-28'
               AND sid.article_id = art.id
               GROUP BY art.id) AS stock_output
         WHERE dod.article_id = stock_output.article_id
@@ -552,7 +554,7 @@ BEGIN
         FROM order_of_service_details osd, phases p, order_of_services os, articles art
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
-        AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND os.date_of_issue BETWEEN '2015-02-01' AND '2015-02-28'
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
         AND p.code LIKE  '90__'
@@ -602,7 +604,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
            GROUP BY p.worker_id) AS payslips_worker
         WHERE ppd.part_person_id = pp.id
         AND payslips_worker.worker_id = ppd.worker_id
@@ -620,7 +622,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
            GROUP BY p.worker_id) AS payslips_worker
         WHERE pw.cost_center_id = v_id
         AND pw.id = pwd.part_worker_id
@@ -720,7 +722,7 @@ BEGIN
         WHERE ge.cost_center_id = v_id
         AND ge.id = ged.general_expense_id
         AND ge.code_phase > 90
-        AND DATE_FORMAT( ge.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND DATE_FORMAT( ge.created_at,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
         GROUP BY ged.type_article;
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donege = TRUE;
       OPEN meta;
@@ -755,7 +757,7 @@ BEGIN
         FROM diverse_expenses_of_managements dem, diverse_expenses_of_management_details demd
         WHERE dem.cost_center_id = v_id
         AND dem.id = demd.diverse_expenses_of_management_id
-        AND DATE_FORMAT( dem.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND DATE_FORMAT( dem.created_at,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
         GROUP BY LEFT(dem.article_code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donedem = TRUE;
       OPEN meta;
@@ -809,7 +811,7 @@ BEGIN
         AND sid.phase_id = p.id
         AND p.code > '91__'
         AND art.id = stock_output_prices.artid
-        AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
         GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donesi = TRUE;
       OPEN stock_outputs_gs;
@@ -850,7 +852,7 @@ BEGIN
         AND osd.article_id = art.id
         AND p.code > '91__'
         AND os.state =  'approved'
-        AND DATE_FORMAT( os.date_of_issue,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+        AND DATE_FORMAT( os.date_of_issue,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
         GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneos = TRUE;
       OPEN order_of_services;
@@ -896,7 +898,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
            GROUP BY p.worker_id) AS payslips_worker
         WHERE ppd.part_person_id = pp.id
         AND payslips_worker.worker_id = ppd.worker_id
@@ -914,7 +916,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
            GROUP BY p.worker_id) AS payslips_worker
         WHERE pw.cost_center_id = v_id
         AND pw.id = pwd.part_worker_id
@@ -959,7 +961,7 @@ BEGIN
     -- PAYROLLS
     -- SERVICIOS GENERALES REAL
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT('2015-02-28','%m%Y'),
       "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
             `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
             `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
@@ -997,11 +999,9 @@ BEGIN
     PREPARE stmt FROM @SQL;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
-
-    DECLARE name_table CHAR(60);
     
     SET @minexists = 0;
-    SET name_table = CONCAT('system_bi.actual_consumption_cost_actual_', v_id, "_", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 MONTH),'%m%Y'));
+    SET name_table = CONCAT("`system_bi`.`actual_consumption_cost_actual_",v_id,"_", DATE_FORMAT('2015-02-28','%m%Y'));
     SET @tbl_sql = CONCAT('SELECT COUNT(*) INTO @minexists FROM ', name_table);
       
     PREPARE stmt_tbl FROM @tbl_sql;
@@ -1009,15 +1009,30 @@ BEGIN
     DEALLOCATE PREPARE stmt_tbl;
     
     IF @minexists > 0 THEN
-      SET @SELECTSQLACT = CONCAT("SELECT * FROM `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-      " INTO @direct_cost_mo_valoriz, @direct_cost_mo_costreal, @direct_cost_mo_meta,
-            @direct_cost_mat_valoriz, @direct_cost_mat_costreal, @direct_cost_mat_meta,
-            @direct_cost_equip_valoriz, @direct_cost_equip_costreal, @direct_cost_equip_meta,
-            @direct_cost_subcont_valoriz, @direct_cost_subcont_costreal, @direct_cost_subcont_meta,
-            @direct_cost_serv_valoriz, @direct_cost_serv_costreal, @direct_cost_serv_meta,
+      SET @SELECTSQLACT = CONCAT("SELECT `direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
+            `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
+            `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
+            `direct_cost_subcont_valoriz`,`direct_cost_subcont_costreal`,`direct_cost_subcont_meta`,`direct_cost_subcont_prog`,
+            `direct_cost_serv_valoriz`,`direct_cost_serv_costreal`,`direct_cost_serv_meta`,`direct_cost_serv_prog`,
+            `general_exp_mo_valoriz`, `general_exp_mo_costreal`, `general_exp_mo_meta`,
+            `general_exp_mat_valoriz`,`general_exp_mat_costreal`,`general_exp_mat_meta`,
+            `general_exp_subcont_valoriz`, `general_exp_subcont_costreal`, `general_exp_subcont_meta`,
+            `general_exp_serv_valoriz`, `general_exp_serv_costreal`, `general_exp_serv_meta`,
+            `general_exp_equip_valoriz`,`general_exp_equip_costreal`,`general_exp_equip_meta`,
+            `gen_serv_mo_costreal`, `gen_serv_mo_meta`,
+            `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
+            `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
+            `gen_serv_service_costreal`, `gen_serv_service_meta`,
+            `gen_serv_equip_costreal`,`gen_serv_equip_meta` FROM `system_bi`.`actual_consumption_cost_actual_",v_id,"_",DATE_FORMAT('2015-01-31','%m%Y'),
+      "` INTO 
+            @direct_cost_mo_valoriz, @direct_cost_mo_costreal, @direct_cost_mo_meta, @program_cost_hand_work, 
+            @direct_cost_mat_valoriz, @direct_cost_mat_costreal, @direct_cost_mat_meta, @program_cost_materials, 
+            @direct_cost_equip_valoriz, @direct_cost_equip_costreal, @direct_cost_equip_meta, @program_cost_equipment, 
+            @direct_cost_subcont_valoriz, @direct_cost_subcont_costreal, @direct_cost_subcont_meta, @program_cost_subcontract, 
+            @direct_cost_serv_valoriz, @direct_cost_serv_costreal, @direct_cost_serv_meta, @program_cost_service, 
             @general_exp_mo_valoriz, @general_exp_mo_costreal, @general_exp_mo_meta,
             @general_exp_mat_valoriz, @general_exp_mat_costreal, @general_exp_mat_meta,
-            @@general_exp_subcont_valoriz, @general_exp_subcont_costreal, @general_exp_subcont_meta,
+            @general_exp_subcont_valoriz, @general_exp_subcont_costreal, @general_exp_subcont_meta,
             @general_exp_serv_valoriz, @general_exp_serv_costreal, @general_exp_serv_meta,
             @general_exp_equip_valoriz, @general_exp_equip_costreal, @general_exp_equip_meta,
             @gen_serv_mo_costreal, @gen_serv_mo_meta,
@@ -1029,49 +1044,54 @@ BEGIN
       EXECUTE stmt_tbl_actual;
       DEALLOCATE PREPARE stmt_tbl_actual;
 
-      val_dir_cost_hand_work = val_dir_cost_hand_work + @direct_cost_mo_valoriz
-      real_cost_hand_work = real_cost_hand_work + @direct_cost_mo_costreal
-      meta_dir_cost_hand_work = real_cost_hand_work + @direct_cost_mo_meta
-      val_dir_cost_materials = val_dir_cost_materials + @direct_cost_mat_valoriz
-      real_cost_materials = real_cost_materials + @direct_cost_mat_costreal
-      meta_dir_cost_materials = meta_dir_cost_materials + @direct_cost_mat_meta
-      val_dir_cost_equipment = val_dir_cost_equipment + @direct_cost_equip_valoriz
-      real_cost_equipment = real_cost_equipment + @direct_cost_equip_costreal
-      meta_dir_cost_equipment = meta_dir_cost_equipment + @direct_cost_equip_meta
-      val_dir_cost_subcontract = val_dir_cost_subcontract + @direct_cost_subcont_valoriz
-      real_cost_subcontract = real_cost_subcontract + @direct_cost_subcont_costreal
-      meta_dir_cost_subcontract = meta_dir_cost_subcontract + @direct_cost_subcont_meta
-      val_dir_cost_service = val_dir_cost_service + @direct_cost_serv_valoriz
-      real_cost_service = val_dir_cost_service + @direct_cost_serv_costreal
-      meta_dir_cost_service = meta_dir_cost_service + @direct_cost_serv_meta
-      v_hand_work = v_hand_work + @general_exp_mo_valoriz
-      r_hand_work = r_hand_work + @general_exp_mo_costreal
-      m_hand_work = m_hand_work + @general_exp_mo_meta
-      v_materials = v_materials + @general_exp_mat_valoriz
-      r_materials = r_materials + @general_exp_mat_costreal
-      m_materials = m_materials + @general_exp_mat_meta
-      v_subcontract = v_subcontract + @general_exp_subcont_valoriz
-      r_subcontract = r_subcontract + @general_exp_subcont_costreal
-      m_subcontract = m_subcontract + @general_exp_subcont_meta
-      v_service = v_service + @general_exp_serv_valoriz
-      r_service = r_service + @general_exp_serv_costreal
-      m_service = m_service + @general_exp_serv_meta
-      v_equipment = v_equipment + @general_exp_equip_valoriz
-      r_equipment = r_equipment + @general_exp_equip_costreal
-      m_equipment = m_equipment + @general_exp_equip_meta
-      real_hand_work = real_hand_work + @gen_serv_mo_costreal
-      meta_hand_work = meta_hand_work + @gen_serv_mo_meta
-      real_materials = real_materials + @gen_serv_mat_costreal
-      meta_materials = meta_materials + @gen_serv_mat_meta
-      real_subcontract = real_subcontract + @gen_serv_subcont_costreal
-      meta_subcontract = meta_subcontract + @gen_serv_subcont_meta
-      real_service = real_service + @gen_serv_service_costreal
-      meta_service = meta_service + @gen_serv_service_meta
-      real_equipment = real_equipment + @gen_serv_equip_costreal
-      meta_equipment = meta_equipment + @gen_serv_equip_meta
+      SET val_dir_cost_hand_work = val_dir_cost_hand_work + @direct_cost_mo_valoriz;
+      SET real_cost_hand_work = real_cost_hand_work + @direct_cost_mo_costreal;
+      SET meta_dir_cost_hand_work = real_cost_hand_work + @direct_cost_mo_meta;
+      SET val_dir_cost_materials = val_dir_cost_materials + @direct_cost_mat_valoriz;
+      SET real_cost_materials = real_cost_materials + @direct_cost_mat_costreal;
+      SET meta_dir_cost_materials = meta_dir_cost_materials + @direct_cost_mat_meta;
+      SET val_dir_cost_equipment = val_dir_cost_equipment + @direct_cost_equip_valoriz;
+      SET real_cost_equipment = real_cost_equipment + @direct_cost_equip_costreal;
+      SET meta_dir_cost_equipment = meta_dir_cost_equipment + @direct_cost_equip_meta;
+      SET val_dir_cost_subcontract = val_dir_cost_subcontract + @direct_cost_subcont_valoriz;
+      SET real_cost_subcontract = real_cost_subcontract + @direct_cost_subcont_costreal;
+      SET meta_dir_cost_subcontract = meta_dir_cost_subcontract + @direct_cost_subcont_meta;
+      SET val_dir_cost_service = val_dir_cost_service + @direct_cost_serv_valoriz;
+      SET real_cost_service = val_dir_cost_service + @direct_cost_serv_costreal;
+      SET meta_dir_cost_service = meta_dir_cost_service + @direct_cost_serv_meta;
+      SET v_hand_work = v_hand_work + @general_exp_mo_valoriz;
+      SET r_hand_work = r_hand_work + @general_exp_mo_costreal;
+      SET m_hand_work = m_hand_work + @general_exp_mo_meta;
+      SET v_materials = v_materials + @general_exp_mat_valoriz;
+      SET r_materials = r_materials + @general_exp_mat_costreal;
+      SET m_materials = m_materials + @general_exp_mat_meta;
+      SET v_subcontract = v_subcontract + @general_exp_subcont_valoriz;
+      SET r_subcontract = r_subcontract + @general_exp_subcont_costreal;
+      SET m_subcontract = m_subcontract + @general_exp_subcont_meta;
+      SET v_service = v_service + @general_exp_serv_valoriz;
+      SET r_service = r_service + @general_exp_serv_costreal;
+      SET m_service = m_service + @general_exp_serv_meta;
+      SET v_equipment = v_equipment + @general_exp_equip_valoriz;
+      SET r_equipment = r_equipment + @general_exp_equip_costreal;
+      SET m_equipment = m_equipment + @general_exp_equip_meta;
+      SET real_hand_work = real_hand_work + @gen_serv_mo_costreal;
+      SET meta_hand_work = meta_hand_work + @gen_serv_mo_meta;
+      SET real_materials = real_materials + @gen_serv_mat_costreal;
+      SET meta_materials = meta_materials + @gen_serv_mat_meta;
+      SET real_subcontract = real_subcontract + @gen_serv_subcont_costreal;
+      SET meta_subcontract = meta_subcontract + @gen_serv_subcont_meta;
+      SET real_service = real_service + @gen_serv_service_costreal;
+      SET meta_service = meta_service + @gen_serv_service_meta;
+      SET real_equipment = real_equipment + @gen_serv_equip_costreal;
+      SET meta_equipment = meta_equipment + @gen_serv_equip_meta;
+      SET program_cost_hand_work = program_cost_hand_work + @program_cost_hand_work;
+      SET program_cost_materials = program_cost_materials + @program_cost_materials;
+      SET program_cost_equipment = program_cost_equipment + @program_cost_equipment;
+      SET program_cost_subcontract = program_cost_subcontract + @program_cost_subcontract;
+      SET program_cost_service = program_cost_service + @program_cost_service;
     END IF;
 
-    SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+    SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",v_id,"_",DATE_FORMAT('2015-02-28','%m%Y'),
       "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
             `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
             `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
