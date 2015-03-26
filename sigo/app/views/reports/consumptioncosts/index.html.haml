@@ -40,7 +40,7 @@
     #table-cost.col-xs-12.col-sm-12.col-md-12.col-lg-12
 
 #showconfig.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalConfigLabel", role: "dialog", tabindex: "-1", keyboard: false, backdrop: 'static'}
-  .modal-dialog
+  .modal-dialog{ :style => 'width:60%;' }
     .modal-content
       .modal-header{:style => 'padding-bottom: 26px; border-bottom: 1px solid #7D7D7D;'}
         %button{"class"=>"close", "data-dismiss"=>"modal"}
@@ -51,77 +51,96 @@
         .row
           %h4{:style => "font-weight: bold;"} Configuración Inicial
           %br
-          .col-md-12
-            .col-md-4
-              %label Fase
-              %select.form-control#phase{:name => 'selected_phase'}
-                %option{:value => "phase", :selected => true} Seleccione
-                - @phase.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+          .col-md-4
+            %form
+              %table.table
+                %tbody
+                  %tr
+                    %td{ :style => 'border-top:none;' }
+                      %select{ :name => 'sort_default_select', :multiple => true, :id => 'sortdefault', 'ondblclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
+                        %option{ :value => 'phase' } FASE
+                        %option{ :value => 'sector' } SECTOR
+                        %option{ :value => 'working_group' } GRUPO DE TRABAJO
+                        %option{ :value => 'articles' } ARTICULOS
+                    %td{ :valign => 'middle', :align => 'center', :style => 'border-top:none;' }
+                      %input{ :type => 'button', :name => 'right', :value => '>>', 'onclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
+                      %br
+                      %br
+                      %input{ :type => 'button', :name => 'left', :value => '<<', 'onclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
+                    %td{ :style => 'border-top:none;' }
+                      %select{ :name => 'final_sort_select', :multiple => true, :id => 'finalsort', 'ondblclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
+          .col-md-8
+            .col-md-12
+              .col-md-4
+                %label Fase
+                %select.form-control#phase{:name => 'selected_phase'}
+                  %option{:value => "phase", :selected => true} Seleccione
+                  - @phase.each do |d|
+                    %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
 
-            .col-md-4
-              %label Subfase
-              %select.form-control#subphase{:name => 'selected_subphase'}
-                %option{:value => "subphase", :selected => true} Seleccione
-          .col-md-12 
-            .col-md-4
-              %label Sector
-              %select.form-control#sector{:name => 'selected_sector'}
-                %option{:value => "sector", :selected => true} Seleccione
-                - @sector.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              .col-md-4
+                %label Subfase
+                %select.form-control#subphase{:name => 'selected_subphase'}
+                  %option{:value => "subphase", :selected => true} Seleccione
+            .col-md-12 
+              .col-md-4
+                %label Sector
+                %select.form-control#sector{:name => 'selected_sector'}
+                  %option{:value => "sector", :selected => true} Seleccione
+                  - @sector.each do |d|
+                    %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
 
-            .col-md-4
-              %label Subsector
-              %select.form-control#subsector{:name => 'selected_subsector'}
-                %option{:value => "subsector", :selected => true} Seleccione
-          .col-md-12
-            .col-md-3
-              %label Grupo de Trabajo
-              %select.form-control#wg{:name => 'selected_working_group'}
-                %option{:value => "wg", :selected => true} Seleccione
-                - @working_group.each do |d|
-                  %option{:value => "#{d.id}"}= d.name
-            .col-md-3
-              %label Jefe de frente
-              %select.form-control#jf{:name => 'selected_jefefrente'}
-                %option{:value => "jf", :selected => true} Seleccione
-                - @front_chiefs.each do |front_chief|
-                  %option{:value => "#{front_chief.id}"}
-                    = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s                
-            .col-md-3
-              %label Ejecutor
-              %select.form-control#exe{:name => 'selected_ejecutor'}
-                %option{:value => "exe", :selected => true} Seleccione
-                - @executors.each do |ex|
-                  %option{:value => "#{ex.id}"}
-                    = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s                
-            .col-md-3
-              %label Capataz
-              %select.form-control#cap{:name => 'selected_capataz'}
-                %option{:value => "cap", :selected => true} Seleccione
-                - @master_builders.each do |master_builder|
-                  %option{:value => "#{master_builder.id}"}
-                    = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s          
-          .col-md-12
-            .col-md-3
-              %label Grupo
-              %select.form-control#artgru{:name => 'selected_group_article'}
-                %option{:value => "artgru", :selected => true} Seleccione
-                - @groups.each do |d|
-                  %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
-            .col-md-3
-              %label Subgrupo
-              %select.form-control#artsubgru{:name => 'selected_subgroup_article'}
-                %option{:value => "artsubgru", :selected => true} Seleccione
-            .col-md-3
-              %label Especifico
-              %select.form-control#artspec{:name => 'selected_especific_article'}
-                %option{:value => "artspec", :selected => true} Seleccione
-            .col-md-3
-              %label Especifico final
-              %select.form-control#art{:name => 'selected_fespecific_article'}
-                %option{:value => "art", :selected => true} Seleccione
+              .col-md-4
+                %label Subsector
+                %select.form-control#subsector{:name => 'selected_subsector'}
+                  %option{:value => "subsector", :selected => true} Seleccione
+            .col-md-12
+              .col-md-3
+                %label Grupo de Trabajo
+                %select.form-control#wg{:name => 'selected_working_group'}
+                  %option{:value => "wg", :selected => true} Seleccione
+                  - @working_group.each do |d|
+                    %option{:value => "#{d.id}"}= d.name
+              .col-md-3
+                %label Jefe de frente
+                %select.form-control#jf{:name => 'selected_jefefrente'}
+                  %option{:value => "jf", :selected => true} Seleccione
+                  - @front_chiefs.each do |front_chief|
+                    %option{:value => "#{front_chief.id}"}
+                      = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s                
+              .col-md-3
+                %label Ejecutor
+                %select.form-control#exe{:name => 'selected_ejecutor'}
+                  %option{:value => "exe", :selected => true} Seleccione
+                  - @executors.each do |ex|
+                    %option{:value => "#{ex.id}"}
+                      = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s                
+              .col-md-3
+                %label Capataz
+                %select.form-control#cap{:name => 'selected_capataz'}
+                  %option{:value => "cap", :selected => true} Seleccione
+                  - @master_builders.each do |master_builder|
+                    %option{:value => "#{master_builder.id}"}
+                      = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s          
+            .col-md-12
+              .col-md-3
+                %label Grupo
+                %select.form-control#artgru{:name => 'selected_group_article'}
+                  %option{:value => "artgru", :selected => true} Seleccione
+                  - @groups.each do |d|
+                    %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
+              .col-md-3
+                %label Subgrupo
+                %select.form-control#artsubgru{:name => 'selected_subgroup_article'}
+                  %option{:value => "artsubgru", :selected => true} Seleccione
+              .col-md-3
+                %label Especifico
+                %select.form-control#artspec{:name => 'selected_especific_article'}
+                  %option{:value => "artspec", :selected => true} Seleccione
+              .col-md-3
+                %label Especifico final
+                %select.form-control#art{:name => 'selected_fespecific_article'}
+                  %option{:value => "art", :selected => true} Seleccione
         %br
         .row{:style => "border-top: 1px solid #7D7D7D;"}
           %br
@@ -292,10 +311,12 @@
                 Anterior
                 = check_box_tag 'chbx_showme_previous_forecasts'
                 %i
-
+  }
 
 :javascript
   
+  loadScript("#{ asset_path 'toolbox.min.js', type: :javascript }");
+
   $('#search-cost').click(function(){
     month = $('#selected-month').val()
     params = { date: month, authenticity_token: "#{form_authenticity_token}" }
@@ -477,8 +498,8 @@
         });
         $('#art').empty();
         $('#art').append(
-              $("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected")
-            )
+          $("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected")
+        )
         $.each(newOptions, function(key,value){
           $('#art').append(
             $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
