@@ -148,47 +148,49 @@
           %br
           .col-md-12
             %h5 Vertical
-            .col-md-6
-            .col-md-5
-              %label.checkbox
-                FASE
-                = check_box_tag 'chbx_phase'
-                %i
-
-              %label.checkbox
-                SUBFASE
-                = check_box_tag 'chbx_subphase'
-                %i
-
-              %label.checkbox
-                SECTOR
-                = check_box_tag 'chbx_sector'
-                %i
-
-              %label.checkbox
-                SUBSECTOR
-                = check_box_tag 'chbx_subsector'
-                %i
-
-              %label.checkbox
-                GRUPO DE TRABAJO
-                = check_box_tag 'chbx_working_group'
-                %i
-
-              %label.checkbox
-                GRUPO
-                = check_box_tag 'chbx_group'
-                %i
-
-              %label.checkbox
-                SUBGRUPO
-                = check_box_tag 'chbx_subgroup'
-                %i
-
-              %label.checkbox
-                ESPECIFICO
-                = check_box_tag 'chbx_specific'
-                %i
+            .col-md-4
+              %select{ :name => 'sort_config_advance_select', :multiple => true, :id => 'sortconfigadvance' }
+                %option{ :value => 'phase_subphase' } FASE/SUBFASE
+                %option{ :value => 'sector_subsector' } SECTOR/SUBSECTOR
+                %option{ :value => 'working_group' } GRUPO DE TRABAJO
+                %option{ :value => 'articles' } ARTICULOS
+            .col-md-8
+              .row
+                .col-md-2
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} FASE
+                    = check_box_tag 'chbx_phase', 1, true
+                .col-md-3
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} SUBFASE
+                    = check_box_tag 'chbx_subphase', 1, true
+              .row
+                .col-md-3
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} SECTOR
+                    = check_box_tag 'chbx_sector', 1, true
+                .col-md-3
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} SUBSECTOR
+                    = check_box_tag 'chbx_subsector', 1, true
+              .row
+                .col-md-4
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} GRUPO DE TRABAJO
+                    = check_box_tag 'chbx_working_group', 1, true
+              .row
+                .col-md-2
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} GRUPO
+                    = check_box_tag 'chbx_group', 1, true
+                .col-md-3
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} SUBGRUPO
+                    = check_box_tag 'chbx_subgroup', 1, true
+                .col-md-3
+                  %label.checkbox{ :style => 'margin: 0;' }
+                    %span{:style => "position: relative;top: 0.3em;"} ESPECIFICO
+                    = check_box_tag 'chbx_specific', 1, true
 
           .col-md-12
             %h5 Horizontal
@@ -198,119 +200,99 @@
                 %label.checkbox
                   ACUMUL. ANTERIOR
                   = check_box_tag 'chbx_all_previous_accumulates'
-                  %i
 
                 %label.checkbox
                   Programado
                   = check_box_tag 'chbx_prev_programado'
-                  %i
 
                 %label.checkbox
                   Valorizado
                   = check_box_tag 'chbx_prev_valorizado'
-                  %i
 
                 %label.checkbox
                   Valor Ganado
                   = check_box_tag 'chbx_prev_valor_ganado'
-                  %i
 
                 %label.checkbox
                   Real
                   = check_box_tag 'chbx_prev_real'
-                  %i
 
                 %label.checkbox
                   Meta
                   = check_box_tag 'chbx_prev_meta'
-                  %i
 
               .col-md-12{:style => "border-top: 1px solid #7D7D7D; border-bottom: 1px solid #7D7D7D;"}
                 %label.checkbox
                   ACUMULADO ACTUAL
                   = check_box_tag 'chbx_all_actual_accumulate_values'
-                  %i
 
                 %label.checkbox
                   Programado
                   = check_box_tag 'chbx_actual_accumulate_programado'
-                  %i
 
                 %label.checkbox
                   Valorizado
                   = check_box_tag 'chbx_actual_accumulate_valorizado'
-                  %i
 
                 %label.checkbox
                   Valor ganado
                   = check_box_tag 'chbx_actual_accumulate_valor_ganado'
-                  %i
 
                 %label.checkbox
                   Real
                   = check_box_tag 'chbx_actual_accumulate_real'
-                  %i
 
                 %label.checkbox
                   Meta
                   = check_box_tag 'chbx_actual_accumulate_meta'
-                  %i
 
               .col-md-12
 
                 %label.checkbox
                   ACTUAL
                   = check_box_tag 'chbx_all_actual_values'
-                  %i
 
                 %label.checkbox
                   Programado
                   = check_box_tag 'chbx_actual_programado'
-                  %i
 
                 %label.checkbox
                   Valorizado
                   = check_box_tag 'chbx_actual_valorizado'
-                  %i
 
                 %label.checkbox
                   Valor ganado
                   = check_box_tag 'chbx_actual_valor_ganado'
-                  %i
 
                 %label.checkbox
                   Real
                   = check_box_tag 'chbx_actual_real'
-                  %i
 
                 %label.checkbox
                   Meta
                   = check_box_tag 'chbx_actual_meta'
-                  %i
+
             // MOSTRANDO CANTIDAD O PARCIALES
             .col-md-4
               %h5 Montos
               %label.checkbox
                 Cantidad
                 = check_box_tag 'chbx_showme_amounts'
-                %i
 
               %label.checkbox
                 Parcial
                 = check_box_tag 'chbx_showme_partials'
-                %i
+
             // MOSTRANDO PROYECCIONES ACTUALES O ANTERIORES
             .col-md-4
               %h5 Proyecciones
               %label.checkbox
                 Actual
                 = check_box_tag 'chbx_showme_actual_forecasts'
-                %i
 
               %label.checkbox
                 Anterior
                 = check_box_tag 'chbx_showme_previous_forecasts'
-                %i
   }
 
 :javascript
@@ -483,27 +465,27 @@
 
   function complete_art(url, specific_id, form_token, default_value){
     $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { specific_id: specific_id, authenticity_token: form_token}
-      }).done(function( data ) {
-        newOptions = [];
-        $.each(data.article, function(key, value){
-          item = {};
-          item['name'] = value.name;
-          item['code'] = value.code;
-          item['id'] = value.id;
-          newOptions.push(item);
-        });
-        $('#art').empty();
-        $('#art').append(
-          $("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected")
-        )
-        $.each(newOptions, function(key,value){
-          $('#art').append(
-            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
-          )
-        });
+      type: "POST",
+      url: url,
+      async: false,
+      data: { specific_id: specific_id, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.article, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['code'] = value.code;
+        item['id'] = value.id;
+        newOptions.push(item);
       });
+      $('#art').empty();
+      $('#art').append(
+        $("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected")
+      );
+      $.each(newOptions, function(key,value){
+        $('#art').append(
+          $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+        )
+      });
+    });
   }    
