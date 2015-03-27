@@ -329,6 +329,7 @@ ArsacLogistica::Application.routes.draw do
     resources :consumptioncosts do
       collection do
         post 'consult'
+        post 'consult_with_config'
         post 'create_tables_missing'
         post 'get_subphase'
         post 'get_subsector'

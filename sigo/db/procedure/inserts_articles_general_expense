@@ -45,10 +45,9 @@ BEGIN
         IF done2 THEN
           LEAVE read_loop2;
         END IF;
-        SET @SQL = CONCAT("INSERT INTO `system_bi`.`accumulated_values_",v_id,"_until_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,`phase_id`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,
-                ");");
+        SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,`phase_id`, `insertion_date`)
+              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'));");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;             
@@ -87,12 +86,12 @@ BEGIN
       OPEN stock_outputs_articles;
       read_loop3: LOOP
         FETCH stock_outputs_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_amount;
-        IF done2 THEN
+        IF done3 THEN
           LEAVE read_loop3;
         END IF;
-        SET @SQL = CONCAT("INSERT INTO `system_bi`.`accumulated_values_",v_id,"_until_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,");");
+        SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `insertion_date`)
+              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'));");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -124,9 +123,9 @@ BEGIN
         IF done4 THEN
           LEAVE read_loop4;
         END IF;
-        SET @SQL = CONCAT("INSERT INTO `system_bi`.`accumulated_values_",v_id,"_until_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",",v_sector_id,");");
+        SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`, `insertion_date`)
+              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",",v_sector_id,",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'));");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -216,9 +215,9 @@ BEGIN
             IF done5ppart THEN
               LEAVE read_loop5pwartp;
             END IF;
-            SET @SQL = CONCAT("INSERT INTO `system_bi`.`accumulated_values_",v_id,"_until_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`)
-                  VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", v_phase_id,",",v_sector_id,");");
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`, `insertion_date`)
+                  VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", v_phase_id,",",v_sector_id,",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'));");
             PREPARE stmt FROM @SQL;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
@@ -264,9 +263,9 @@ BEGIN
             IF done5ppartw THEN
               LEAVE read_loop5pwart;
             END IF;
-            SET @SQL = CONCAT("INSERT INTO `system_bi`.`accumulated_values_",v_id,"_until_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`)
-                  VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", v_phase_id,",",v_sector_id,");");
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`, `insertion_date`)
+                  VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", v_phase_id,",",v_sector_id,",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'));");
             PREPARE stmt FROM @SQL;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
@@ -307,9 +306,9 @@ BEGIN
         IF done6 THEN
           LEAVE read_loop6;
         END IF;
-        SET @SQL = CONCAT("INSERT INTO `system_bi`.`accumulated_values_",v_id,"_until_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`valorizado_specific_lvl_1`,`phase_id`)
-              VALUES ('",v_article_code, "','", v_amount,");");
+        SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+          "`(`article_code`,`valorizado_specific_lvl_1`, `insertion_date`)
+              VALUES ('",v_article_code, "','", v_amount,",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'));");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;  
