@@ -64,7 +64,7 @@
                 %li
                   %a{href: "#{show_panel_main_path(@company.id)}?cost_center=#{other_cc[0]}"}
                     %i.fa.fa-power-off
-                    = other_cc[1]
+                    = other_cc[2] + " - " + other_cc[1]
       / pulled right: nav area
       .pull-right
         / collapse menu button   

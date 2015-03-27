@@ -37,8 +37,9 @@ class Logistics::StockOutputsController < ApplicationController
     # @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @reg_n = Time.now.to_i
+    @number_doc = (ActiveRecord::Base.connection.execute("SELECT MAX( CONVERT( IFNULL(st.document,0), UNSIGNED INTEGER ) ) FROM stock_inputs st WHERE st.cost_center_id = " +get_company_cost_center('cost_center').to_s + " AND st.input = 0").first[0].to_i + 1).to_s.rjust(5,'0')
     render layout: false
   end
 
@@ -208,6 +209,7 @@ class Logistics::StockOutputsController < ApplicationController
     ids_items = ids_items.join(',')
     @warehouse_id = params[:warehouse_id2]
     @sectors = Sector.where("code LIKE '__'")
+    @cc = get_company_cost_center('cost_center')
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @arrItems = Article.getSpecificArticlesforStockOutputs2(@warehouse_id,ids_items)
     @arrItems.each do |ai|

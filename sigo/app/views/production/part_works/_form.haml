@@ -28,7 +28,7 @@
             %select.form-control{:name =>"part_work[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
               - @sectors.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
-                  - Sector.getSubSectors(sector.code).each do |subsector|
+                  - Sector.getSubSectors(sector.code, @cc).each do |subsector|
                     %option{:value => "#{subsector.id}", :selected => @partwork.sector_id==subsector.id}
                       = subsector.name
           %section.col.col-2

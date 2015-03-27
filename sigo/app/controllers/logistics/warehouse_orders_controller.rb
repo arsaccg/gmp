@@ -83,6 +83,7 @@ class Logistics::WarehouseOrdersController < ApplicationController
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     @amount = params[:amount].to_f
+    @cc = get_company_cost_center('cost_center')
     @quantity = params[:quantity].to_i
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
     @unitOfMeasurement = UnitOfMeasurement.find(@article.unit_of_measurement_id).symbol

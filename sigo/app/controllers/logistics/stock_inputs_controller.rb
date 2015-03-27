@@ -6,7 +6,7 @@ class Logistics::StockInputsController < ApplicationController
     #@input = params[:input]
     @company = get_company_cost_center('company')
     @cost_centers = get_company_cost_center('cost_center')
-    @head = StockInput.where("input = 1")
+    #@head = StockInput.where("input = 1")
     @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
 
     # 20150223 Ajuste Masivo (INI) : Update Masivo del Period & Year, según issue_date
@@ -170,10 +170,6 @@ class Logistics::StockInputsController < ApplicationController
     render(partial: 'rows_stock_inputs', :layout => false)
   end
 
-  def show_stock_inputs
-
-  end
-
   def show_purchase_order_item_field
     @company = get_company_cost_center('cost_center')
     #@tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id], params[:order])
@@ -224,6 +220,28 @@ class Logistics::StockInputsController < ApplicationController
       end
     end
     render :json => str_option
+  end
+
+  def show_stock_inputs
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+
+    outputs = StockInput.get_input(cost_center, display_length, pager_number, keyword)
+    # si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.id , fo.name
+    outputs.each do |output|
+      array << [
+        output[1],
+        output[2].strftime("%d/%m/%Y").to_s,
+        output[3],
+        output[4],
+        output[5],
+        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+      ]
+    end
+    render json: { :aaData => array }
   end
 
   private

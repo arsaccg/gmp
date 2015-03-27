@@ -61,7 +61,53 @@ class StockInput < ActiveRecord::Base
   end
 
   def self.get_input(cost_center_id, display_length, pager_number, keyword = '')
-
+    if keyword != '' && pager_number != 'NaN'
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
+        FROM stock_inputs si, warehouses wa, warehouses w, formats fo
+        WHERE si.cost_center_id = " + cost_center_id.to_s + "
+        AND si.input = 1
+        AND si.status = 'A'
+        AND si.warehouse_id = w.id 
+        AND w.cost_center_id = "+ cost_center_id.to_s + "
+        AND wa.id = si.warehouse_id
+        AND fo.id = si.format_id 
+        AND (wa.name LIKE '%" + keyword + "%' OR si.document LIKE '%" + keyword + "%')
+        ORDER BY si.id DESC
+        LIMIT " + display_length +
+        " OFFSET " + pager_number
+      )
+    elsif pager_number != 'NaN'
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
+        FROM stock_inputs si, warehouses wa, warehouses w, formats fo
+        WHERE si.cost_center_id = " + cost_center_id.to_s + "
+        AND si.input = 1
+        AND si.status = 'A'
+        AND si.warehouse_id = w.id 
+        AND w.cost_center_id = "+ cost_center_id.to_s + "
+        AND wa.id = si.warehouse_id
+        AND fo.id = si.format_id 
+        ORDER BY si.id DESC
+        LIMIT " + display_length +
+        " OFFSET " + pager_number
+      )
+    else
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
+        FROM stock_inputs si, warehouses wa, warehouses w, formats fo
+        WHERE si.cost_center_id = " + cost_center_id.to_s + "
+        AND si.input = 1
+        AND si.status = 'A'
+        AND si.warehouse_id = w.id 
+        AND w.cost_center_id = "+ cost_center_id.to_s + "
+        AND wa.id = si.warehouse_id
+        AND fo.id = si.format_id 
+        ORDER BY si.id DESC
+        LIMIT " + display_length
+      )
+    end
+    return mysql_result
 
   end
 

@@ -115,7 +115,7 @@ class Administration::ProvisionArticlesController < ApplicationController
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     data_article = Article.find_idarticle_global_by_specific_idarticle(params_article[0], get_company_cost_center("cost_center"))
-
+    @cc = get_company_cost_center('cost_center')
     @id_article = data_article[1]
     @name_article = data_article[0]
     @unit_of_measurement = data_article[2]

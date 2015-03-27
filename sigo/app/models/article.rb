@@ -217,6 +217,20 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
+  def self.get_article_todo_per_type_concat_stock(type_article, word, cc)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT af.id, af.code, af.name, af.unit_of_measurement_id, u.symbol
+      FROM articles af, stock_input_details std, stock_inputs st, unit_of_measurements u
+      WHERE af.code LIKE '#{type_article}%'
+      AND af.unit_of_measurement_id = u.id
+      AND std.article_id = af.id
+      AND st.cost_center_id = #{cc}
+      AND std.stock_input_id = st.id
+      AND Concat(af.code, ' ', af.name, ' ', u.symbol) LIKE '%#{word}%'
+    ")
+    return mysql_result
+  end  
+
   def self.get_article_todo_per_type(code, cost_center, type_article)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.unit_of_measurement_id, u.name

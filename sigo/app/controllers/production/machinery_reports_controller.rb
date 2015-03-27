@@ -3,7 +3,7 @@ class Production::MachineryReportsController < ApplicationController
 		@company = get_company_cost_center('company')
     @cost_center=session[:cost_center]
   	#@workingGroups = WorkingGroup.all
-    @subcontractequipmentdetail = SubcontractEquipmentDetail.all
+    @subcontractequipmentdetail = SubcontractEquipment.where("cost_center_id = " + get_company_cost_center('cost_center'))
     render layout: false
 	end
 

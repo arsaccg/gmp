@@ -11,7 +11,7 @@
       %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
       - @sectors.each do |sector|
         %optgroup{:label => "#{sector.name}"}
-          -Sector.getSubSectors(sector.code).each do |subsector|
+          -Sector.getSubSectors(sector.code,@cc).each do |subsector|
             %option{:value => "#{subsector.id}"}
               = subsector.name
   %td.phase

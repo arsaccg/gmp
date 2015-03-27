@@ -5,12 +5,13 @@ class PartOfEquipment < ActiveRecord::Base
 	belongs_to :worker
 	accepts_nested_attributes_for :part_of_equipment_details, :allow_destroy => true
 
-  def self.getSelectWorker(word)
+  def self.getSelectWorker(word, cc)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT w.id, e.name, e.second_name, e.paternal_surname, e.maternal_surname
       FROM workers w, entities e
       WHERE ( e.name LIKE '%#{word}%' OR e.second_name LIKE '%#{word}%' OR e.paternal_surname LIKE '%#{word}%' OR e.maternal_surname LIKE '%#{word}%')
       AND e.id = w.entity_id
+      AND w.cost_center_id = #{cc}
       GROUP BY e.id
     ")
     return mysql_result

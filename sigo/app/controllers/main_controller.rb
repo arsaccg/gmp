@@ -32,10 +32,10 @@ class MainController < ApplicationController
       @company = Company.find(get_company_cost_center('company')) rescue nil
       @cost_center_detail = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center')) rescue nil
       @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
-      @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name rescue nil
+      @cost_center_name = @cost_center.code + " - " + @cost_center.name
       if !@company.nil? && !@cost_center_name.nil?
         @others_cost_centers = ActiveRecord::Base.connection.execute("
-          SELECT cc. id, cc.name 
+          SELECT cc. id, cc.name, cc.code
           FROM cost_centers_users ccu, cost_centers cc 
           WHERE cc.company_id = " + @company.id.to_s + "
           AND ccu.cost_center_id = cc.id 

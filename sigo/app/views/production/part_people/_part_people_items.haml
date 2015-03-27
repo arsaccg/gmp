@@ -10,7 +10,7 @@
       %select.form-control{:name =>"part_person[part_person_details_attributes][#{@reg_n.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;',:required => true, title:'No puede dejar este campo vacio'}
         - @sectors.each do |sector|
           %optgroup{:label => "#{sector.name}"}
-            - Sector.getSubSectors(sector.code).each do |subsector|
+            - Sector.getSubSectors(sector.code, @cc).each do |subsector|
               %option{:value => "#{subsector.id}", :selected => subsector.id.to_i==@sec.to_i}
                 = subsector.name
   %td.phase.col-md-2

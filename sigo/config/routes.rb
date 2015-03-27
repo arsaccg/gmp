@@ -263,6 +263,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_items_from_pod'
         post 'more_items_from_pod'
         post 'display_supplier'
+        post 'show_stock_inputs'
       end
       member do
         put 'show_purchase_order_item_field'

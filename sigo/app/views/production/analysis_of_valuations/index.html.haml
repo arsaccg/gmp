@@ -17,7 +17,7 @@
               %option{:value => "0"} Seleccionar Sector
               -@sector.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
-                  - Sector.getSubSectors(sector.code).each do |subsector|
+                  - Sector.getSubSectors(sector.code, @cc).each do |subsector|
                     %option{:value => "#{subsector.id}"}
                       =subsector.name
         .col-md-2

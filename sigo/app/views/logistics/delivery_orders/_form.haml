@@ -118,7 +118,7 @@
                             %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
                             - @sectors.each do |sector|
                               %optgroup{:label => "#{sector.name}"}
-                                -Sector.getSubSectors(sector.code).each do |subsector|
+                                -Sector.getSubSectors(sector.code, @deliveryOrder.cost_center_id).each do |subsector|
                                   %option{:value => "#{subsector.id}", :selected => dod.sector_id == subsector.id }
                                     = subsector.name 
                         %td

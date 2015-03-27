@@ -14,7 +14,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     if params[:element].blank?
       word = params[:q]
       article_hash = Array.new
-      articles = PartOfEquipment.getSelectWorker(word)
+      articles = PartOfEquipment.getSelectWorker(word, get_company_cost_center('cost_center'))
       articles.each do |art|
         article_hash << {'id' => art[0].to_s,'name' => art[1].to_s + " " + art[2].to_s + " " + art[3].to_s + " " + art[4].to_s}
       end
@@ -163,7 +163,28 @@ class Production::PartOfEquipmentsController < ApplicationController
     end
 
     if complete_decimal && complete_decimal2
-      if previo.count == 0 && previo_val.end_date < params[:part_of_equipment]['date'].to_date
+      if !previo_val.nil?
+        if previo.count == 0 && previo_val.end_date < params[:part_of_equipment]['date'].to_date
+          if part.save
+            flash[:notice] = "Se ha creado correctamente el parte."
+            redirect_to :action => :index, company_id: params[:company_id]
+          else
+            part.errors.messages.each do |attribute, error|
+              puts error.to_s
+              puts error
+            end
+            flash[:error] =  "Ha ocurrido un error en el sistema."
+            redirect_to :action => :index, company_id: params[:company_id]
+          end
+        else
+          part.errors.messages.each do |attribute, error|
+            puts error.to_s
+            puts error
+          end
+          flash[:error] =  "No se permiten guardar partes con fecha y equipo repetido, o con fecha menor a la ultima valorización."
+          redirect_to :action => :index, company_id: params[:company_id]
+        end
+      else
         if part.save
           flash[:notice] = "Se ha creado correctamente el parte."
           redirect_to :action => :index, company_id: params[:company_id]
@@ -174,14 +195,7 @@ class Production::PartOfEquipmentsController < ApplicationController
           end
           flash[:error] =  "Ha ocurrido un error en el sistema."
           redirect_to :action => :index, company_id: params[:company_id]
-        end
-      else
-        part.errors.messages.each do |attribute, error|
-          puts error.to_s
-          puts error
-        end
-        flash[:error] =  "No se permiten guardar partes con fecha y equipo repetido, o con fecha menor a la ultima valorización."
-        redirect_to :action => :index, company_id: params[:company_id]
+        end        
       end
     else
       part.errors.messages.each do |attribute, error|
@@ -195,14 +209,14 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def edit
     @company = params[:company_id]
-    cost_center = get_company_cost_center('cost_center')
+    @cost_center = get_company_cost_center('cost_center')
     @partofequipment = PartOfEquipment.find(params[:id])
     @id = @partofequipment.equipment_id
-    @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center)
-    @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
+    @working_groups = WorkingGroup.where("cost_center_id = ?", @cost_center)
+    @subcon = SubcontractEquipment.where("cost_center_id = ?", @cost_center)
     @type = Array.new
     @fuel_articles = Article.where("code LIKE ?", '__32%')
-    @worker = Worker.where("cost_center_id = ?", cost_center)
+    @worker = Worker.where("cost_center_id = ?", @cost_center)
 
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @reg_n = Time.now.to_i
@@ -275,11 +289,11 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def add_more_register
     @reg_n = ((Time.now.to_f)*100).to_i
-    @sectors = Sector.where("code LIKE '__'")
-
+    @cc = get_company_cost_center('cost_center')
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + @cc.to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @phases = @phases.sort! { |a,b| a.code <=> b.code }
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = " + @cc.to_s)
     render(partial: 'part_equipment_register', :layout => false)
   end
 

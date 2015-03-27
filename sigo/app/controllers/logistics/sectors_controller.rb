@@ -4,8 +4,8 @@ class Logistics::SectorsController < ApplicationController
   
   def index
     flash[:error] = nil
-    cost_center = get_company_cost_center('cost_center')
-    @Sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
+    @cost_center = get_company_cost_center('cost_center')
+    @Sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", @cost_center)
     render layout: false
   end
 
@@ -35,7 +35,7 @@ class Logistics::SectorsController < ApplicationController
     @Sectors = Sector.find(params[:id])
     if params[:subsector]
       @subsector = true
-      @sectors = Sector.where("`code` LIKE  '__'")
+      @sectors = Sector.where("`code` LIKE  '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     end
     @action = 'edit'
     render layout: false
@@ -81,7 +81,7 @@ class Logistics::SectorsController < ApplicationController
     @Sectors = Sector.new
     if params[:subsector]
       @subsector = true
-      @sectors = Sector.where("`code` LIKE  '__'")
+      @sectors = Sector.where("`code` LIKE  '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     end
     render :new, layout: false
   end

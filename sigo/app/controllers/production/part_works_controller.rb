@@ -35,6 +35,7 @@ class Production::PartWorksController < ApplicationController
     itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
     @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @company = params[:company_id]
+    @cc = get_company_cost_center('cost_center')
     render layout: false
   end
 
@@ -76,6 +77,7 @@ class Production::PartWorksController < ApplicationController
     @unit = UnitOfMeasurement.all
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center_id)
     @action = 'edit'
+    @cc = get_company_cost_center('cost_center')
     @reg_n = Time.now.to_i
     @company = params[:company_id]
     render layout: false

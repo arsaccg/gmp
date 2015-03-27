@@ -13,10 +13,11 @@
           .form-group
             %label.control-label Responsable
             .input-group
-              %select(name='stock_input[responsible_id]' class = 'select2 form-control' id = 'responsible-select' style='width:100%;padding: 0;border: none;')
+              %select.form-control#responsible-select{:name => 'stock_input[responsible_id]', :style=>'width:100%;padding: 0;'}
                 - @responsibles.each do |x|
                   %option(value = "#{x.id}")
                     = x.entity.name.to_s + ' ' + x.entity.second_name.to_s + ' ' + x.entity.paternal_surname.to_s + ' ' + x.entity.maternal_surname.to_s
+
         .col-md-2
         .col-md-3
           .row
@@ -29,7 +30,7 @@
                       %option{:value => "#{x.id}"}
                         = x.name
                   %span.input-group-addon
-                    %i.fa.fa-gears
+                    %i.fa.fa-gears                        
   #step2.step-pane
     %h3
       %strong Paso 2
@@ -71,14 +72,14 @@
         .col-md-2
           %label.control-label N° Documento
           .input-group
-            = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control", :required => true, :title=>"(*)")
+            = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control", :required => true, :title=>"(*)", :value => @number_doc)
             %span.input-group-addon
               %i.fa.fa-file
 
         .col-md-4
           %label.control-label Grupo de Trabajo
           .input-group
-            %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
+            %select.form-control#working_group-select{:name=>'stock_input[working_group_id]', :style=>'width:300px;padding: 0;'}
               - @working_groups.each do |x|
                 %option(value = "#{x.id}")
                   = x.name
@@ -144,7 +145,7 @@
 :javascript
   $(document).ready(function(){
     //$('#stock_input_issue_date').datepicker.noConflict;
-    $('select_table_per_warehouse').select2({width:'200px'});
+    //$('#select_table_per_warehouse').select2({width:'200px'});
     //$("#stock_input_company_id").val($.company_global_id);
   });
 
