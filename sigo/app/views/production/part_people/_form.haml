@@ -42,7 +42,7 @@
             %select.form-control#sector{:style => 'width:100%;padding: 0;border: none;'}
               - @sectors.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
-                  - Sector.getSubSectors(sector.code).each do |subsector|
+                  - Sector.getSubSectors(sector.code, @cc).each do |subsector|
                     %option{:value => "#{subsector.id}"}
                       = subsector.name           
             

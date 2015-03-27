@@ -291,6 +291,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @phases = @phases.sort! { |a,b| a.code <=> b.code }
     @amount = params[:amount].to_f
+    @cc = get_company_cost_center('cost_center')
     @centerOfAttention = CenterOfAttention.all
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]

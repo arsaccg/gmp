@@ -136,7 +136,7 @@
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][sector_id]"}
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
-                              - Sector.getSubSectors(sector.code).each do |subsector|
+                              - Sector.getSubSectors(sector.code, @cost_center).each do |subsector|
                                 -if part.sector_id == subsector.id
                                   %option{:value => "#{subsector.id}", :selected=>"selected"}
                                     = subsector.name

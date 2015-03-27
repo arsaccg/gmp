@@ -143,7 +143,7 @@
                               %option{:value => nil, :disabled => true} Seleccionar Sector
                               - @sectors.each do |sector|
                                 %optgroup{:label => "#{sector.name}"}
-                                  -Sector.getSubSectors(sector.code).each do |subsector|
+                                  -Sector.getSubSectors(sector.code, @cost_center).each do |subsector|
                                     %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
                                       = subsector.name
                           -else

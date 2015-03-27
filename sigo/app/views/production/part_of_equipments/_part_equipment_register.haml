@@ -8,7 +8,7 @@
     %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][#{@reg_n.to_s}][sector_id]"}
       - @sectors.each do |sector|
         %optgroup{:label => "#{sector.name}"}
-          - Sector.getSubSectors(sector.code).each do |subsector|
+          - Sector.getSubSectors(sector.code, @cc).each do |subsector|
             %option{:value => "#{subsector.id}"}
               = subsector.name
   %td.phase.col-lg-2

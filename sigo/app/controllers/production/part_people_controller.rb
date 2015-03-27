@@ -41,6 +41,7 @@ class Production::PartPeopleController < ApplicationController
     @working_groups = WorkingGroup.where("cost_center_id ="+cost_center.to_s)
     workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s)
     @workers = Array.new
+    @cc = get_company_cost_center('cost_center')
     workers.each do |wor|
       if wor.worker_contracts.count != 0
         @workers << wor
@@ -98,6 +99,7 @@ class Production::PartPeopleController < ApplicationController
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
+    @cc = get_company_cost_center('cost_center')
     @name_worker = @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s+ ", "+ @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
     if WorkerContract.where("worker_id = ?",@worker.id).count>0
       if WorkerContract.where("worker_id = ?",@worker.id).last.article.nil?
@@ -119,8 +121,8 @@ class Production::PartPeopleController < ApplicationController
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     @company = get_company_cost_center('company')
-    cost_center = get_company_cost_center('cost_center')
-    workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s)
+    @cc = get_company_cost_center('cost_center')
+    workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+@cc.to_s)
     @workers = Array.new
     workers.each do |wor|
       if wor.worker_contracts.count != 0

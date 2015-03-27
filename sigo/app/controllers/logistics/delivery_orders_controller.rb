@@ -246,6 +246,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end
+    @cc = get_company_cost_center('cost_center')
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
     render(partial: 'delivery_order_items', :layout => false)

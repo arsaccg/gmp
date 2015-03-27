@@ -77,8 +77,8 @@
                   - company.cost_centers.each do |cc|
                     - if cc.users.where("user_id = " + @user.id.to_s).count > 0
                       .col-sm-12.col-md-12.col-lg-12
-                        %h1= cc.name
-                        %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
+                        %h1{:style=>" font-size: medium; font-weight: bold; "}= cc.code + " - " + cc.name
+                        %a.btn.btn-primary.btn-md{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
                           Ingresar
           :javascript
             $("a#btn-#{company.id}").click(function(){
@@ -108,7 +108,7 @@
                   - company.cost_centers.each do |cc|
                     - if cc.users.where("user_id = " + @user.id.to_s).count > 0
                       .col-sm-12.col-md-12.col-lg-12
-                        %h1= cc.name
+                        %h1= cc.code + " - " + cc.name
                         %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
                           Ingresar
           :javascript

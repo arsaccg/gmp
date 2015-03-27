@@ -94,7 +94,7 @@
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Sector
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
-                              - Sector.getSubSectors(sector.code).each do |subsector|
+                              - Sector.getSubSectors(sector.code,@partworker.cost_center_id).each do |subsector|
                                 %option{:value => "#{subsector.id}"}
                                   = subsector.name
                     %td.phase.smart-form

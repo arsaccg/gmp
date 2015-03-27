@@ -23,7 +23,7 @@ class Reports::InventoriesController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    articles = Article.get_article_todo_per_type_concat('02', word)
+    articles = Article.get_article_todo_per_type_concat_stock('02', word, get_company_cost_center('cost_center'))
     articles.each do |x|
       article_hash << {'id' => x[0].to_s, 'code' => x[1], 'name' => x[2], 'symbol' => x[4]}
     end
