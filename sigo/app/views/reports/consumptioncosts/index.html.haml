@@ -15,6 +15,11 @@
         %button#create-tables.btn.btn-primary{type: "button"}
           %i.fa.fa-search
             Crear Tablas
+      .col-xs-6.col-sm-6.col-md-6.col-lg-6
+        %label{:style => 'visibility:hidden; width: 100%;'}
+        %button#search-cost-config.btn.btn-primary{type: "button"}
+          %i.fa.fa-search
+            Consultar Micro
     .col-md-4.col-lg-4
     .col-xs-6.col-sm-6.col-md-4.col-lg-4
       %button.btn.btn-primary{type: "button", 'data-toggle' => "modal", 'data-target' => "#showconfig"}
@@ -38,6 +43,7 @@
   %br
   .row
     #table-cost.col-xs-12.col-sm-12.col-md-12.col-lg-12
+    #table-cost-config.col-xs-12.col-sm-12.col-md-12.col-lg-12
 
 #showconfig.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalConfigLabel", role: "dialog", tabindex: "-1", keyboard: false, backdrop: 'static'}
   .modal-dialog{ :style => 'width:60%;' }
@@ -69,6 +75,35 @@
                       %input{ :type => 'button', :name => 'left', :value => '<<', 'onclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
                     %td{ :style => 'border-top:none;' }
                       %select{ :name => 'final_sort_select', :multiple => true, :id => 'finalsort', 'ondblclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
+          .col-md-4
+            %label Primer Nivel
+            %select.form-control#first 
+              %option{:value => "defecto", :selected => true} Defecto
+              %option{:value => "phase"} Fase
+              %option{:value => "sector"} Sector
+              %option{:value => "working_group"} Grupo de Trabajo
+              %option{:value => "article"} Articulo
+            %label Segundo Nivel
+            %select.form-control#second 
+              %option{:value => "defecto", :selected => true} Defecto
+              %option{:value => "phase"} Fase
+              %option{:value => "sector"} Sector
+              %option{:value => "working_group"} Grupo de Trabajo
+              %option{:value => "article"} Articulo
+            %label Tercer Nivel
+            %select.form-control#third
+              %option{:value => "defecto", :selected => true} Defecto
+              %option{:value => "phase"} Fase
+              %option{:value => "sector"} Sector
+              %option{:value => "working_group"} Grupo de Trabajo
+              %option{:value => "article"} Articulo
+            %label Cuarto Nivel
+            %select.form-control#fourth
+              %option{:value => "defecto", :selected => true} Defecto
+              %option{:value => "phase"} Fase
+              %option{:value => "sector"} Sector
+              %option{:value => "working_group"} Grupo de Trabajo
+              %option{:value => "article"} Articulo
           .col-md-8
             .col-md-12
               .col-md-4
@@ -298,6 +333,30 @@
 :javascript
   
   loadScript("#{ asset_path 'toolbox.min.js', type: :javascript }");
+
+  $('#search-cost-config').click(function(){
+    var first = $('#first').val();
+    var second = $('#second').val();
+    var third = $('#third').val();
+    var fourth = $('#fourth').val();
+    var phase = $('#phase').val();
+    var subphase = $('#subphase').val();
+    var sector = $('#sector').val();
+    var subsector = $('#subsector').val();
+    var wg = $('#wg').val();
+    var jf = $('#jf').val();
+    var exe = $('#exe').val();
+    var cap = $('#cap').val();
+    var artgru = $('#artgru').val();
+    var artsubgru = $('#artsubgru').val();
+    var artspec = $('#artspec').val();
+    var art = $('#art').val();
+
+
+    month = $('#selected-month').val()
+    params = { date: month, authenticity_token: "#{form_authenticity_token}", phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+    load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST')
+  });
 
   $('#search-cost').click(function(){
     month = $('#selected-month').val()

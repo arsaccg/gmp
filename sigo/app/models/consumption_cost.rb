@@ -9,7 +9,7 @@ class ConsumptionCost < ActiveRecord::Base
       '-', `general_exp_subcont_valoriz`, '-', `general_exp_subcont_costreal`, `general_exp_subcont_meta` ,
       '-', `general_exp_serv_valoriz`, '-', `general_exp_serv_costreal`, `general_exp_serv_meta` ,
       '-', `general_exp_equip_valoriz`, '-', `general_exp_equip_costreal`, `general_exp_equip_meta` 
-    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_until_"+ date.to_s + "`")
     return array_ge
   end
 
@@ -21,7 +21,7 @@ class ConsumptionCost < ActiveRecord::Base
       '-', '-', '-', `gen_serv_subcont_costreal`, `gen_serv_subcont_meta` ,
       '-', '-', '-', `gen_serv_service_costreal`, `gen_serv_service_meta` ,
       '-', '-', '-', `gen_serv_equip_costreal`,`gen_serv_equip_meta` 
-    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_until_"+ date.to_s + "`")
     return array_genser
   end
 
@@ -33,9 +33,62 @@ class ConsumptionCost < ActiveRecord::Base
       `direct_cost_subcont_prog`, `direct_cost_subcont_valoriz`, `direct_cost_subcont_valgan`, `direct_cost_subcont_costreal`, `direct_cost_subcont_meta` ,
       `direct_cost_serv_prog`, `direct_cost_serv_valoriz`, `direct_cost_serv_valgan`, `direct_cost_serv_costreal`, `direct_cost_serv_meta` ,
       `direct_cost_equip_prog`, `direct_cost_equip_valoriz`, `direct_cost_equip_valgan`, `direct_cost_equip_costreal`, `direct_cost_equip_meta` 
-    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_until_"+ date.to_s + "`")
     return array_dc
-  end  
+  end
+
+  def self.get_phases cc_id, date
+    array_dc = connection.select_all("
+      SELECT DISTINCT  `ph`.`id` 
+      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `phases` ph
+      WHERE acc.phase_id = ph.id
+      ORDER BY ph.code")
+    return array_dc
+  end
+
+  def self.get_sector_from_phases cc_id, date, ph_id
+    array_dc = connection.select_all("
+      SELECT DISTINCT  `acc`.`sector_id` 
+      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `sectors` se
+      WHERE acc.sector_id = se.id
+      AND acc.phase_id = #{ph_id}
+      ORDER BY se.code")
+    return array_dc
+  end     
+  
+  def self.get_wg_from_sector_from_phases cc_id, date, ph_id, se_id
+    array_dc = connection.select_all("
+      SELECT DISTINCT  `acc`.`working_group_id` 
+      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `working_groups` wg
+      WHERE acc.working_group_id = wg.id
+      AND acc.phase_id = #{ph_id}
+      AND acc.sector_id = #{se_id}
+      ORDER BY wg.name")
+    return array_dc
+  end    
+
+  def self.get_articles_from_cwgsf cc_id, date, ph_id, se_id, wg_id
+    array_dc = connection.select_all("
+      SELECT DISTINCT  Concat(`acc`.`article_code`,' - ',`acc`.`article_name` ,' - ', `acc`.`article_unit`) AS article, SUM(`acc`.`programado_specific_lvl1`) AS programado_specific_lvl1, SUM(`acc`.`meta_specific_lvl_1`) AS meta_specific_lvl_1, SUM(`acc`.`real_specific_lvl_1`) AS real_specific_lvl_1, SUM(`acc`.`valorizado_specific_lvl_1`) AS valorizado_specific_lvl_1, SUM(`acc`.`valor_ganado_specific_lvl_1`) AS valor_ganado_specific_lvl_1
+      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
+      WHERE acc.working_group_id = #{wg_id}
+      AND acc.phase_id = #{ph_id}
+      AND acc.sector_id = #{se_id}
+      GROUP BY acc.article_code
+      ORDER BY acc.article_name")
+    return array_dc
+  end
+
+  def self.get_articles_from_swgsf cc_id, date, ph_id, se_id
+    array_dc = connection.select_all("
+      SELECT DISTINCT  Concat(`acc`.`article_code`,' - ',`acc`.`article_name` ,' - ', `acc`.`article_unit`) AS article, SUM(`acc`.`programado_specific_lvl1`) AS programado_specific_lvl1, SUM(`acc`.`meta_specific_lvl_1`) AS meta_specific_lvl_1, SUM(`acc`.`real_specific_lvl_1`) AS real_specific_lvl_1, SUM(`acc`.`valorizado_specific_lvl_1`) AS valorizado_specific_lvl_1, SUM(`acc`.`valor_ganado_specific_lvl_1`) AS valor_ganado_specific_lvl_1
+      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
+      WHERE acc.phase_id = #{ph_id}
+      AND acc.sector_id = #{se_id}
+      GROUP BY acc.article_code
+      ORDER BY acc.article_name")
+    return array_dc
+  end   
 
   def self.create_tables_new_costcenter(cost_center_id,start_date,end_date)
     start_date = "2015-01-01".to_date

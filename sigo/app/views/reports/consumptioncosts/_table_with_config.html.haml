@@ -1,0 +1,72 @@
+.col-md-12
+  %h4= @cost_center_str
+  %h1{:style => 'text-align:center;'}
+    = "COSTO POR CONSUMO PERIODO: " + @month
+
+.col-md-4
+  %p
+    %strong TIPO DE REPORTE: GENERAL
+
+.col-md-4
+  %p
+    %strong FILTRO: TODOS
+
+.col-md-12
+  %table.table.table-bordered.table-hover
+    %tr
+      %th
+      %th{:colspan => "5", :style => 'text-align:center;'} 
+        %strong ACTUAL
+      %th{:colspan => "5", :style => 'text-align:center;'} 
+        %strong ACUM. ACTUAL
+      %th{:rowspan => "2", :style => 'text-align:center;'}
+        %strong 
+          COSTO AL
+          %br>/
+          TERMINO
+      %th{:rowspan => "2", :style => 'text-align:center;'}
+        %strong 
+          COSTO AL
+          %br>/
+          TERMINO
+          %br>/
+          ANTERIOR
+    %tr
+      %td{:style => 'text-align:center;'}
+        %strong Descripción
+      %td{:style => 'text-align:center;'}
+        %strong PROGRAMADO
+      %td{:style => 'text-align:center;'}
+        %strong VALORIZADO
+      %td{:style => 'text-align:center;'}
+        %strong VALOR GANADO
+      %td{:style => 'text-align:center;'}
+        %strong COSTO REAL
+      %td{:style => 'text-align:center;'}
+        %strong META
+      %td{:style => 'text-align:center;'}
+        %strong PROGRAMADO
+      %td{:style => 'text-align:center;'}
+        %strong VALORIZADO
+      %td{:style => 'text-align:center;'}
+        %strong VALOR GANADO
+      %td{:style => 'text-align:center;'}
+        %strong COSTO REAL
+      %td{:style => 'text-align:center;'}
+        %strong META
+    -@total.each do |tot|
+      %tr
+        %td
+          %strong= tot[0]
+        %td= tot[1]
+        %td= tot[2]
+        %td= tot[3]
+        %td= tot[4]
+        %td= tot[5]
+        %td= tot[6]
+        %td= tot[7]
+        %td
+        %td
+        %td
+        %td
+        %td

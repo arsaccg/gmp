@@ -80,7 +80,76 @@ class Reports::ConsumptioncostsController < ApplicationController
     type = Category.find(params[:specific_id])
     article = Article.where("code LIKE '__" + type.code + "__'")
     render json: {:article => article}  
-  end    
+  end 
 
-
+  def consult_with_config
+    @month = Date.parse(params[:date] + '-01').strftime('%m-%Y')
+    month = Date.parse(params[:date] + '-01').strftime('%m%Y')
+    first = params[:first]
+    second = params[:second]
+    third = params[:third]
+    fourth = params[:fourth]
+    phase = params[:phase]
+    subphase = params[:subphase]
+    sector = params[:sector]
+    subsector = params[:subsector]
+    wg = params[:wg]
+    jf = params[:jf]
+    exe = params[:exe]
+    cap = params[:cap]
+    artgru = params[:artgru]
+    artsubgru = params[:artsubgru]
+    artspec = params[:artspec]
+    art = params[:art]
+    cc = get_company_cost_center('cost_center')
+    @phases = ConsumptionCost.get_phases(cc, Time.now.to_date.strftime('%m%Y'))
+    @total = Array.new
+    @total_nombres_fases = Array.new
+    @total_nombres_sector = Array.new
+    @total_nombres_wg = Array.new
+    @phases.to_a.each do |ph|
+      phs = Phase.find(ph['id'])
+      php = Phase.find_by_code(phs.code[0..1])
+      if !@total_nombres_fases.include?(php.name)
+        @total << [php.code + " - " + php.name,nil,nil,nil,nil,nil,"fase padre"]
+        @total_nombres_fases << [php.name]
+      end
+      @total << [phs.code + " - " + phs.name,nil,nil,nil,nil,nil,"fase hija"]
+      @sector = ConsumptionCost.get_sector_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id)
+      if !@sector.nil?
+        @sector.each do |se|
+          ses = Sector.find(se['sector_id'])
+          sep = Sector.find_by_code(ses.code[0..1])
+          if !@total_nombres_sector.include?(sep.name)
+            @total << [sep.code + " - " + sep.name,nil,nil,nil,nil,nil,"sector padre"]
+            @total_nombres_sector << [sep.name]
+          end          
+          @total << [ses.code + " - " + ses.name,nil,nil,nil,nil,nil,"sector hija"]
+          @wg = ConsumptionCost.get_wg_from_sector_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id)
+          if !@wg.empty?
+            @wg.each do |wg|
+              wgs = WorkingGroup.find(wg['working_group_id'])
+              if !@total_nombres_wg.include?(wgs.name)
+                @total << [wgs.name,nil,nil,nil,nil,nil,"working_group"]
+                @total_nombres_wg << [wgs.name]
+              end
+              @articles = ConsumptionCost.get_articles_from_cwgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id, wgs.id)
+              @articles.each do |ar|
+                @total << [ar['article'], ar['programado_specific_lvl1'],ar['meta_specific_lvl_1'], ar['real_specific_lvl_1'], ar['valorizado_specific_lvl_1'], ar['valor_ganado_specific_lvl_1'], "article"]
+              end
+            end
+          else
+            @articles = ConsumptionCost.get_articles_from_swgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id)
+            @articles.each do |ar|
+              @total << [ar['article'], ar['programado_specific_lvl1'],ar['meta_specific_lvl_1'], ar['real_specific_lvl_1'], ar['valorizado_specific_lvl_1'], ar['valor_ganado_specific_lvl_1'], "article"]
+            end
+          end
+        end
+      end
+    end
+    p "----------------------------------------------------------------------------------------------------------------------------------------"
+    p @total.inspect
+    p "----------------------------------------------------------------------------------------------------------------------------------------"
+    render(partial: 'table_with_config.html', :layout => false)
+  end   
 end
