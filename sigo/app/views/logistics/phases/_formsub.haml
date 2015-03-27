@@ -9,7 +9,7 @@
         = f.hidden_field :category, :value => "subphase"
         .row
           %section.col.col-10
-            %label.label Grupo
+            %label.label Fase
             %label.input{for: "category_id"}
               %select.form-control#phase-select{:name =>"extrafield[phase_id]"}
                 - @phases.each do |phase|

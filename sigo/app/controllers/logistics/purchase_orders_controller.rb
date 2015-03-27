@@ -529,6 +529,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
     purchaseOrder = PurchaseOrder.find(params[:id])
     purchaseOrder.update_attributes(purchase_order_parameters)
     PurchaseOrder.find(purchaseOrder.id).purchase_order_details.each do |po|
+      if po.quantity_igv.to_f == 0.0
+        po.update(:igv=>nil)
+      end
       detail = PurchaseOrderDetail.find(po.id)
       discounts_before = 0
       discounts_after = 0

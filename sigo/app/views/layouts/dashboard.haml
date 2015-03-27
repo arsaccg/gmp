@@ -1116,7 +1116,7 @@
             %button{"class"=>"close", "data-dismiss"=>"modal"}
               %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
               %span{"class"=>"sr-only"} Close
-            %h4{"class"=>"modal-title", "id"=>"cost_center_general_data","style"=>"margin-left:35%;font-weight:900;"} Datos Generales del Proyecto
+            %h4{"class"=>"modal-title", "id"=>"cost_center_general_data","style"=>"margin-left:35%;font-weight:900;"} Lista de Centros de Costos
           .modal-body{"style"=>"background-color:#E6E6E6;font-size: 115%;"}
             %table.table.table-striped.table-hover.table-condensed
               %thead
@@ -1144,7 +1144,10 @@
                       %td
                         %span
                           %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
-                            %i.fa.fa-folder-open
+                            %i.fa.fa-money
+                        %span
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'bond_letter('+cc.id.to_s+');'}
+                            %i.fa.fa-envelope   
                       %td
                         %span
                           %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
@@ -1281,7 +1284,36 @@
   function loan_show(cc1,cc2,cc3){
     data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
     load_modal_ajax('#{general_expenses_loan_path("show")}', 'loan_show', 'loan', data, null, 'GET');
-  }    
+  }
+
+  function bond_letter(cc_id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id};
+    load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'all_cost_centers', data, null, 'GET');
+    $('#bond_letter_index').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function bond_letter_new(cc_id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id};
+    load_modal_ajax('#{new_general_expenses_bond_letter_path}', 'bond_letter_new', 'bond_letter_index', data, null, 'GET');
+  }
+
+  function bond_letter_edit(cc_id,bl_id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id};
+    load_modal_ajax('/general_expenses/bond_letters/'+bl_id+'/edit', 'bond_letter_edit', 'bond_letter_index', data, null, 'GET');
+  }
+
+  function bond_letter_detail_new(cc_id, bl_id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id, bl: bl_id};
+    load_modal_ajax('#{new_bond_letter_detail_general_expenses_bond_letters_path}', 'bond_letter_new', 'bond_letter_index', data, null, 'GET');
+  }
+
+  function bond_letter_detail_edit(cc_id,bl_id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc: cc_id};
+    load_modal_ajax('/general_expenses/bond_letters/'+bl_id+'/edit_bond_letter_detail', 'bond_letter_edit', 'bond_letter_index', data, null, 'GET');
+  }   
 
   function load_operating_result(cost_center_id){
     data = { authenticity_token : "#{form_authenticity_token}", cost_center : cost_center_id }

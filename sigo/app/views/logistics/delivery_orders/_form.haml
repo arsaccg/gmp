@@ -115,22 +115,21 @@
                             = text_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
                         %td.precio
                           %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][sector_id]"}
-                            - @sectors.each do |sect|
-                              - if sect.id == dod.sector.id
-                                %option{:value => "#{sect.id}", :selected => true}
-                                  = sect.name
-                              - else
-                                %option{:value => "#{sect.id}"}
-                                  = sect.name
+                            %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
+                            - @sectors.each do |sector|
+                              %optgroup{:label => "#{sector.name}"}
+                                -Sector.getSubSectors(sector.code).each do |subsector|
+                                  %option{:value => "#{subsector.id}", :selected => dod.sector_id == subsector.id }
+                                    = subsector.name 
                         %td
                           %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][phase_id]"}
                             - @phases.each do |phas|
                               - if phas.id == dod.phase_id
                                 %option{:value => "#{phas.id}", :selected => true}
-                                  = phas.name
+                                  = phas.code + " - "+ phas.name
                               - else
                                 %option{:value => "#{phas.id}"}
-                                  = phas.name
+                                  = phas.code + " - "+ phas.name
                         %td(class="order_delivery_centro_atencion")
                           %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][center_of_attention_id]"}
                             - @centerOfAttentions.each do |centerOfAttention|

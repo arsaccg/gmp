@@ -28,7 +28,7 @@ class MainController < ApplicationController
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @calidad = nil
       @supplier = nil
-      @all_cost_center = CostCenter.all
+      @all_cost_center = CostCenter.all.order("convert(code, UNSIGNED INTEGER)")
       @company = Company.find(get_company_cost_center('company')) rescue nil
       @cost_center_detail = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center')) rescue nil
       @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
@@ -66,10 +66,10 @@ class MainController < ApplicationController
   def management_dashboard
     @company= Company.all
     @cost_centers = CostCenter.all
-    @saneamiento = CostCenter.where("speciality = 'saneamiento' and active = 1")
-    @civil = CostCenter.where("speciality = 'civil' and active = 1") 
-    @electrico = CostCenter.where("speciality = 'electrico' and active = 1")
-    @administracion = CostCenter.where("speciality = 'administracion' and active = 1")
+    @saneamiento = CostCenter.where("speciality = 'saneamiento' and active = 1").order("convert(code, UNSIGNED INTEGER)")
+    @civil = CostCenter.where("speciality = 'civil' and active = 1").order("convert(code, UNSIGNED INTEGER)")
+    @electrico = CostCenter.where("speciality = 'electrico' and active = 1").order("convert(code, UNSIGNED INTEGER)")
+    @administracion = CostCenter.where("speciality = 'administracion' and active = 1").order("convert(code, UNSIGNED INTEGER)")
 
     current_cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @direct_cost_acc = 0

@@ -7,7 +7,7 @@
             %i.fa.fa-pencil-square-o.fa-fw 
           %strong REGISTRO DE CARTA FIANZA
     .modal-body
-    
+
       = form_for @letter_detail, url: create_bond_letter_detail_general_expenses_bond_letters_path, as: :post, html: { class: "smart-form", id: "create_bond_letter_detail" } do |f|    
 
         %fieldset
@@ -17,7 +17,6 @@
               %label{"style"=>"font-size:14px;"} N° DE CARTA
             %section.col-md-6
               = text_field_tag 'bond_letter_detail[code]', nil, placeholder: "N° Cartas", class: "form-control"
-
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Adjunto
@@ -36,7 +35,7 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Fecha de Vencimiento
             %section.col-md-6
-              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control",  as: :string, type: "date"
+              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control"
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Monto
@@ -86,15 +85,26 @@
             Salir
 
 :javascript
-
+  loadScript("#{ asset_path 'plugin/datetimepicker/bootstrap-datetimepicker.min.js', type: :javascript }");
   $("#new2").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc: #{@cc.id}};
     load_modal_ajax('#{general_expenses_bond_letters_path}', 'bond_letter_index', 'bond_letter_new', data2, null, 'GET');
   });
 
   $(document).ready(function (){
-    /*$('#dateTimePicker').datetimepicker();*/            
+    
     $('#bond_letter_new').attr("tabindex","");
+    $('#bond_letter_detail_expiration_date').datetimepicker({
+          language:  'es',
+          weekStart: 1,
+          todayBtn:  1,
+          autoclose: 1,
+          todayHighlight: 1,
+          startView: 1,
+          minView: 0,
+          maxView: 1,
+          forceParse: 0
+    });
 
     $("#concept").change(function() {
         // foo is the id of the other select box 

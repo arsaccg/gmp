@@ -188,7 +188,11 @@ class GeneralExpenses::LoansController < ApplicationController
       format.html
       format.pdf do
         @todo = Array.new
-        @ccs = CostCenter.where("active = 1")
+        cc_lender_in_loan = ActiveRecord::Base.connection.execute("SELECT DISTINCT cost_center_lender_id FROM loans").to_a
+        cc_beneficiary_in_loan = ActiveRecord::Base.connection.execute("SELECT DISTINCT cost_center_beneficiary_id FROM loans").to_a
+        total_cc = cc_lender_in_loan + cc_beneficiary_in_loan
+        total_cc = total_cc.uniq.join(',')
+        @ccs = CostCenter.where("id IN (" + total_cc.to_s+")").order(:code)
         @ccs.each do |cc|
           flag1 =true
           flag2 =true

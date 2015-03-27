@@ -19,7 +19,7 @@
                 %option{:value => nil, :selected => true, :disabled => true} Seleccione un Beneficiario
                 - @costcenters.each do |ph|
                   %option{:value => "#{ph.id}", :selected => "#{@loan.cost_center_beneficiary_id}"=="#{ph.id}"}
-                    = ph.name
+                    = ph.code + " - " + ph.name
           .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
               %label{"style"=>"font-size:14px;"} Entregado a

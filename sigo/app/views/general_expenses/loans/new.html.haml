@@ -21,7 +21,7 @@
                 %option{:value => nil, :disabled => true, :selected => true} Seleccione un Beneficiario
                 - @costcenters.each do |ph|
                   %option{:value => "#{ph.id}"}
-                    = ph.name
+                    = ph.code + " - " + ph.name
           .row{"style"=>"margin-bottom:1%;"}
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Entregado a

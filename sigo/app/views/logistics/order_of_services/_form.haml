@@ -125,6 +125,8 @@
                   %div(class="col-lg-3")
                     %a{:href => "javascript:add_article_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
                       Agregar Insumo
+                  %button.btn.btn-primary#btn-info-cost{'type' => 'button'}
+                    Calc. Total y Sub-Total                      
             .form-group
               .col-lg-3
               .col-lg-12
@@ -358,6 +360,27 @@
   
   $(document).ready(function(){
     console.log("antes del select2")
+
+    $('#btn-info-cost').click(function() {
+      var total_unit_price = 0;
+      $('#article_items_table tr td.price-without-igv input').each(function(k,v){
+        total_unit_price = total_unit_price + parseFloat($(this).val());
+      });
+
+      var total_unit_price_with_igv = 0;
+      $('#article_items_table tr td.price-with-igv input').each(function(k,v){
+        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
+      });
+
+      $.smallBox({
+        title : "Información de la Orden de Compra",
+        content : "El Sub Total es de: S/." + total_unit_price + ' ' + "El Total es de: S/." + total_unit_price_with_igv, 
+        color : "#5384AF",
+        //timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    });
+
     $('#proveedor-select').select2({
       placeholder: "Buscar proveedor...",
       minimumInputLength: 3,

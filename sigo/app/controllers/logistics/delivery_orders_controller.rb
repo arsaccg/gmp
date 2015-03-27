@@ -215,7 +215,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def edit
     @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
-    @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @centerOfAttentions = CenterOfAttention.where("cost_center_id = ?",get_company_cost_center('cost_center'))
     @costcenter_id = @deliveryOrder.cost_center_id
