@@ -37,20 +37,8 @@ class Administration::PartWorkersController < ApplicationController
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @workers = ActiveRecord::Base.connection.execute("
-      SELECT w.id
-      FROM workers w, entities e
-      WHERE w.typeofworker LIKE  'empleado'
-      AND w.state LIKE  'active'
-      AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
-      AND e.id = w.entity_id
-      ORDER BY CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ' ', e.name,  ' ', e.second_name ) 
-      ")
-    @company = session[:company]
-    @reg_n = ((Time.now.to_f)*100).to_i
-    @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @costcenters = CostCenter.where("company_id = ?",@company)
+    @sectors = Sector.where("code LIKE '____'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))    
     @cc = get_company_cost_center('cost_center')
     render layout: false
   end
@@ -118,6 +106,34 @@ class Administration::PartWorkersController < ApplicationController
     partworker_destroyed = PartWorker.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Parte de Trabajadores."
     render :json => partworker
+  end
+
+  def get_workers
+    @phase = params[:phase].to_i
+    @sector = params[:sector].to_i
+    @wg = params[:wg].to_i
+    date = params[:date].to_s
+    @company = session[:company]
+    @working_groups = WorkingGroup.all
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @workers = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT w.id
+      FROM workers w, entities e, worker_contracts wc
+      WHERE w.typeofworker LIKE  'empleado'
+      AND w.state LIKE  'active'
+      AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
+      AND e.id = w.entity_id
+      AND w.id = wc.worker_id
+      AND wc.start_date <=  '#{date}'
+      AND wc.end_date >=  '#{date}'
+      ORDER BY CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ' ', e.name,  ' ', e.second_name ) 
+      ")
+    @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @costcenters = CostCenter.where("company_id = ?",@company)
+    @cc = get_company_cost_center('cost_center')
+    render(partial: "workers", layout: false)    
+    
   end
 
   private

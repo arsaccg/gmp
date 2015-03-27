@@ -632,6 +632,7 @@ ArsacLogistica::Application.routes.draw do
     resources :part_workers do
       collection do
         post 'show_part_workers'
+        post 'get_workers'
       end
     end
     resources :health_centers
