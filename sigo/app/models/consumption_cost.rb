@@ -50,8 +50,8 @@ class ConsumptionCost < ActiveRecord::Base
     array_dc = connection.select_all("
       SELECT DISTINCT  `acc`.`sector_id` 
       FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `sectors` se
-      WHERE acc.sector_id = se.id
-      AND acc.phase_id = #{ph_id}
+      WHERE acc.phase_id = #{ph_id}
+      AND acc.sector_id = se.id
       ORDER BY se.code")
     return array_dc
   end     
@@ -74,6 +74,7 @@ class ConsumptionCost < ActiveRecord::Base
       WHERE acc.working_group_id = #{wg_id}
       AND acc.phase_id = #{ph_id}
       AND acc.sector_id = #{se_id}
+      AND acc.working_group_id = #{wg_id}
       GROUP BY acc.article_code
       ORDER BY acc.article_name")
     return array_dc
@@ -85,10 +86,23 @@ class ConsumptionCost < ActiveRecord::Base
       FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
       WHERE acc.phase_id = #{ph_id}
       AND acc.sector_id = #{se_id}
+      AND acc.working_group_id = 0
       GROUP BY acc.article_code
       ORDER BY acc.article_name")
     return array_dc
-  end   
+  end
+
+  def self.get_articles_from_phases cc_id, date, ph_id
+    array_dc = connection.select_all("
+      SELECT DISTINCT  Concat(`acc`.`article_code`,' - ',`acc`.`article_name` ,' - ', `acc`.`article_unit`) AS article, SUM(`acc`.`programado_specific_lvl1`) AS programado_specific_lvl1, SUM(`acc`.`meta_specific_lvl_1`) AS meta_specific_lvl_1, SUM(`acc`.`real_specific_lvl_1`) AS real_specific_lvl_1, SUM(`acc`.`valorizado_specific_lvl_1`) AS valorizado_specific_lvl_1, SUM(`acc`.`valor_ganado_specific_lvl_1`) AS valor_ganado_specific_lvl_1
+      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
+      WHERE acc.phase_id = #{ph_id}
+      AND acc.sector_id = 0
+      AND acc.working_group_id = 0
+      GROUP BY acc.article_code
+      ORDER BY acc.article_name")
+    return array_dc
+  end  
 
   def self.create_tables_new_costcenter(cost_center_id,start_date,end_date)
     start_date = "2015-01-01".to_date

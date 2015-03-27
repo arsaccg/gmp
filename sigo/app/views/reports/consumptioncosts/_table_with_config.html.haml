@@ -57,7 +57,10 @@
     -@total.each do |tot|
       %tr
         %td
-          %strong= tot[0]
+          -if tot[7] == "article"
+            =tot[0]
+          -else
+            %strong= tot[0]
         %td= tot[1]
         %td= tot[2]
         %td= tot[3]

@@ -112,17 +112,17 @@ class Reports::ConsumptioncostsController < ApplicationController
       php = Phase.find_by_code(phs.code[0..1])
       if !@total_nombres_fases.include?(php.name)
         @total << [php.code + " - " + php.name,nil,nil,nil,nil,nil,"fase padre"]
-        @total_nombres_fases << [php.name]
+        @total_nombres_fases << php.name
       end
       @total << [phs.code + " - " + phs.name,nil,nil,nil,nil,nil,"fase hija"]
       @sector = ConsumptionCost.get_sector_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id)
-      if !@sector.nil?
+      if !@sector.empty?
         @sector.each do |se|
           ses = Sector.find(se['sector_id'])
           sep = Sector.find_by_code(ses.code[0..1])
           if !@total_nombres_sector.include?(sep.name)
             @total << [sep.code + " - " + sep.name,nil,nil,nil,nil,nil,"sector padre"]
-            @total_nombres_sector << [sep.name]
+            @total_nombres_sector << sep.name
           end          
           @total << [ses.code + " - " + ses.name,nil,nil,nil,nil,nil,"sector hija"]
           @wg = ConsumptionCost.get_wg_from_sector_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id)
@@ -131,7 +131,7 @@ class Reports::ConsumptioncostsController < ApplicationController
               wgs = WorkingGroup.find(wg['working_group_id'])
               if !@total_nombres_wg.include?(wgs.name)
                 @total << [wgs.name,nil,nil,nil,nil,nil,"working_group"]
-                @total_nombres_wg << [wgs.name]
+                @total_nombres_wg << wgs.name
               end
               @articles = ConsumptionCost.get_articles_from_cwgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id, wgs.id)
               @articles.each do |ar|
@@ -145,11 +145,13 @@ class Reports::ConsumptioncostsController < ApplicationController
             end
           end
         end
+      else
+        @articles =ConsumptionCost.get_articles_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id)
+        @articles.each do |ar|
+          @total << [ar['article'], ar['programado_specific_lvl1'],ar['meta_specific_lvl_1'], ar['real_specific_lvl_1'], ar['valorizado_specific_lvl_1'], ar['valor_ganado_specific_lvl_1'], "article"]
+        end        
       end
     end
-    p "----------------------------------------------------------------------------------------------------------------------------------------"
-    p @total.inspect
-    p "----------------------------------------------------------------------------------------------------------------------------------------"
     render(partial: 'table_with_config.html', :layout => false)
   end   
 end
