@@ -329,3 +329,138 @@ BEGIN
   SELECT real_cost_hand_work, real_cost_materials, real_cost_equipment, real_cost_subcontract, real_cost_service FROM DUAL;
 
 END $$
+
+-----------------------------------
+--| PROCEDURES ARTICLES VALUES  |--
+-----------------------------------
+
+DELIMITER $$
+
+-- COSTO DIRECTO / VALORIZADO - VENTA
+DROP PROCEDURE IF EXISTS `costo_directo_valorizado_por_articulo`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_valorizado_por_articulo`()
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE ibi_done INT DEFAULT FALSE;
+
+  DECLARE v_valorization_id INT;
+  DECLARE v_budget_id INT;
+  DECLARE v_order CHAR(120);
+  DECLARE v_description CHAR(255);
+  DECLARE v_measured FLOAT(10,4);
+
+  DECLARE v_partial_mo FLOAT(10,4);
+  DECLARE v_amount_mo FLOAT(10,4);
+  DECLARE v_cod_input_mo CHAR(20);
+
+  DECLARE v_partial_material FLOAT(10,4);
+  DECLARE v_amount_material FLOAT(10,4);
+  DECLARE v_cod_input_material CHAR(20);
+
+  DECLARE v_partial_equipment FLOAT(10,4);
+  DECLARE v_amount_equipment FLOAT(10,4);
+  DECLARE v_cod_input_equipment CHAR(20);
+
+  DECLARE v_partial_subcontract FLOAT(10,4);
+  DECLARE v_amount_subcontract FLOAT(10,4);
+  DECLARE v_cod_input_subcontract CHAR(20);
+
+  DECLARE v_partial_service FLOAT(10,4);
+  DECLARE v_amount_service FLOAT(10,4);
+  DECLARE v_cod_input_service CHAR(20);
+
+  DECLARE valorizations CURSOR FOR
+  SELECT v.id, b.id 
+  FROM valorizations v, budgets b 
+  WHERE b.cost_center_id = 1 -- DATO DE ENTRADA
+  AND b.type_of_budget = 1
+  AND b.id = v.budget_id
+  AND v.valorization_date BETWEEN '2014-07-01' AND '2014-07-30'; -- DATOS DE ENTRADA
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN valorizations;
+  read_loop: LOOP
+    FETCH valorizations INTO v_valorization_id, v_budget_id;
+  IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+  -- MONTOS VALORIZADOS
+  BLOCK: BEGIN
+
+    DECLARE itembybudgets CURSOR FOR
+    SELECT rv.order, description, con_measured FROM report_valorizations rv WHERE valorization_id = v_valorization_id AND con_measured IS NOT NULL;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET ibi_done = TRUE;
+  
+    OPEN itembybudgets;
+    read_loop_ibb: LOOP
+    FETCH itembybudgets INTO v_order, v_description, v_measured;
+    IF ibi_done THEN
+      LEAVE read_loop_ibb;
+    END IF;
+
+      SET @i_identify = (SELECT p.id FROM itembywbses ibw, wbsitems wi, phases p WHERE ibw.wbsitem_id = wi.id AND p.code > '0___' AND p.code < '89__' AND wi.phase_id = p.id AND ibw.budget_id = v_budget_id AND ibw.order_budget LIKE v_order GROUP BY p.id);
+
+    IF @i_identify IS NOT NULL THEN
+      
+      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+      INTO v_partial_mo, v_amount_mo, v_cod_input_mo
+      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+      WHERE ibi.cod_input LIKE '01%' 
+      AND ibi.budget_id = v_budget_id 
+      AND ib.budget_id = v_budget_id 
+      AND ibi.`order` LIKE CONCAT(v_order, '%') 
+      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+      GROUP BY ibi.cod_input;
+
+      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+      INTO v_partial_material, v_amount_material, v_cod_input_material
+      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+      WHERE ibi.cod_input LIKE '02%' 
+      AND ibi.budget_id = v_budget_id 
+      AND ib.budget_id = v_budget_id 
+      AND ibi.`order` LIKE CONCAT(v_order, '%') 
+      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+      GROUP BY ibi.cod_input;
+
+      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+      INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment
+      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+      WHERE ibi.cod_input LIKE '03%' 
+      AND ibi.budget_id = v_budget_id 
+      AND ib.budget_id = v_budget_id 
+      AND ibi.`order` LIKE CONCAT(v_order, '%') 
+      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+      GROUP BY ibi.cod_input;
+
+      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+      INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract
+      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+      WHERE ibi.cod_input LIKE '04%' 
+      AND ibi.budget_id = v_budget_id 
+      AND ib.budget_id = v_budget_id 
+      AND ibi.`order` LIKE CONCAT(v_order, '%') 
+      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+      GROUP BY ibi.cod_input;
+
+      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+      INTO v_partial_service, v_amount_service, v_cod_input_service
+      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+      WHERE ibi.cod_input LIKE '05%' 
+      AND ibi.budget_id = v_budget_id 
+      AND ib.budget_id = v_budget_id 
+      AND ibi.`order` LIKE CONCAT(v_order, '%') 
+      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+      GROUP BY ibi.cod_input;
+
+    END IF;
+
+    END LOOP read_loop_ibb;
+    CLOSE itembybudgets;
+
+  END BLOCK;
+
+  END LOOP read_loop;
+  CLOSE valorizations;
+
+END $$
