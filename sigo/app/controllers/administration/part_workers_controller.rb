@@ -37,7 +37,7 @@ class Administration::PartWorkersController < ApplicationController
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @sectors = Sector.where("code LIKE '____'")
+    @sectors = Sector.where("code LIKE '____' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))    
     @cc = get_company_cost_center('cost_center')
     render layout: false
@@ -75,7 +75,7 @@ class Administration::PartWorkersController < ApplicationController
     @numbercode = @partworker.number_part
     @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'")
     @working_groups = WorkingGroup.all
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @costcenters = CostCenter.where("company_id = ?",@company)
     @action = 'edit'
@@ -128,7 +128,7 @@ class Administration::PartWorkersController < ApplicationController
       AND wc.end_date >=  '#{date}'
       ORDER BY CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ' ', e.name,  ' ', e.second_name ) 
       ")
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @costcenters = CostCenter.where("company_id = ?",@company)
     @cc = get_company_cost_center('cost_center')

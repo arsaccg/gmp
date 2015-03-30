@@ -169,20 +169,6 @@
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
       }
-        });
-
-        return $form.valid();
-      },
-      target: '#content',
-      success: function (data){
-        $(".help-inline").parent().addClass("state-error");
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
-      },
-      error: function(xhr, status, error) {
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
-      }
     });
 
   });

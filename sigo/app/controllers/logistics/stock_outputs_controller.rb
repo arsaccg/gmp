@@ -124,7 +124,7 @@ class Logistics::StockOutputsController < ApplicationController
     @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
     @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
-    @sectors = Sector.all
+    @sectors = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(@cost_center)
     @working_groups = WorkingGroup.all
     @reg_n = Time.now.to_i
@@ -144,7 +144,7 @@ class Logistics::StockOutputsController < ApplicationController
     @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
     @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
-    @sectors = Sector.all
+    @sectors = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code LIKE '__'")
     @phases = Phase.getSpecificPhases(@cost_center)
     @working_groups = WorkingGroup.all
     @reg_n = Time.now.to_i
@@ -191,7 +191,7 @@ class Logistics::StockOutputsController < ApplicationController
     @cost_center = get_company_cost_center('cost_center')
     @article = Article.find(data_article_unit[0])
     @amount = params[:amount].to_i
-    @sectors = Sector.where("code LIKE '__' ")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(@cost_center)
     
     render(partial: 'add_item', :layout => false)
@@ -208,7 +208,7 @@ class Logistics::StockOutputsController < ApplicationController
     ids_items = params[:ids_items]
     ids_items = ids_items.join(',')
     @warehouse_id = params[:warehouse_id2]
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @cc = get_company_cost_center('cost_center')
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @arrItems = Article.getSpecificArticlesforStockOutputs2(@warehouse_id,ids_items)
