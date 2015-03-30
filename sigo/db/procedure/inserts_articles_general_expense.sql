@@ -56,8 +56,8 @@ BEGIN
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
              `measured_meta`,`insertion_date`, `type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",'",
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"',",
               v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"', 'GG');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -113,9 +113,9 @@ BEGIN
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
              `measured_real`,`insertion_date`, `type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",'", 
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"','",
+              v_sector_code_hijo,"','",@sector_nombre,"','",LEFT(v_sector_code_hijo,2),"','",@sector_padre,"',",
               v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"','GG');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -162,9 +162,9 @@ BEGIN
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
              `measured_real`,`insertion_date`, `type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",'", 
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"','",
+              v_sector_code_hijo,"','",@sector_nombre,"','",LEFT(v_sector_code_hijo,2),"','",@sector_padre,"',",
               v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'GG');");
 
         PREPARE stmt FROM @SQL;
@@ -269,9 +269,9 @@ BEGIN
                 `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
                  `measured_real`,`insertion_date`,`type`)
                 VALUES (
-                  '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
-                  v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-                  v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+                  '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",'", 
+                  v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"','",
+                  v_sector_code_hijo,"','",@sector_nombre,"','",LEFT(v_sector_code_hijo,2),"','",@sector_padre,"',",
                   v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"','GG');");
 
             PREPARE stmt FROM @SQL;
@@ -332,9 +332,9 @@ BEGIN
                 `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
                  `measured_real`,`insertion_date`, `type`)
                 VALUES (
-                  '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
-                  v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-                  v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+                  '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",'", 
+                  v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"','",
+                  v_sector_code_hijo,"','",@sector_nombre,"','",LEFT(v_sector_code_hijo,2),"','",@sector_padre,"',",
                   v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'GG');");
 
             PREPARE stmt FROM @SQL;
@@ -416,8 +416,8 @@ BEGIN
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
              `measured_meta`,`insertion_date`,`type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",'",
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"',",
               v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
@@ -453,8 +453,8 @@ BEGIN
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
              `measured_meta`,`insertion_date`, `type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",'",
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"',",
               1,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
@@ -513,9 +513,9 @@ BEGIN
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
              `measured_real`,`insertion_date`, `type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",'", 
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"','",
+              v_sector_code_hijo,"','",@sector_nombre,"','",LEFT(v_sector_code_hijo,2),"','",@sector_padre,"',",
               v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
@@ -560,9 +560,9 @@ BEGIN
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
              `measured_real`,`insertion_date`, `type`)
             VALUES (
-              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
-              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",'", 
+              v_phase_code_hijo,"','",@phase_nombre,"','",LEFT(v_phase_code_hijo,2),"','",@phase_padre,"','",
+              v_sector_code_hijo,"','",@sector_nombre,"','",LEFT(v_sector_code_hijo,2),"','",@sector_padre,"',",
               v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
