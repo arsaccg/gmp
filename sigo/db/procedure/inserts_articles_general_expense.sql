@@ -9,9 +9,12 @@ BEGIN
   DECLARE v_article_code TEXT;
   DECLARE v_article_name TEXT;
   DECLARE v_article_unit TEXT;
-  DECLARE v_phase_id INTEGER;
-  DECLARE v_sector_id INTEGER;
+  DECLARE v_phase_code_padre TEXT;
+  DECLARE v_phase_code_hijo TEXT;
+  DECLARE v_sector_code_padre TEXT;
+  DECLARE v_sector_code_hijo TEXT;
   DECLARE v_working_group INTEGER;
+  DECLARE v_quantity FLOAT(10,2);
   DECLARE v_amount FLOAT(10,2);
 
   DECLARE cost_centers CURSOR FOR 
@@ -29,25 +32,33 @@ BEGIN
     BLOCK2: BEGIN
       DECLARE done2 INT DEFAULT FALSE;
       DECLARE articles_gg_meta CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, ge.phase_id, SUM( ged.parcial )
-        FROM general_expense_details ged, general_expenses ge, articles art, unit_of_measurements unit
+        SELECT art.code, art.name, unit.symbol, ph.code, SUM( ged.parcial ), IFNULL( ged.people, ged.amount)
+        FROM general_expense_details ged, general_expenses ge, articles art, unit_of_measurements unit, phases ph
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
         AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         AND ge.code_phase = 90
+        AND ge.phase_id = ph.id
         AND ged.article_id = art.id
         AND art.unit_of_measurement_id = unit.id
         GROUP BY (art.code);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done2 = TRUE;
       OPEN articles_gg_meta;
       read_loop2: LOOP
-        FETCH articles_gg_meta INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_amount;
+        FETCH articles_gg_meta INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_amount, v_quantity;
         IF done2 THEN
           LEAVE read_loop2;
         END IF;
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,`phase_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+             `measured_meta`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;             
@@ -61,8 +72,8 @@ BEGIN
     BLOCK3: BEGIN
       DECLARE done3 INT DEFAULT FALSE;
       DECLARE stock_outputs_articles CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, dod.phase_id, dod.sector_id, (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount)
-        FROM articles art, purchase_orders po, purchase_order_details pod, delivery_order_details dod, phases p, unit_of_measurements unit,
+        SELECT art.code, art.name, unit.symbol, p.code, se.code, (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount), stock_output.amount
+        FROM articles art, purchase_orders po, purchase_order_details pod, delivery_order_details dod, phases p, unit_of_measurements unit, sectors se,
              (SELECT art.id AS article_id, SUM( sid.amount ) AS amount
               FROM stock_inputs si, stock_input_details sid, articles art
               WHERE si.input = 0
@@ -75,6 +86,7 @@ BEGIN
         WHERE dod.article_id = stock_output.article_id
         AND art.id = dod.article_id
         AND dod.phase_id = p.id
+        AND dod.sector_id = se.id
         AND p.code LIKE '90__'
         AND pod.delivery_order_detail_id = dod.id
         AND po.id = pod.purchase_order_id
@@ -85,13 +97,26 @@ BEGIN
 
       OPEN stock_outputs_articles;
       read_loop3: LOOP
-        FETCH stock_outputs_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_sector_id, v_amount;
+        FETCH stock_outputs_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_sector_code_hijo, v_amount, v_quantity;
         IF done3 THEN
           LEAVE read_loop3;
         END IF;
+
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
+        SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
+        SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
+
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`,`sector_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),",",IFNULL(v_sector_id,0),", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+            `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
+             `measured_real`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -105,9 +130,10 @@ BEGIN
       DECLARE done4 INT DEFAULT FALSE;
       DECLARE order_of_services_articles CURSOR FOR 
 
-        SELECT art.code, art.name, unit.symbol, osd.phase_id, osd.sector_id, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0))
-        FROM order_of_service_details osd, phases p, order_of_services os, articles art, unit_of_measurements unit
+        SELECT art.code, art.name, unit.symbol, p.code, se.code, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
+        FROM order_of_service_details osd, phases p, order_of_services os, articles art, unit_of_measurements unit, sectors se 
         WHERE osd.phase_id = p.id
+        AND osd.sector_id = se.id
         AND os.id = osd.order_of_service_id
         AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         AND os.cost_center_id = v_id
@@ -119,13 +145,28 @@ BEGIN
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done4 = TRUE;
       OPEN order_of_services_articles;
       read_loop4: LOOP
-        FETCH order_of_services_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_sector_id, v_amount;
+        FETCH order_of_services_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_sector_code_hijo, v_amount, v_quantity;
         IF done4 THEN
           LEAVE read_loop4;
         END IF;
+
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
+        SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
+        SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
+
+
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",",v_sector_id,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+            `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
+             `measured_real`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -193,10 +234,12 @@ BEGIN
           DECLARE v_pay FLOAT (10,2);
           
           DECLARE articles_payroll CURSOR FOR
-            SELECT art.code, art.name, unit.symbol, ppd.sector_id, ppd.phase_id, SUM( ppd.total_hours )
-            FROM part_people pp, part_person_details ppd, phases p, articles art, workers w, worker_contracts wc, unit_of_measurements unit
+            SELECT art.code, art.name, unit.symbol, se.code, p.code, SUM( ppd.total_hours )
+            FROM part_people pp, part_person_details ppd, phases p, articles art, workers w, worker_contracts wc, unit_of_measurements unit, sectors s
             WHERE ppd.part_person_id = pp.id
             AND ppd.worker_id = v_worker
+            AND ppd.phase_id = p.id
+            AND ppd.sector_id = se.id
             AND pp.blockweekly = 1
             AND pp.cost_center_id =1
             AND ppd.phase_id = p.id
@@ -211,13 +254,26 @@ BEGIN
             DECLARE CONTINUE HANDLER FOR NOT FOUND SET done5ppart = TRUE;       
           OPEN articles_payroll;
           read_loop5pwartp: LOOP
-            FETCH articles_payroll INTO v_article_code, v_article_name, v_article_unit, v_sector_id, v_phase_id, v_pay;
+            FETCH articles_payroll INTO v_article_code, v_article_name, v_article_unit, v_sector_code_hijo, v_phase_code_hijo, v_pay;
             IF done5ppart THEN
               LEAVE read_loop5pwartp;
             END IF;
+            SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+            SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
+            SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
+            SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
+
             SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`, `insertion_date`)
-                  VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", v_phase_id,",",v_sector_id,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
+                `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+                `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
+                 `measured_real`,`insertion_date`)
+                VALUES (
+                  '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
+                  v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+                  v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+                  v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+
             PREPARE stmt FROM @SQL;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
@@ -241,10 +297,12 @@ BEGIN
           DECLARE v_pay FLOAT (10,2);
           
           DECLARE articles_payrollw CURSOR FOR
-            SELECT art.code, art.name, unit.symbol, pwd.sector_id, pwd.phase_id, SUM(8.5)
-            FROM part_workers pw, part_worker_details pwd, phases p, articles art, workers w, worker_contracts wc, unit_of_measurements unit
+            SELECT art.code, art.name, unit.symbol, se.code, ph.code, SUM(8.5)
+            FROM part_workers pw, part_worker_details pwd, phases p, articles art, workers w, worker_contracts wc, unit_of_measurements unit, sectors se
             WHERE pwd.part_worker_id = pp.id AND pwd.worker_id = v_worker 
             AND pw.blockweekly = 1
+            AND pwd.sector_id = se.id
+            AND pwd.phase_id = ph.id
             AND pw.cost_center_id = v_id 
             AND pwd.phase_id = p.id
             AND pw.date_of_creation BETWEEN v_date_begin AND v_date_end 
@@ -259,13 +317,26 @@ BEGIN
             DECLARE CONTINUE HANDLER FOR NOT FOUND SET done5ppartw = TRUE;       
           OPEN articles_payrollw;
           read_loop5pwart: LOOP
-            FETCH articles_payrollw INTO v_article_code, v_article_name, v_article_unit, v_sector_id, v_phase_id, v_pay;
+            FETCH articles_payrollw INTO v_article_code, v_article_name, v_article_unit, v_sector_code_hijo, v_phase_code_hijo, v_pay;
             IF done5ppartw THEN
               LEAVE read_loop5pwart;
             END IF;
+            SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+            SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
+            SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
+            SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
+
             SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `sector_id`, `insertion_date`)
-                  VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", v_phase_id,",",v_sector_id,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
+                `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+                `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
+                 `measured_real`,`insertion_date`)
+                VALUES (
+                  '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
+                  v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+                  v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+                  v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+
             PREPARE stmt FROM @SQL;
             EXECUTE stmt;
             DEALLOCATE PREPARE stmt;
@@ -284,7 +355,7 @@ BEGIN
     BLOCK6: BEGIN
       DECLARE done6 INT DEFAULT FALSE;
       DECLARE valorizacion CURSOR FOR 
-        SELECT im.item_code AS type_article, SUM( i.measured * i.price )*budget.general_expenses
+        SELECT im.item_code AS type_article, SUM( i.measured * i.price )*budget.general_expenses -- FALTA CANTIDAD 
         FROM valorizations va, valorizationitems v, itembybudgets i, items im, 
              (SELECT b.id, b.general_expenses
               FROM budgets b
@@ -321,25 +392,34 @@ BEGIN
     BLOCKGE: BEGIN
       DECLARE donege INT DEFAULT FALSE;
       DECLARE meta CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, ge.phase_id, SUM( ged.parcial )
-        FROM general_expense_details ged, general_expenses ge, articles art, unit_of_measurements unit
+        SELECT art.code, art.name, unit.symbol, ph.code, SUM( ged.parcial ), IFNULL(ged.people, ged.amount)
+        FROM general_expense_details ged, general_expenses ge, articles art, unit_of_measurements unit, phases ph
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
         AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         AND ge.code_phase > 90
+        AND ge.phase_id = ph.id
         AND ged.article_id = art.id
         AND art.unit_of_measurement_id = unit.id
         GROUP BY (art.code);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donege = TRUE;
       OPEN meta;
       read_loop7: LOOP
-        FETCH meta INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_amount;
+        FETCH meta INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_amount, v_quantity;
         IF donege THEN
           LEAVE read_loop7;
         END IF;
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,`phase_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),",'",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+             `measured_meta`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;               
@@ -350,22 +430,32 @@ BEGIN
     BLOCKDEM: BEGIN
       DECLARE donedem INT DEFAULT FALSE;
       DECLARE meta CURSOR FOR 
-        SELECT dem.article_code, dem.phase_id, SUM( demd.amount ) 
-        FROM diverse_expenses_of_managements dem, diverse_expenses_of_management_details demd
+        SELECT dem.article_code, art.name, unit.symbol, p.code, dem.amount
+        FROM diverse_expenses_of_managements dem, diverse_expenses_of_management_details demd, articles art, unit_of_measurements unit, phases p
         WHERE dem.cost_center_id = v_id
         AND dem.id = demd.diverse_expenses_of_management_id
+        AND dem.article_code = art.code
+        AND dem.phase_id = p.id
+        AND art.unit_of_measurement_id = unit.id
         AND DATE_FORMAT( dem.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         GROUP BY dem.article_code;
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donedem = TRUE;
       OPEN meta;
       read_loop8: LOOP
-        FETCH meta INTO v_article_code, v_phase_id, v_amount;
+        FETCH meta INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_amount;
         IF donedem THEN
           LEAVE read_loop8;
         END IF;
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,`phase_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),",'",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");              
+          "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+             `measured_meta`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              1,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
 
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -380,8 +470,8 @@ BEGIN
     BLOCKSI: BEGIN
       DECLARE donesi INT DEFAULT FALSE;
       DECLARE stock_outputs_gs CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, stock_output_prices.phases_dod, stock_output_prices.sectordod, (SUM(sid.amount)*stock_output_prices.price)
-        FROM stock_inputs si, stock_input_details sid, phases p, articles art, unit_of_measurements unit,
+        SELECT art.code, art.name, unit.symbol, p.code, se.code, (SUM(sid.amount)*stock_output_prices.price), SUM(sid.amount)
+        FROM stock_inputs si, stock_input_details sid, phases p, articles art, unit_of_measurements unit, sectors se,
             (SELECT art.id AS artid, ((pod.unit_price_igv - IFNULL( pod.discount_after, 0 ) ) * dod.amount) AS price, dod.phase_id AS phases_dod, dod.sector_id AS sectordod
             FROM purchase_orders po, purchase_order_details pod, articles art, delivery_order_details dod, phases p
             WHERE po.id = pod.purchase_order_id
@@ -394,7 +484,9 @@ BEGIN
             GROUP BY art.id) AS stock_output_prices
         WHERE si.id = sid.stock_input_id
         AND si.input = 0
+        AND stock_output_prices.phases_dod = p.id
         AND si.status =  'A'
+        AND stock_output_prices.sectordod = se.id
         AND si.cost_center_id = v_id
         AND sid.article_id = art.id
         AND sid.phase_id = p.id
@@ -406,13 +498,26 @@ BEGIN
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donesi = TRUE;
       OPEN stock_outputs_gs;
       read_loop9: LOOP
-        FETCH stock_outputs_gs INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_sector_id, v_amount;
+        FETCH stock_outputs_gs INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_sector_code_hijo, v_amount, v_quantity;
         IF donesi THEN
           LEAVE read_loop9;
         END IF;
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
+        SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
+        SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
+
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`,`sector_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),",",IFNULL(v_sector_id,0),",'",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+            `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
+             `measured_real`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;               
@@ -425,12 +530,13 @@ BEGIN
     BLOCKOS: BEGIN
       DECLARE doneos INT DEFAULT FALSE;
       DECLARE order_of_services CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, p.id, osd.sector_id, osd.working_group_id, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0))
+        SELECT art.code, art.name, unit.symbol, p.code, se.code, osd.working_group_id, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
         FROM order_of_services os, order_of_service_details osd, phases p, articles art, unit_of_measurements unit
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
+        AND se.id = osd.sector_id
         AND p.code > '91__'
         AND os.state =  'approved'
         AND art.unit_of_measurement_id = unit.id
@@ -439,13 +545,26 @@ BEGIN
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneos = TRUE;
       OPEN order_of_services;
       read_loop10: LOOP
-        FETCH order_of_services INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_sector_id, v_working_group, v_amount;
+        FETCH order_of_services INTO v_article_code, v_article_name, v_article_unit, v_phase_code_hijo, v_sector_code_hijo, v_working_group, v_amount, v_quantity;
         IF doneos THEN
           LEAVE read_loop10;
         END IF;
+        SET @phase_padre = (SELECT name FROM phases WHERE code = LEFT(v_phase_code_hijo,2));
+        SET @phase_nombre = (SELECT name FROM phases WHERE code = v_phase_code_hijo);
+        SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
+        SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
+
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`,`sector_id`,`working_group_id`, `insertion_date`)
-              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),",",IFNULL(v_sector_id,0),",",IFNULL(v_working_group,0),",'",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
+            `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
+            `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
+             `measured_real`,`insertion_date`)
+            VALUES (
+              '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
+              v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
+              v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
