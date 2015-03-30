@@ -531,7 +531,7 @@ BEGIN
       DECLARE doneos INT DEFAULT FALSE;
       DECLARE order_of_services CURSOR FOR 
         SELECT art.code, art.name, unit.symbol, p.code, se.code, osd.working_group_id, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
-        FROM order_of_services os, order_of_service_details osd, phases p, articles art, unit_of_measurements unit
+        FROM order_of_services os, order_of_service_details osd, phases p, articles art, unit_of_measurements unit, sectors se
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
         AND os.cost_center_id = v_id
