@@ -21,6 +21,7 @@ class Production::WorkerContractsController < ApplicationController
     @concepts_obrero=Concept.where("type_obrero like 'Fijo' AND status like '1'")
     @concepts_empleado=Concept.where("type_empleado like 'Fijo' AND status like '1'")
     @typeofcontract = params[:typeofcontract]
+    @worker = Worker.find(params[:worker_id])
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
     @cost_center = session[:cost_center]
@@ -48,7 +49,7 @@ class Production::WorkerContractsController < ApplicationController
       @workercontract.end_date = @workercontract2.end_date
       if num.count > 0
         @numberofcontract = @workercontract2.numberofcontract
-        @numberofcontract = @numberofcontract + ' - AD ' + num.first[0].to_i + 1).to_s.rjust(2, '0')
+        @numberofcontract = @numberofcontract + ' - AD ' + (num.first[0].to_i + 1).to_s.rjust(2, '0')
       else
         @numberofcontract = @workercontract2.numberofcontract + ' - AD 01'
       end
@@ -72,7 +73,7 @@ class Production::WorkerContractsController < ApplicationController
       @workercontract.end_date = @workercontract2.end_date.to_date + @diff.days
       if num.count > 0
         @numberofcontract = @workercontract2.numberofcontract
-        @numberofcontract = @numberofcontract + ' - RVN ' + num.first[0].to_i + 1).to_s.rjust(2, '0')
+        @numberofcontract = @numberofcontract + ' - RVN ' + (num.first[0].to_i + 1).to_s.rjust(2, '0')
       else
         @numberofcontract = @workercontract2.numberofcontract + ' - RVN 01'
       end
