@@ -47,7 +47,11 @@ BEGIN
         END IF;
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
           "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,`phase_id`, `insertion_date`)
+<<<<<<< HEAD
               VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+=======
+              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+>>>>>>> a141e2f2ae3d5795a0d8937891a64645f32636de
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;             
@@ -61,7 +65,11 @@ BEGIN
     BLOCK3: BEGIN
       DECLARE done3 INT DEFAULT FALSE;
       DECLARE stock_outputs_articles CURSOR FOR 
+<<<<<<< HEAD
         SELECT art.code, art.name, unit.symbol, dod.phase_id, dod.sector_id, (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount)
+=======
+        SELECT art.code, art.name, unit.symbol, dod.phase_id, (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount)
+>>>>>>> a141e2f2ae3d5795a0d8937891a64645f32636de
         FROM articles art, purchase_orders po, purchase_order_details pod, delivery_order_details dod, phases p, unit_of_measurements unit,
              (SELECT art.id AS article_id, SUM( sid.amount ) AS amount
               FROM stock_inputs si, stock_input_details sid, articles art
@@ -85,13 +93,22 @@ BEGIN
 
       OPEN stock_outputs_articles;
       read_loop3: LOOP
+<<<<<<< HEAD
         FETCH stock_outputs_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_sector_id, v_amount;
+=======
+        FETCH stock_outputs_articles INTO v_article_code, v_article_name, v_article_unit, v_phase_id, v_amount;
+>>>>>>> a141e2f2ae3d5795a0d8937891a64645f32636de
         IF done3 THEN
           LEAVE read_loop3;
         END IF;
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
+<<<<<<< HEAD
           "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`,`sector_id`, `insertion_date`)
               VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", IFNULL(v_phase_id,0),",",IFNULL(v_sector_id,0),", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+=======
+          "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,`phase_id`, `insertion_date`)
+              VALUES ('",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", v_phase_id,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+>>>>>>> a141e2f2ae3d5795a0d8937891a64645f32636de
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -317,6 +334,7 @@ BEGIN
     END BLOCK6;
     -- GASTOS GENERALES VALORIZADO
 
+<<<<<<< HEAD
     -- SERVICIOS GENERALES META
     BLOCKGE: BEGIN
       DECLARE donege INT DEFAULT FALSE;
@@ -454,6 +472,8 @@ BEGIN
     END BLOCKOS;
     -- ORDER OF SERVICE
     -- SERVICIOS GENERALES REAL
+=======
+>>>>>>> a141e2f2ae3d5795a0d8937891a64645f32636de
   END LOOP;
   CLOSE cost_centers;
 END $$

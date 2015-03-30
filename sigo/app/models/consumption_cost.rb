@@ -1,27 +1,33 @@
 class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
-  def self.apply_all_consult cc_id, date
+  # => Methods for Macro Report
+
+  def self.apply_all_general_expenses cc_id, date
     array_ge = connection.select_one("
       SELECT 
       '-', `general_exp_mo_valoriz`, '-', `general_exp_mo_costreal`, `general_exp_mo_meta` ,
       '-', `general_exp_mat_valoriz`, '-', `general_exp_mat_costreal`,`general_exp_mat_meta` ,
       '-', `general_exp_subcont_valoriz`, '-', `general_exp_subcont_costreal`, `general_exp_subcont_meta` ,
       '-', `general_exp_serv_valoriz`, '-', `general_exp_serv_costreal`, `general_exp_serv_meta` ,
-      '-', `general_exp_equip_valoriz`, '-', `general_exp_equip_costreal`, `general_exp_equip_meta` 
-    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_until_"+ date.to_s + "`")
+      '-', `general_exp_equip_valoriz`, '-', `general_exp_equip_costreal`, `general_exp_equip_meta`,
+      (`general_exp_mo_costreal` + `general_exp_mat_costreal` + `general_exp_subcont_costreal` + `general_exp_serv_costreal` + `general_exp_equip_costreal`) as `sum_costo_real`,
+      (`general_exp_mo_meta` + `general_exp_mat_meta` + `general_exp_subcont_meta` + `general_exp_serv_meta` + `general_exp_equip_meta`) as `sum_meta`
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_ge
   end
 
-  def self.apply_all_gen_serv cc_id, date
+  def self.apply_all_general_services cc_id, date
     array_genser = connection.select_one("
       SELECT 
       '-', '-', '-', `gen_serv_mo_costreal`, `gen_serv_mo_meta` ,
       '-', '-', '-', `gen_serv_mat_costreal`,`gen_serv_mat_meta` ,
       '-', '-', '-', `gen_serv_subcont_costreal`, `gen_serv_subcont_meta` ,
       '-', '-', '-', `gen_serv_service_costreal`, `gen_serv_service_meta` ,
-      '-', '-', '-', `gen_serv_equip_costreal`,`gen_serv_equip_meta` 
-    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_until_"+ date.to_s + "`")
+      '-', '-', '-', `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
+      (`gen_serv_mo_costreal` + `gen_serv_mat_costreal` + `gen_serv_subcont_costreal` + `gen_serv_service_costreal` + `gen_serv_equip_costreal`) as `sum_costo_real`,
+      (`gen_serv_mo_meta` + `gen_serv_mat_meta` + `gen_serv_subcont_meta` + `gen_serv_service_meta` + `gen_serv_equip_meta`) as `sum_meta`
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_genser
   end
 
@@ -30,12 +36,64 @@ class ConsumptionCost < ActiveRecord::Base
       SELECT 
       `direct_cost_mo_prog`, `direct_cost_mo_valoriz`, `direct_cost_mo_valgan`, `direct_cost_mo_costreal`, `direct_cost_mo_meta` ,
       `direct_cost_mat_prog`, `direct_cost_mat_valoriz`, `direct_cost_mat_valgan`, `direct_cost_mat_costreal`, `direct_cost_mat_meta` ,
-      `direct_cost_subcont_prog`, `direct_cost_subcont_valoriz`, `direct_cost_subcont_valgan`, `direct_cost_subcont_costreal`, `direct_cost_subcont_meta` ,
-      `direct_cost_serv_prog`, `direct_cost_serv_valoriz`, `direct_cost_serv_valgan`, `direct_cost_serv_costreal`, `direct_cost_serv_meta` ,
-      `direct_cost_equip_prog`, `direct_cost_equip_valoriz`, `direct_cost_equip_valgan`, `direct_cost_equip_costreal`, `direct_cost_equip_meta` 
-    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_until_"+ date.to_s + "`")
+      `direct_cost_subcont_prog`, `direct_cost_subcont_valoriz`, `direct_cost_subcont_valgan`, `direct_cost_subcont_costreal`, `direct_cost_subcont_meta`,
+      `direct_cost_serv_prog`, `direct_cost_serv_valoriz`, `direct_cost_serv_valgan`, `direct_cost_serv_costreal`, `direct_cost_serv_meta`,
+      `direct_cost_equip_prog`, `direct_cost_equip_valoriz`, `direct_cost_equip_valgan`, `direct_cost_equip_costreal`, `direct_cost_equip_meta`, 
+      (`direct_cost_mo_prog` + `direct_cost_mat_prog` + `direct_cost_subcont_prog` + `direct_cost_serv_prog` + `direct_cost_equip_prog`) as `sum_programado`,
+      (`direct_cost_mo_valoriz` + `direct_cost_mat_valoriz` + `direct_cost_subcont_valoriz` + `direct_cost_serv_valoriz` + `direct_cost_equip_valoriz`) as `sum_valorizado`,
+      (`direct_cost_mo_valgan` + `direct_cost_mat_valgan` + `direct_cost_subcont_valgan` + `direct_cost_serv_valgan` + `direct_cost_equip_valgan`) as `sum_valorganado`,
+      (`direct_cost_mo_costreal` + `direct_cost_mat_costreal` + `direct_cost_subcont_costreal` + `direct_cost_serv_costreal` + `direct_cost_equip_costreal`) as `sum_costo_real`,
+      (`direct_cost_mo_meta` + `direct_cost_mat_meta` + `direct_cost_subcont_meta` + `direct_cost_serv_meta` + `direct_cost_equip_meta`) as `sum_meta`
+    FROM `actual_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
     return array_dc
   end
+
+  def self.apply_all_accumulated_general_expenses cc_id, date
+    array_ge = connection.select_one("
+      SELECT 
+      '-', `general_exp_mo_valoriz`, '-', `general_exp_mo_costreal`, `general_exp_mo_meta` ,
+      '-', `general_exp_mat_valoriz`, '-', `general_exp_mat_costreal`,`general_exp_mat_meta` ,
+      '-', `general_exp_subcont_valoriz`, '-', `general_exp_subcont_costreal`, `general_exp_subcont_meta` ,
+      '-', `general_exp_serv_valoriz`, '-', `general_exp_serv_costreal`, `general_exp_serv_meta` ,
+      '-', `general_exp_equip_valoriz`, '-', `general_exp_equip_costreal`, `general_exp_equip_meta`,
+      (`general_exp_mo_costreal` + `general_exp_mat_costreal` + `general_exp_subcont_costreal` + `general_exp_serv_costreal` + `general_exp_equip_costreal`) as `sum_costo_real`,
+      (`general_exp_mo_meta` + `general_exp_mat_meta` + `general_exp_subcont_meta` + `general_exp_serv_meta` + `general_exp_equip_meta`) as `sum_meta`
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    return array_ge
+  end
+
+  def self.apply_all_accumulated_general_services cc_id, date
+    array_genser = connection.select_one("
+      SELECT 
+      '-', '-', '-', `gen_serv_mo_costreal`, `gen_serv_mo_meta`,
+      '-', '-', '-', `gen_serv_mat_costreal`, `gen_serv_mat_meta`,
+      '-', '-', '-', `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
+      '-', '-', '-', `gen_serv_service_costreal`, `gen_serv_service_meta`,
+      '-', '-', '-', `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
+      (`gen_serv_mo_costreal` + `gen_serv_mat_costreal` + `gen_serv_subcont_costreal` + `gen_serv_service_costreal` + `gen_serv_equip_costreal`) as `sum_costo_real`,
+      (`gen_serv_mo_meta` + `gen_serv_mat_meta` + `gen_serv_subcont_meta` + `gen_serv_service_meta` + `gen_serv_equip_meta`) as `sum_meta`
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    return array_genser
+  end
+
+  def self.apply_all_accumulated_direct_cost cc_id, date
+    array_dc = connection.select_one("
+      SELECT 
+      `direct_cost_mo_prog`, `direct_cost_mo_valoriz`, `direct_cost_mo_valgan`, `direct_cost_mo_costreal`, `direct_cost_mo_meta` ,
+      `direct_cost_mat_prog`, `direct_cost_mat_valoriz`, `direct_cost_mat_valgan`, `direct_cost_mat_costreal`, `direct_cost_mat_meta` ,
+      `direct_cost_subcont_prog`, `direct_cost_subcont_valoriz`, `direct_cost_subcont_valgan`, `direct_cost_subcont_costreal`, `direct_cost_subcont_meta` ,
+      `direct_cost_serv_prog`, `direct_cost_serv_valoriz`, `direct_cost_serv_valgan`, `direct_cost_serv_costreal`, `direct_cost_serv_meta` ,
+      `direct_cost_equip_prog`, `direct_cost_equip_valoriz`, `direct_cost_equip_valgan`, `direct_cost_equip_costreal`, `direct_cost_equip_meta`,
+      (`direct_cost_mo_prog` + `direct_cost_mat_prog` + `direct_cost_subcont_prog` + `direct_cost_serv_prog` + `direct_cost_equip_prog`) as `sum_programado`,
+      (`direct_cost_mo_valoriz` + `direct_cost_mat_valoriz` + `direct_cost_subcont_valoriz` + `direct_cost_serv_valoriz` + `direct_cost_equip_valoriz`) as `sum_valorizado`,
+      (`direct_cost_mo_valgan` + `direct_cost_mat_valgan` + `direct_cost_subcont_valgan` + `direct_cost_serv_valgan` + `direct_cost_equip_valgan`) as `sum_valorganado`,
+      (`direct_cost_mo_costreal` + `direct_cost_mat_costreal` + `direct_cost_subcont_costreal` + `direct_cost_serv_costreal` + `direct_cost_equip_costreal`) as `sum_costo_real`,
+      (`direct_cost_mo_meta` + `direct_cost_mat_meta` + `direct_cost_subcont_meta` + `direct_cost_serv_meta` + `direct_cost_equip_meta`) as `sum_meta`
+    FROM `acc_consumption_cost_actual_"+ cc_id.to_s + "_"+ date.to_s + "`")
+    return array_dc
+  end
+
+  # => Methods for Macro Report
 
   def self.get_phases cc_id, date
     array_dc = connection.select_all("

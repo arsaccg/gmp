@@ -37,9 +37,25 @@ class Reports::ConsumptioncostsController < ApplicationController
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
-  	@magic_result_ge = ConsumptionCost.apply_all_consult(cost_center_obj.id,month)
-    @magic_result_gen_serv = ConsumptionCost.apply_all_gen_serv(cost_center_obj.id,month)
+  	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, month)
+    @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, month)
     @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, month)
+
+    @accumulated_result_ge = ConsumptionCost.apply_all_accumulated_general_expenses(cost_center_obj.id, month)
+    @accumulated_result_gen_serv = ConsumptionCost.apply_all_accumulated_general_services(cost_center_obj.id, month)
+    @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, month)
+
+    @costo_total_programado = @magic_result_dc['sum_programado'].to_f
+    @costo_total_valorizado = @magic_result_dc['sum_valorizado'].to_f # => FALTA el valorizado de Gastos Generales
+    @costo_total_valor_ganado = @magic_result_dc['sum_valorganado'].to_f
+    @costo_total_costo_real = @magic_result_dc['sum_costo_real'].to_f + @magic_result_ge['sum_costo_real'].to_f + @magic_result_gen_serv['sum_costo_real'].to_f
+    @costo_total_meta = @magic_result_dc['sum_meta'].to_f + @magic_result_ge['sum_meta'].to_f + @magic_result_gen_serv['sum_meta'].to_f
+    @costo_total_accumulado_programado = @accumulated_result_dc['sum_programado'].to_f
+    @costo_total_accumulado_valorizado = @accumulated_result_dc['sum_valorizado'].to_f # => FALTA el valorizado de Gastos Generales
+    @costo_total_accumulado_valor_ganado = @accumulated_result_dc['sum_valorganado'].to_f
+    @costo_total_accumulado_costo_real = @accumulated_result_dc['sum_costo_real'].to_f + @accumulated_result_ge['sum_costo_real'].to_f + @accumulated_result_gen_serv['sum_costo_real'].to_f
+    @costo_total_accumulado_meta = @accumulated_result_dc['sum_meta'].to_f + @accumulated_result_ge['sum_meta'].to_f + @accumulated_result_gen_serv['sum_meta'].to_f
+
   	render(partial: 'table', :layout => false)
   end
 

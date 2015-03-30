@@ -12,14 +12,8 @@
           %i.fa.fa-search
             Consultar
         %label{:style => 'visibility:hidden; width: 100%;'}
-        %button#create-tables.btn.btn-primary{type: "button"}
-          %i.fa.fa-search
-            Crear Tablas
-      .col-xs-6.col-sm-6.col-md-6.col-lg-6
-        %label{:style => 'visibility:hidden; width: 100%;'}
-        %button#search-cost-config.btn.btn-primary{type: "button"}
-          %i.fa.fa-search
-            Consultar Micro
+
+      
     .col-md-4.col-lg-4
     .col-xs-6.col-sm-6.col-md-4.col-lg-4
       %button.btn.btn-primary{type: "button", 'data-toggle' => "modal", 'data-target' => "#showconfig"}
@@ -328,6 +322,11 @@
               %label.checkbox
                 Anterior
                 = check_box_tag 'chbx_showme_previous_forecasts'
+
+      .modal-footer
+        %button#search-cost-config.btn.btn-primary{type: "button"}
+          %i.fa.fa-search
+            Guardar y Consultar
   }
 
 :javascript
