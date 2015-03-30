@@ -32,7 +32,7 @@ BEGIN
     BLOCK2: BEGIN
       DECLARE done2 INT DEFAULT FALSE;
       DECLARE articles_gg_meta CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, ph.code, SUM( ged.parcial ), IFNULL( ged.people, ged.amount)
+        SELECT art.code, art.name, unit.symbol, CAST(ph.code AS CHAR), SUM( ged.parcial ), IFNULL( ged.people, ged.amount)
         FROM general_expense_details ged, general_expenses ge, articles art, unit_of_measurements unit, phases ph
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
@@ -54,11 +54,11 @@ BEGIN
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
           "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
-             `measured_meta`,`insertion_date`)
+             `measured_meta`,`insertion_date`, `type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"', 'GG');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;             
@@ -72,7 +72,7 @@ BEGIN
     BLOCK3: BEGIN
       DECLARE done3 INT DEFAULT FALSE;
       DECLARE stock_outputs_articles CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, p.code, se.code, (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount), stock_output.amount
+        SELECT art.code, art.name, unit.symbol, CAST(p.code AS CHAR), CAST( se.code AS CHAR ) , (SUM(pod.unit_price_igv-IFNULL(pod.discount_after,0))/SUM(dod.amount)*stock_output.amount), stock_output.amount
         FROM articles art, purchase_orders po, purchase_order_details pod, delivery_order_details dod, phases p, unit_of_measurements unit, sectors se,
              (SELECT art.id AS article_id, SUM( sid.amount ) AS amount
               FROM stock_inputs si, stock_input_details sid, articles art
@@ -111,12 +111,12 @@ BEGIN
           "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
-             `measured_real`,`insertion_date`)
+             `measured_real`,`insertion_date`, `type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
               v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
-              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"','GG');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
@@ -130,7 +130,7 @@ BEGIN
       DECLARE done4 INT DEFAULT FALSE;
       DECLARE order_of_services_articles CURSOR FOR 
 
-        SELECT art.code, art.name, unit.symbol, p.code, se.code, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
+        SELECT art.code, art.name, unit.symbol, CAST(p.code AS CHAR), CAST( se.code AS CHAR ) , SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
         FROM order_of_service_details osd, phases p, order_of_services os, articles art, unit_of_measurements unit, sectors se 
         WHERE osd.phase_id = p.id
         AND osd.sector_id = se.id
@@ -160,12 +160,12 @@ BEGIN
           "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
-             `measured_real`,`insertion_date`)
+             `measured_real`,`insertion_date`, `type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
               v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
-              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'GG');");
 
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -234,7 +234,7 @@ BEGIN
           DECLARE v_pay FLOAT (10,2);
           
           DECLARE articles_payroll CURSOR FOR
-            SELECT art.code, art.name, unit.symbol, se.code, p.code, SUM( ppd.total_hours )
+            SELECT art.code, art.name, unit.symbol, CAST( se.code AS CHAR ), CAST(p.code AS CHAR), SUM( ppd.total_hours )
             FROM part_people pp, part_person_details ppd, phases p, articles art, workers w, worker_contracts wc, unit_of_measurements unit, sectors s
             WHERE ppd.part_person_id = pp.id
             AND ppd.worker_id = v_worker
@@ -267,12 +267,12 @@ BEGIN
               "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
                 `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
                 `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
-                 `measured_real`,`insertion_date`)
+                 `measured_real`,`insertion_date`,`type`)
                 VALUES (
                   '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",", 
                   v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
                   v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
-                  v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+                  v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"','GG');");
 
             PREPARE stmt FROM @SQL;
             EXECUTE stmt;
@@ -297,7 +297,7 @@ BEGIN
           DECLARE v_pay FLOAT (10,2);
           
           DECLARE articles_payrollw CURSOR FOR
-            SELECT art.code, art.name, unit.symbol, se.code, ph.code, SUM(8.5)
+            SELECT art.code, art.name, unit.symbol, CAST( se.code AS CHAR ) , CAST(ph.code AS CHAR), SUM(8.5)
             FROM part_workers pw, part_worker_details pwd, phases p, articles art, workers w, worker_contracts wc, unit_of_measurements unit, sectors se
             WHERE pwd.part_worker_id = pp.id AND pwd.worker_id = v_worker 
             AND pw.blockweekly = 1
@@ -330,12 +330,12 @@ BEGIN
               "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
                 `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
                 `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
-                 `measured_real`,`insertion_date`)
+                 `measured_real`,`insertion_date`, `type`)
                 VALUES (
                   '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
                   v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
                   v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
-                  v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+                  v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'GG');");
 
             PREPARE stmt FROM @SQL;
             EXECUTE stmt;
@@ -378,8 +378,8 @@ BEGIN
           LEAVE read_loop6;
         END IF;
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
-          "`(`article_code`,`valorizado_specific_lvl_1`, `insertion_date`)
-              VALUES ('",v_article_code, "',", v_amount,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          "`(`article_code`,`valorizado_specific_lvl_1`, `insertion_date`,`type`)
+              VALUES ('",v_article_code, "',", v_amount,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"','GG');");
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;  
@@ -392,7 +392,7 @@ BEGIN
     BLOCKGE: BEGIN
       DECLARE donege INT DEFAULT FALSE;
       DECLARE meta CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, ph.code, SUM( ged.parcial ), IFNULL(ged.people, ged.amount)
+        SELECT art.code, art.name, unit.symbol, CAST(ph.code AS CHAR), SUM( ged.parcial ), IFNULL(ged.people, ged.amount)
         FROM general_expense_details ged, general_expenses ge, articles art, unit_of_measurements unit, phases ph
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
@@ -414,11 +414,11 @@ BEGIN
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
           "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
-             `measured_meta`,`insertion_date`)
+             `measured_meta`,`insertion_date`,`type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              v_quantity,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -430,7 +430,7 @@ BEGIN
     BLOCKDEM: BEGIN
       DECLARE donedem INT DEFAULT FALSE;
       DECLARE meta CURSOR FOR 
-        SELECT dem.article_code, art.name, unit.symbol, p.code, dem.amount
+        SELECT dem.article_code, art.name, unit.symbol, CAST(p.code AS CHAR), dem.amount
         FROM diverse_expenses_of_managements dem, diverse_expenses_of_management_details demd, articles art, unit_of_measurements unit, phases p
         WHERE dem.cost_center_id = v_id
         AND dem.id = demd.diverse_expenses_of_management_id
@@ -451,11 +451,11 @@ BEGIN
         SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",v_id,"_",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%m%Y'),
           "`(`article_code`,`article_name`,`article_unit`,`meta_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
-             `measured_meta`,`insertion_date`)
+             `measured_meta`,`insertion_date`, `type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_amount, ",",
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
-              1,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              1,",'",DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -470,7 +470,7 @@ BEGIN
     BLOCKSI: BEGIN
       DECLARE donesi INT DEFAULT FALSE;
       DECLARE stock_outputs_gs CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, p.code, se.code, (SUM(sid.amount)*stock_output_prices.price), SUM(sid.amount)
+        SELECT art.code, art.name, unit.symbol, CAST(p.code AS CHAR), CAST( se.code AS CHAR ) , (SUM(sid.amount)*stock_output_prices.price), SUM(sid.amount)
         FROM stock_inputs si, stock_input_details sid, phases p, articles art, unit_of_measurements unit, sectors se,
             (SELECT art.id AS artid, ((pod.unit_price_igv - IFNULL( pod.discount_after, 0 ) ) * dod.amount) AS price, dod.phase_id AS phases_dod, dod.sector_id AS sectordod
             FROM purchase_orders po, purchase_order_details pod, articles art, delivery_order_details dod, phases p
@@ -511,12 +511,12 @@ BEGIN
           "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
-             `measured_real`,`insertion_date`)
+             `measured_real`,`insertion_date`, `type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
               v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
-              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
@@ -530,7 +530,7 @@ BEGIN
     BLOCKOS: BEGIN
       DECLARE doneos INT DEFAULT FALSE;
       DECLARE order_of_services CURSOR FOR 
-        SELECT art.code, art.name, unit.symbol, p.code, se.code, osd.working_group_id, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
+        SELECT art.code, art.name, unit.symbol, CAST(p.code AS CHAR), CAST( se.code AS CHAR ) , osd.working_group_id, SUM(osd.unit_price_igv - IFNULL(osd.discount_after,0)), osd.amount
         FROM order_of_services os, order_of_service_details osd, phases p, articles art, unit_of_measurements unit, sectors se
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
@@ -558,12 +558,12 @@ BEGIN
           "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
             `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
             `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
-             `measured_real`,`insertion_date`)
+             `measured_real`,`insertion_date`, `type`)
             VALUES (
               '",v_article_code, "','", v_article_name, "','", v_article_unit, "',", v_total_h/v_pay*v_neto, ",", 
               v_phase_code_hijo,",'",@phase_nombre,"',",LEFT(v_phase_code_hijo,2),",'",@phase_padre,"',",
               v_sector_code_hijo,",'",@sector_nombre,"',",LEFT(v_sector_code_hijo,2),",'",@sector_padre,"',",
-              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"');");
+              v_quantity,", '",DATE_ADD(CURDATE(), INTERVAL -1 DAY),"', 'SG');");
 
         PREPARE stmt FROM @SQL;
         EXECUTE stmt;
