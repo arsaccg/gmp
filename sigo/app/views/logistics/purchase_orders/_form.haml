@@ -87,30 +87,7 @@
                   %label.col-md-3.control-label Proveedores
                   .col-md-9
                     %input#proveedor-select.form-control{"name" =>"purchase_order[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@purchaseOrder.entity_id}"}
-              .col-md-4
-                .form-group
-                  %label.col-md-2.control-label Estado
-                  .col-md-10
-                    .input-group
-                      = f.input :state, :input_html => {:name => 'state', :class => 'form-control', :value => translate_purchase_order_state(@purchaseOrder.state)}, label: false, readonly: true
-                      %span.input-group-addon
-                        %i.fa.fa-flag
-              .col-md-4
-                .form-group
-                  %label.col-md-3.control-label Responsable
-                  .col-md-9
-                    .input-group
-                      = text_field(:purchaseOrder, :liable, class: "form-control", value: "#{@purchaseOrder.user.first_name} #{@purchaseOrder.user.last_name}", readonly: true)
-                      %span.input-group-addon
-                        %i.fa.fa-male
-            .row
-              .col-md-4
-                %label.col-md-3.control-label N° O.C.
-                .col-md-9
-                  .input-group
-                    = f.input :code, placeholder: "N° O.C.", :input_html => {:class => 'form-control'}, label: false
-                    %span.input-group-addon
-                      %i.fa.fa-male
+
               .col-md-8
                 .form-group
                   %label.col-md-2.control-label Glosa

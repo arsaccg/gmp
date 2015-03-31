@@ -1,10 +1,15 @@
 #content-inside
-  .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
-  #widget-grid
+  %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-12
-        = render :partial => 'form'
+        #wid-id-10.jarviswidget{:role => 'widget'}
+          %header{:role => 'heading'}
+            %span.widget-icon
+              %i.fa.fa-cloud-upload
+            %h2="Orden de Compra - Creada por  " + "#{current_user.first_name} #{current_user.last_name}"
+          %div{:role => 'content'}
+            .widget-body
+              = render :partial => 'form'
         
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>
@@ -90,10 +95,11 @@
       });
     });
 
-    $('form[id^="edit_purchase_order"]').ajaxForm({
+    $('form[id^="edit_"]').ajaxForm({
       beforeSubmit: function(arr, $form, options) {
         $form.validate({
           // Rules for form validation
+          ignore: '',
           rules : {
             'purchase_order[supplier_id]': {
               required: true
@@ -118,6 +124,9 @@
             'purchase_order[delivery_date]': {
               required: true,
               greaterThan: "#purchase_order_date_of_issue"
+            },
+            'purchase_order[description]': {
+              required: true
             }
           },
 
@@ -138,6 +147,9 @@
             'purchase_order[delivery_date]': { 
               required: "Porfavor, especifica la fecha de entrega.",
               greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+            },
+            'purchase_order[description]': {
+              required: "(*)"
             }
           },
         
@@ -146,6 +158,7 @@
             error.insertAfter(element.parent());
             $('#modalLoadingLabelading').modal('hide');
             $('.modal-backdrop.fade.in').remove();
+            $('em.invalid').attr("style", "color:#CC0000")
           }
         });
 
@@ -153,21 +166,25 @@
         $(".help-inline").remove();
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000")
         // Client Valid
-        if( $('#new_purchase_order').valid() ){
+        if( $('form[id^="edit_"]').valid() ){
           $('#modalLoadingLabelading').modal();
+          $('em.invalid').attr("style", "color:#CC0000")
         }
-        return $('#new_purchase_order').valid();  
+        return $('form[id^="edit_"]').valid();  
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000")
       },
       error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000")
       }
     });
 

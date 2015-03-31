@@ -32,11 +32,11 @@ class Administration::PartWorkersController < ApplicationController
 
   def new
     @action = 'new'
-    @partworkerlast = PartWorker.count
+    @partworkerlast = PartWorker.where("cost_center_id = " + get_company_cost_center('cost_center').to_s).count
     @numbercode = @partworkerlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @sectors = Sector.where("code LIKE '____' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))    
     @cc = get_company_cost_center('cost_center')
@@ -74,10 +74,10 @@ class Administration::PartWorkersController < ApplicationController
     @reg_n = Time.now.to_i
     @numbercode = @partworker.number_part
     @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'")
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @costcenters = CostCenter.where("company_id = ?",@company)
+    @costcenters = CostCenter.all
     @action = 'edit'
     @company = get_company_cost_center('company')
     @workers = Worker.all
@@ -114,7 +114,7 @@ class Administration::PartWorkersController < ApplicationController
     @wg = params[:wg].to_i
     date = params[:date].to_s
     @company = session[:company]
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @reg_n = ((Time.now.to_f)*100).to_i
     @workers = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT w.id

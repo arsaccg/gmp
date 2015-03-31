@@ -1,25 +1,27 @@
 - @reportRows.each do |x|
   %tr
     %td
-      = x[2] #x.warehouse_name
+      = x[3] #x.warehouse_name
     %td
-      = x[4] #x.period
+      = x[0]
     %td
-      = x[5] #x.issue_date
+      = x[5] #x.period
     %td
-      = x[7] #x.article_code
+      = x[6] #x.issue_date
     %td
-      = x[8] #x.article_name
+      = x[8] #x.article_code
     %td
-      = x[9] #x.article_symbol
-    - case x[0] #x.input
+      = x[9] #x.article_name
+    %td
+      = x[10] #x.article_symbol
+    - case x[1] #x.input
       - when 1
         %td
-          = x[10] #x.amount
-        %td
-          = number_with_precision(x[11], precision: 2, delimiter: ',')
+          = x[11] #x.amount
         %td
           = number_with_precision(x[12], precision: 2, delimiter: ',')
+        %td
+          = number_with_precision(x[13], precision: 2, delimiter: ',')
         %td
         %td
         %td
@@ -28,8 +30,8 @@
         %td
         %td
         %td
-          = x[10] #x.amount
-        %td
-          = number_with_precision(x[11], precision: 2, delimiter: ',')
+          = x[11] #x.amount
         %td
           = number_with_precision(x[12], precision: 2, delimiter: ',')
+        %td
+          = number_with_precision(x[13], precision: 2, delimiter: ',')

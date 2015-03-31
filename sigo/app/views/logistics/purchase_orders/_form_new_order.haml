@@ -62,33 +62,10 @@
     .row
       .col-md-4
         .form-group
-          %label.col-md-3.control-label Proveedores
+          %label.col-md-3.control-label Proveedor
           .col-md-9
             %input#proveedor-select.form-control{"name" =>"purchase_order[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', :required => true}
-      .col-md-4
-        .form-group
-          %label.col-md-2.control-label Estado
-          .col-md-10
-            .input-group
-              = f.input :state, :input_html => {:class => 'form-control', :value => translate_purchase_order_state(@purchaseOrder.state)}, label: false, readonly: true
-              %span.input-group-addon
-                %i.fa.fa-flag
-      .col-md-4
-        .form-group
-          %label.col-md-3.control-label Responsable
-          .col-md-9
-            .input-group
-              = text_field(:purchaseOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
-              %span.input-group-addon
-                %i.fa.fa-male
-    .row
-      .col-md-4
-        %label.col-md-3.control-label N° O.C.
-        .col-md-9
-          .input-group
-            = f.input :code, :input_html => {:class => 'form-control', :value => @numbercode}, label: false
-            %span.input-group-addon
-              %i.fa.fa-male
+
       .col-md-8
         .form-group
           %label.col-md-2.control-label Glosa
@@ -111,7 +88,7 @@
       %thead
         %tr
           %th Codigo
-          %th Nombre del Artículo
+          %th{'style' => 'width: 30%;'} Nombre del Artículo
           %th{'style' => 'width: 4%;'}
             U.M.
           %th{'style' => 'width: 5%;'}
@@ -131,7 +108,7 @@
           %th{'style' => 'width: 8%;'}
             Neto a pagar 
           %th{'style' => 'width: 1%;'} Otros
-          %th{'style' => 'width: 30%;'} Descripción
+          %th Descripción
       %tbody#order_delivery_items_table
 
   .form-actions

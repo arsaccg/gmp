@@ -1,9 +1,9 @@
 - @reportRows.each do |x|
   %tr
     %td
-      = x[1] #x.warehouse_name
+      = x[2] #x.warehouse_name
     %td
-      = x[6]
+      = x[0]
     %td
       = x[7]
     %td
@@ -11,12 +11,14 @@
     %td
       = x[9]
     %td
-      = number_with_precision(x[10], precision: 2, delimiter: ',')
+      = x[10]
     %td
       = number_with_precision(x[11], precision: 2, delimiter: ',')
     %td
-      = x[12]
+      = number_with_precision(x[12], precision: 2, delimiter: ',')
     %td
-      = number_with_precision(x[13], precision: 2, delimiter: ',')
+      = x[13]
     %td
       = number_with_precision(x[14], precision: 2, delimiter: ',')
+    %td
+      = number_with_precision(x[15], precision: 2, delimiter: ',')

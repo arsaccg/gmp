@@ -32,7 +32,7 @@ class Production::PartWorksController < ApplicationController
     @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center_id)
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center_id)
     #@articles = PartWork.getOwnArticles(cost_center_id)
-    itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
+    itembybudget_ids = SubcontractDetail.distinct.joins(:subcontract).select(:itembybudget_id).where("subcontracts.cost_center_id = " + get_company_cost_center('cost_center').to_s).map(&:itembybudget_id)
     @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @company = params[:company_id]
     @cc = get_company_cost_center('cost_center')

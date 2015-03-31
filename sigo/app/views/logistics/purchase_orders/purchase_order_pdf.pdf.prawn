@@ -82,28 +82,28 @@ end
 
 move_down 10
 
-text "Glosa", :style => :bold, :size => 9
-text "#{@purchaseOrder.description}", :size => 9
-repeat :all do
-  bounding_box [bounds.right - 63, bounds.bottom + 520], :width  => 200 do
-    text "de #{total}", :size => 9
-  end
-end
-bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
-  text "#{@total_neto.to_i.to_words.upcase} Y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name.upcase}", :size => 8,:style => :bold
-end
-bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
-  table([ 
-    ["", "Condiciones:
-    1. Facturar adjuntando O/C y guias recepcionadas
-    2. Indicar procedencia, marca y lote de producción en casos aplicables
-    3. Adjuntar certificado de calidad, en casos aplicables", ""]
-  ], :width => 550, :column_widths => [70, 410, 70]) do
-      style(columns(0..2), :size => 8)
-    end
-end
 
 if(@percepcion_neto!=0)
+  text "Glosa", :style => :bold, :size => 9
+  text "#{@purchaseOrder.description}", :size => 9
+  repeat :all do
+    bounding_box [bounds.right - 63, bounds.bottom + 520], :width  => 200 do
+      text "de #{total}", :size => 9
+    end
+  end
+  bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
+    text "#{(@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto).to_i.to_words.upcase} Y #{number_with_precision ((@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto)-(@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto).to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name.upcase}", :size => 8,:style => :bold
+  end
+  bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
+    table([ 
+      ["", "Condiciones:
+      1. Facturar adjuntando O/C y guias recepcionadas
+      2. Indicar procedencia, marca y lote de producción en casos aplicables
+      3. Adjuntar certificado de calidad, en casos aplicables", ""]
+    ], :width => 550, :column_widths => [70, 410, 70]) do
+        style(columns(0..2), :size => 8)
+      end
+  end
   bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
@@ -121,6 +121,26 @@ if(@percepcion_neto!=0)
       end     
   end
 else
+  text "Glosa", :style => :bold, :size => 9
+  text "#{@purchaseOrder.description}", :size => 9
+  repeat :all do
+    bounding_box [bounds.right - 63, bounds.bottom + 520], :width  => 200 do
+      text "de #{total}", :size => 9
+    end
+  end
+  bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
+    text "#{(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto).to_i.to_words.upcase} Y #{number_with_precision ((@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto)-(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto).to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name.upcase}", :size => 8,:style => :bold
+  end
+  bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
+    table([ 
+      ["", "Condiciones:
+      1. Facturar adjuntando O/C y guias recepcionadas
+      2. Indicar procedencia, marca y lote de producción en casos aplicables
+      3. Adjuntar certificado de calidad, en casos aplicables", ""]
+    ], :width => 550, :column_widths => [70, 410, 70]) do
+        style(columns(0..2), :size => 8)
+      end
+  end
   bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],

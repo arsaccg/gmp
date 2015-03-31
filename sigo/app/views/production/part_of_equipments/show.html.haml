@@ -35,7 +35,7 @@
                     %td
                       = @partofequipment.code
                     %td 
-                      = @partofequipment.date
+                      = @partofequipment.date.strftime("%d-%m-%Y").to_s
                     %td
                       -@subcontracts.each do |sb|
                         -if sb.id==@partofequipment.subcontract_equipment_id
@@ -43,7 +43,7 @@
                     %td
                       = @partofequipment.worker.entity.name.to_s + ' '+ @partofequipment.worker.entity.paternal_surname.to_s + ' ' + @partofequipment.worker.entity.maternal_surname.to_s
                     %td
-                      = SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).code + ' ' + @name_article_specific
+                      = SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).code + ' ' + @name_article_specific.to_s
                     %td
                       = @partofequipment.dif
                     %td

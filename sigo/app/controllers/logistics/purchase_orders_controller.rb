@@ -498,8 +498,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def create
     @purchaseOrder = PurchaseOrder.new(purchase_order_parameters)
+    ancester = (PurchaseOrder.where(:cost_center_id => get_company_cost_center('cost_center')).last.code.to_i rescue 0)
     @purchaseOrder.state = 'pre_issued'
     @purchaseOrder.user_id = current_user.id
+    @purchaseOrder.code = ancester + 1
     if @purchaseOrder.save
 
       @purchaseOrder.purchase_order_details.each do |pod|
@@ -606,12 +608,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def destroy
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
     if !PurchaseOrder.inspect_have_data(params[:id])
-      if @purchaseOrder.cancel!
-        stateOrderDetail = StatePerOrderPurchase.new
-        stateOrderDetail.state = @purchaseOrder.human_state_name
-        stateOrderDetail.purchase_order_id = params[:id]
-        stateOrderDetail.user_id = current_user.id
-        stateOrderDetail.save
+      if @purchaseOrder.state == "pre_issued"
+        @purchaseOrder.destroy
+      else
+        if @purchaseOrder.cancel!
+          stateOrderDetail = StatePerOrderPurchase.new
+          stateOrderDetail.state = @purchaseOrder.human_state_name
+          stateOrderDetail.purchase_order_id = params[:id]
+          stateOrderDetail.user_id = current_user.id
+          stateOrderDetail.save
+        end
       end
     else
       flash[:error] = "La Orden de Compra N° " + @purchaseOrder.id.to_s.rjust(5, '0') + " no puede ser cancelada. Los datos de esta orden están siendo utilizados."

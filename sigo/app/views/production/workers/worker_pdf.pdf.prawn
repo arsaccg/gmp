@@ -105,13 +105,13 @@ table([ ["#{@worker.address.to_s}"] ], :width => 520, :cell_style => {:height =>
         style(columns(0), :align => :center)
         style(columns(0), :size => 7)
       end
-table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
+table([ ["DISTRITO", "PROVINCIA","DEPARTAMENTO"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 7)
         columns(0..2).font_style = :bold
         style(row(0), :background_color => 'A0D8A0')
       end
-table([ ["#{@worker.district.to_s}", "#{@worker.province.to_s}","#{@worker.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
+table([ [("#{@worker.district.to_s}" rescue " "), ("#{@worker.province.to_s}" rescue " "),("#{@worker.department.to_s}" rescue " ")] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 7)
       end
@@ -553,13 +553,13 @@ if @workercontract.nil?
           style(row(0), :background_color => 'A0D8A0')
         end
   move_down 10
-  table([ ["OBRA", "#{@worker.cost_center.cost_center_detail.name}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,440]) do
+  table([ ["OBRA", ("#{@worker.cost_center.cost_center_detail.name}" rescue "-")] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,440]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 7)
           columns(0).font_style = :bold
           style(column(0), :background_color => 'A0D8A0')
         end
-  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],["#{@worker.cost_center.cost_center_detail.district.to_s}", "#{@worker.cost_center.cost_center_detail.province.to_s}","#{@worker.cost_center.cost_center_detail.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
+  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],[("#{@worker.cost_center.cost_center_detail.district.to_s}" rescue " "),("#{@worker.cost_center.cost_center_detail.province.to_s}" rescue " "),("#{@worker.cost_center.cost_center_detail.department.to_s}" rescue " ")] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
           style(columns(0..2), :align => :center)
           style(columns(0..2), :size => 7)
           row(0).font_style = :bold
@@ -574,7 +574,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   move_down 10
-  table([ ["OBRA", "#{@worker.cost_center.cost_center_detail.name.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,440]) do
+  table([ ["OBRA", ("#{@worker.cost_center.cost_center_detail.name.to_s}" rescue "-")] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,440]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 7)
           columns(0).font_style = :bold
@@ -608,7 +608,7 @@ else
     end
     move_down 10
   end
-  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],["#{@worker.cost_center.cost_center_detail.district.to_s}", "#{@worker.cost_center.cost_center_detail.province.to_s}","#{@worker.cost_center.cost_center_detail.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
+  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],[("#{@worker.cost_center.cost_center_detail.district.to_s}" rescue " "), ("#{@worker.cost_center.cost_center_detail.province.to_s}" rescue " "),("#{@worker.cost_center.cost_center_detail.department.to_s}" rescue " ")] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
           style(columns(0..2), :align => :center)
           style(columns(0..2), :size => 7)
           row(0).font_style = :bold
