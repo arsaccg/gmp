@@ -873,7 +873,7 @@ BEGIN
     SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
 
     SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
       VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
     PREPARE stmt FROM @SQL;
     EXECUTE stmt;
@@ -892,7 +892,7 @@ BEGIN
     SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
 
     SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
       VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
     PREPARE stmt FROM @SQL;
     EXECUTE stmt;
@@ -910,7 +910,7 @@ BEGIN
     SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
 
     SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
       VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
     PREPARE stmt FROM @SQL;
     EXECUTE stmt;
@@ -929,7 +929,7 @@ BEGIN
     SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
 
     SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
       VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
     PREPARE stmt FROM @SQL;
     EXECUTE stmt;
@@ -948,7 +948,7 @@ BEGIN
     SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
 
     SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
       VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
     PREPARE stmt FROM @SQL;
     EXECUTE stmt;
