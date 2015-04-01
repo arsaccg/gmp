@@ -37,13 +37,13 @@ class Reports::ConsumptioncostsController < ApplicationController
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
-  	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, month)
-    @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, month)
-    @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, month)
+  	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, Time.now.to_date.strftime('%m%Y'))
+    @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, Time.now.to_date.strftime('%m%Y'))
+    @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, Time.now.to_date.strftime('%m%Y'))
 
-    @accumulated_result_ge = ConsumptionCost.apply_all_accumulated_general_expenses(cost_center_obj.id, month)
-    @accumulated_result_gen_serv = ConsumptionCost.apply_all_accumulated_general_services(cost_center_obj.id, month)
-    @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, month)
+    @accumulated_result_ge = ConsumptionCost.apply_all_accumulated_general_expenses(cost_center_obj.id, Time.now.to_date.strftime('%m%Y'))
+    @accumulated_result_gen_serv = ConsumptionCost.apply_all_accumulated_general_services(cost_center_obj.id, Time.now.to_date.strftime('%m%Y'))
+    @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, Time.now.to_date.strftime('%m%Y'))
 
     @costo_total_programado = @magic_result_dc['sum_programado'].to_f
     @costo_total_valorizado = @magic_result_dc['sum_valorizado'].to_f # => FALTA el valorizado de Gastos Generales
@@ -69,32 +69,52 @@ class Reports::ConsumptioncostsController < ApplicationController
   end
 
   def get_subphase
-    type = Phase.find(params[:phase_id])
-    subphase = Phase.where("code LIKE '" + type.code + "__'" )
+    type = Phase.where("id IN (" + params[:phase_id].to_a.join(',').to_s + ")")
+    cad = Array.new
+    type.each do |ph|
+      cad << "code LIKE '" + ph.code.to_s + "__'"
+    end
+    subphase = Phase.where("( " + cad.to_a.join(' OR ').to_s + ")")
     render json: {:subphase => subphase}  
   end
 
   def get_subsector
-    type = Sector.find(params[:sector_id])
-    subsector = Sector.where("code LIKE '" + type.code + "__' AND cost_center_id = " + get_company_cost_center('cost_center') )
+    type = Sector.where("id IN (" + params[:sector_id].to_a.join(',').to_s + ")")
+    cad = Array.new
+    type.each do |ph|
+      cad << "code LIKE '" + ph.code.to_s + "__'"
+    end    
+    subsector = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND (" + cad.to_a.join(' OR ').to_s + ")" )
     render json: {:subsector => subsector}  
   end
 
   def get_subgroup
-    type = Category.find(params[:group_id])
-    subgroup = Category.where("code LIKE '" + type.code + "__'")
+    type = Category.where("id IN (" + params[:group_id].to_a.join(',').to_s + ")")
+    cad = Array.new
+    type.each do |ph|
+      cad << "code LIKE '" + ph.code.to_s + "__'"
+    end      
+    subgroup = Category.where(" ( " + cad.to_a.join(' OR ').to_s + ") ")
     render json: {:subgroup => subgroup}  
   end
 
   def get_specific
-    type = Category.find(params[:subgroup_id])
-    specific = Category.where("code LIKE '" + type.code + "__'")
+    type = Category.where("id IN (" + params[:subgroup_id].to_a.join(',').to_s + ")")
+    cad = Array.new
+    type.each do |ph|
+      cad << "code LIKE '" + ph.code.to_s + "__'"
+    end     
+    specific = Category.where(" ( " + cad.to_a.join(' OR ').to_s + ") ")
     render json: {:specific => specific}  
   end
 
   def get_art
-    type = Category.find(params[:specific_id])
-    article = Article.where("code LIKE '__" + type.code + "__'")
+    type = Category.where("id IN (" + params[:specific_id].to_a.join(',').to_s + ")")
+    cad = Array.new
+    type.each do |ph|
+      cad << "code LIKE '__" + ph.code.to_s + "__'"
+    end      
+    article = Article.where(" ( " + cad.to_a.join(' OR ').to_s + ") ")
     render json: {:article => article}  
   end 
 
@@ -105,6 +125,7 @@ class Reports::ConsumptioncostsController < ApplicationController
     second = params[:second]
     third = params[:third]
     fourth = params[:fourth]
+
     phase = params[:phase]
     subphase = params[:subphase]
     sector = params[:sector]
@@ -117,57 +138,812 @@ class Reports::ConsumptioncostsController < ApplicationController
     artsubgru = params[:artsubgru]
     artspec = params[:artspec]
     art = params[:art]
+
     cc = get_company_cost_center('cost_center')
-    @phases = ConsumptionCost.get_phases(cc, Time.now.to_date.strftime('%m%Y'))
+    # cc_id, date, insertion_date, select, table, condition_id, condition, order
     @total = Array.new
     @total_nombres_fases = Array.new
     @total_nombres_sector = Array.new
     @total_nombres_wg = Array.new
-    @phases.to_a.each do |ph|
-      phs = Phase.find(ph['id'])
-      php = Phase.find_by_code(phs.code[0..1])
-      if !@total_nombres_fases.include?(php.name)
-        @total << [php.code + " - " + php.name,nil,nil,nil,nil,nil,"fase padre"]
-        @total_nombres_fases << php.name
-      end
-      @total << [phs.code + " - " + phs.name,nil,nil,nil,nil,nil,"fase hija"]
-      @sector = ConsumptionCost.get_sector_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id)
-      if !@sector.empty?
-        @sector.each do |se|
-          ses = Sector.find(se['sector_id'])
-          sep = Sector.find_by_code(ses.code[0..1])
-          if !@total_nombres_sector.include?(sep.name)
-            @total << [sep.code + " - " + sep.name,nil,nil,nil,nil,nil,"sector padre"]
-            @total_nombres_sector << sep.name
-          end          
-          @total << [ses.code + " - " + ses.name,nil,nil,nil,nil,nil,"sector hija"]
-          @wg = ConsumptionCost.get_wg_from_sector_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id)
-          if !@wg.empty?
-            @wg.each do |wg|
-              wgs = WorkingGroup.find(wg['working_group_id'])
-              if !@total_nombres_wg.include?(wgs.name)
-                @total << [wgs.name,nil,nil,nil,nil,nil,"working_group"]
-                @total_nombres_wg << wgs.name
-              end
-              @articles = ConsumptionCost.get_articles_from_cwgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id, wgs.id)
-              @articles.each do |ar|
-                @total << [ar['article'], ar['programado_specific_lvl1'],ar['meta_specific_lvl_1'], ar['real_specific_lvl_1'], ar['valorizado_specific_lvl_1'], ar['valor_ganado_specific_lvl_1'], "article"]
+    @total_nombres_category = Array.new
+    ["CD","GG","SG"].each do |cat|
+      if first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"
+
+        @phases = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`fase_cod_hijo`", ", `phases` ph", "fase_cod_hijo =  ph.code", " ", "ph.code", cat)
+        @phases.to_a.each do |ph|
+          phs = Phase.find_by_code(ph['fase_cod_hijo'])
+          php = Phase.find_by_code(phs.code[0..1])
+          if !@total_nombres_fases.include?(php.name)
+            @total << [php.code + " - " + php.name,nil,nil,nil,nil,nil,"fase padre"]
+            @total_nombres_fases << php.name
+          end
+          @total << [phs.code + " - " + phs.name,nil,nil,nil,nil,nil,"fase hija"]
+          @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`", ", `sectors` sc", "sector_cod_hijo =  sc.code", " AND acc.fase_cod_hijo = #{phs.code}", "sc.code", cat)
+          if !@sector.empty?
+            @sector.each do |se|
+              ses = Sector.find_by_code(se['sector_cod_hijo'])
+              sep = Sector.find_by_code(ses.code[0..1])
+              if !@total_nombres_sector.include?(sep.name)
+                @total << [sep.code + " - " + sep.name,nil,nil,nil,nil,nil,"sector padre"]
+                @total_nombres_sector << sep.name
+              end          
+              @total << [ses.code + " - " + ses.name,nil,nil,nil,nil,nil,"sector hija"]
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{phs.code} AND acc.sector_cod_hijo = #{ses.code}", "wg.name", cat)
+              if !@wg.empty?
+                @wg.each do |wg|
+                  wgs = WorkingGroup.find(wg['working_group_id'])
+                  if !@total_nombres_wg.include?(wgs.name)
+                    @total << [wgs.name,nil,nil,nil,nil,nil,"working_group"]
+                    @total_nombres_wg << wgs.name
+                  end
+                  @articles = ConsumptionCost.get_articles_from_cwgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.code, ses.code, wgs.id)
+                  @articles.each do |ar|
+                    @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                  end
+                end
+              else
+                @articles = ConsumptionCost.get_articles_from_swgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.code, ses.code)
+                @articles.each do |ar|
+                  @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                end
               end
             end
           else
-            @articles = ConsumptionCost.get_articles_from_swgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.id, ses.id)
+            @articles =ConsumptionCost.get_articles_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.code)
             @articles.each do |ar|
-              @total << [ar['article'], ar['programado_specific_lvl1'],ar['meta_specific_lvl_1'], ar['real_specific_lvl_1'], ar['valorizado_specific_lvl_1'], ar['valor_ganado_specific_lvl_1'], "article"]
-            end
+              @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+            end        
           end
         end
-      else
-        @articles =ConsumptionCost.get_articles_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.id)
-        @articles.each do |ar|
-          @total << [ar['article'], ar['programado_specific_lvl1'],ar['meta_specific_lvl_1'], ar['real_specific_lvl_1'], ar['valorizado_specific_lvl_1'], ar['valor_ganado_specific_lvl_1'], "article"]
-        end        
       end
+      # ----------------------------------- EMPIEZAN COMBINACIONES -----------------------------------
+      # --------------------------- FASE PRIMERO ------------------------------------
+      if first == "phase"
+        if phase != ""
+          extra = Phase.where("id IN (#{phase.join(',')})")
+          code = Array.new
+          extra.each do |ex|
+            code << ex.code
+          end
+          @phase = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`fase_cod_hijo`, CONCAT(`acc`.`fase_cod_padre`, ' - ', `acc`.`fase_cod_padre_nombre`) AS phase_father", ", `phases` ph", "fase_cod_hijo =  ph.code", " AND ph.code IN (#{code.join(',')})", "ph.code", cat)
+        elsif subphase != ""
+          @phase = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`fase_cod_hijo`, CONCAT(`acc`.`fase_cod_padre`, ' - ', `acc`.`fase_cod_padre_nombre`) AS phase_father", ", `phases` ph", "fase_cod_hijo =  ph.code", " AND ph.id IN (#{subphase.join(',')})", "ph.code", cat)
+        else
+          @phase = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`fase_cod_hijo`, CONCAT(`acc`.`fase_cod_padre`, ' - ', `acc`.`fase_cod_padre_nombre`) AS phase_father", ", `phases` ph", "fase_cod_hijo =  ph.code", " ", "ph.code", cat)
+        end
+        @phase.each do |fa|
+          if !@total_nombres_fases.include?(fa['phase_father'])
+            @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
+            @total_nombres_fases << fa['phase_father']
+          end
+          name = Phase.find_by_code(fa['fase_cod_hijo'])
+          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+          if second == "sector"
+            if sector != ""
+              extra = Sector.where("id IN (#{sector.join(',')})")
+              code = Array.new
+              extra.each do |ex|
+                code << ex.code
+              end
+              @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND se.code IN (#{code.join(',')} AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "se.code", cat)
+            elsif subsector != ""
+              @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo =  se.code", " AND se.id IN (#{subsector.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "se.code", cat)
+            else
+              @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "se.code", cat)
+            end
+            @sector.each do |se|
+              if !@total_nombres_sector.include?(se['sector_padre'])
+                @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
+                @total_nombres_sector << se['sector_padre']
+              end
+              name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
+              @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+              if third == "article" && fourth == "working_group"
+                cad_in = Array.new
+                if artgru != ""
+                  Category.where("id IN (#{artgru.join(',')}").each do |cat|
+                    cad_in << cat.code
+                  end
+                  @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 4),2) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "art.code", cat)
+                else
+                  @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "art.code", cat)
+                end
+                @group.each do |gr|
+                  code_group_name = Category.find_by_code(gr['group_code']).name
+                  if !@total_nombres_wg.include?(code_group_name)
+                    @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                    @total_nombres_fases << code_group_name
+                  end                      
+                  if artsubgru != ""
+                    Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
+                      cad_in << cat.code
+                    end
+                    @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 6),4) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "art.code", cat)
+                  else
+                    @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "art.code", cat)
+                  end
+                  @sub_group.each do |sgr|
+                    code_group_name = Category.find_by_code(sgr['sub_group_code']).name
+                    if !@total_nombres_wg.include?(code_group_name)
+                      @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                      @total_nombres_fases << code_group_name
+                    end                        
+                    if artspec != ""
+                      Category.where("id IN (#{artspec.join(',')}").each do |cat|
+                        cad_in << cat.code
+                      end
+                      @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 8),6) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "art.code", cat)
+                    else
+                      @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "art.code", cat)
+                    end
+                    @specific.each do |spe|
+                      code_group_name = Category.find_by_code(spe['specifics']).name
+                      if !@total_nombres_wg.include?(code_group_name)
+                        @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                        @total_nombres_fases << code_group_name
+                      end
+                      if wg != ""
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                      elsif jf != ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                      elsif jf != "" && exe != ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                      elsif jf != "" && cap!= ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                      elsif jf != "" && cap!= "" && exe != ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                      else
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) ", "wg.name", cat)
+                      end
+                      @wg.each do |wg|
+                        if !@total_nombres_wg.include?(wg['name'])
+                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          @total_nombres_fases << wg['name']
+                        end
+                        if art != ""
+                          Article.where("id IN (#{art.join(',')}").each do |cat|
+                            cad_in << cat.code
+                          end
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND art.code IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']}", "art.code", cat)
+                        else
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
+                        end
+                        @article.each do |art|
+                          @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                        end
+                      end
+                    end
+                  end
+                end 
+
+              elsif third == "working_group" && fourth == "article"
+                if wg != ""
+                  @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                elsif jf != ""
+                  wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                  ids = Array.new()
+                  wg.each do |w|
+                    ids << w.id
+                  end
+                  @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                elsif jf != "" && exe != ""
+                  wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                  ids = Array.new()
+                  wg.each do |w|
+                    ids << w.id
+                  end
+                  @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                elsif jf != "" && cap!= ""
+                  wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                  ids = Array.new()
+                  wg.each do |w|
+                    ids << w.id
+                  end
+                  @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                elsif jf != "" && cap!= "" && exe != ""
+                  wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                  ids = Array.new()
+                  wg.each do |w|
+                    ids << w.id
+                  end
+                  @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                else
+                  @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} ", "wg.name", cat)
+                end
+                @wg.each do |wg|
+                  if !@total_nombres_wg.include?(wg['name'])
+                    @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                    @total_nombres_fases << wg['name']
+                  end                  
+                  cad_in = Array.new
+                  if artgru != ""
+                    Category.where("id IN (#{artgru.join(',')}").each do |cat|
+                      cad_in << cat.code
+                    end
+                    @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 4),2) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                  else
+                    @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                  end
+                  @group.each do |gr|
+                    code_group_name = Category.find_by_code(gr['group_code']).name
+                    if !@total_nombres_wg.include?(code_group_name)
+                      @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                      @total_nombres_fases << code_group_name
+                    end                      
+                    if artsubgru != ""
+                      Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
+                        cad_in << cat.code
+                      end
+                      @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 6),4) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                    else
+                      @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                    end
+                    @sub_group.each do |sgr|
+                      code_group_name = Category.find_by_code(sgr['sub_group_code']).name
+                      if !@total_nombres_wg.include?(code_group_name)
+                        @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                        @total_nombres_fases << code_group_name
+                      end                        
+                      if artspec != ""
+                        Category.where("id IN (#{artspec.join(',')}").each do |cat|
+                          cad_in << cat.code
+                        end
+                        @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 8),6) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                      else
+                        @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                      end
+                      @specific.each do |spe|
+                        code_group_name = Category.find_by_code(spe['specifics']).name
+                        if !@total_nombres_wg.include?(code_group_name)
+                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          @total_nombres_fases << code_group_name
+                        end
+                        if art != ""
+                          Article.where("id IN (#{art.join(',')}").each do |cat|
+                            cad_in << cat.code
+                          end
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND art.code IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']}", "art.code", cat)
+                        else
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
+                        end
+                        @article.each do |art|
+                          @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+
+          elsif second == "working_group"
+            if wg != ""
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "wg.name", cat)
+            elsif jf != ""
+              wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+              ids = Array.new()
+              wg.each do |w|
+                ids << w.id
+              end
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "wg.name", cat)
+            elsif jf != "" && exe != ""
+              wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+              ids = Array.new()
+              wg.each do |w|
+                ids << w.id
+              end
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "wg.name", cat)
+            elsif jf != "" && cap!= ""
+              wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+              ids = Array.new()
+              wg.each do |w|
+                ids << w.id
+              end
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "wg.name", cat)
+            elsif jf != "" && cap!= "" && exe != ""
+              wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+              ids = Array.new()
+              wg.each do |w|
+                ids << w.id
+              end
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "wg.name", cat)
+            else
+              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} ", "wg.name", cat)
+            end
+            @wg.each do |wg|
+              if !@total_nombres_wg.include?(wg['name'])
+                @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                @total_nombres_fases << wg['name']
+              end               
+              if third == "sector" && fourth == "article"
+                if sector != ""
+                  extra = Sector.where("id IN (#{sector.join(',')})")
+                  code = Array.new
+                  extra.each do |ex|
+                    code << ex.code
+                  end
+                  @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND se.code IN (#{code.join(',')} AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "se.code", cat)
+                elsif subsector != ""
+                  @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo =  se.code", " AND se.id IN (#{subsector.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "se.code", cat)
+                else
+                  @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "se.code", cat)
+                end
+                @sector.each do |se|
+                  if !@total_nombres_sector.include?(se['sector_padre'])
+                    @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
+                    @total_nombres_sector << se['sector_padre']
+                  end
+                  name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
+                  @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                  if artgru != ""
+                    Category.where("id IN (#{artgru.join(',')}").each do |cat|
+                      cad_in << cat.code
+                    end
+                    @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 4),2) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                  else
+                    @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                  end                  
+                  @group.each do |gr|
+                    code_group_name = Category.find_by_code(gr['group_code']).name
+                    if !@total_nombres_wg.include?(code_group_name)
+                      @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                      @total_nombres_fases << code_group_name
+                    end                      
+                    if artsubgru != ""
+                      Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
+                        cad_in << cat.code
+                      end
+                      @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 6),4) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                    else
+                      @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                    end
+                    @sub_group.each do |sgr|
+                      code_group_name = Category.find_by_code(sgr['sub_group_code']).name
+                      if !@total_nombres_wg.include?(code_group_name)
+                        @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                        @total_nombres_fases << code_group_name
+                      end                        
+                      if artspec != ""
+                        Category.where("id IN (#{artspec.join(',')}").each do |cat|
+                          cad_in << cat.code
+                        end
+                        @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 8),6) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                      else
+                        @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                      end
+                      @specific.each do |spe|
+                        code_group_name = Category.find_by_code(spe['specifics']).name
+                        if !@total_nombres_wg.include?(code_group_name)
+                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          @total_nombres_fases << code_group_name
+                        end
+                        if art != ""
+                          Article.where("id IN (#{art.join(',')}").each do |cat|
+                            cad_in << cat.code
+                          end
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND art.code IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']}", "art.code", cat)
+                        else
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
+                        end
+                        @article.each do |art|
+                          @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                        end
+                      end
+                    end
+                  end
+                end
+
+              elsif third == "article" && fourth == "sector"
+                if artgru != ""
+                  Category.where("id IN (#{artgru.join(',')}").each do |cat|
+                    cad_in << cat.code
+                  end
+                  @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 4),2) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                else
+                  @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                end
+                @group.each do |gr|
+                  code_group_name = Category.find_by_code(gr['group_code']).name
+                  if !@total_nombres_wg.include?(code_group_name)
+                    @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                    @total_nombres_fases << code_group_name
+                  end                      
+                  if artsubgru != ""
+                    Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
+                      cad_in << cat.code
+                    end
+                    @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 6),4) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                  else
+                    @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                  end
+                  p "as-------------------------------------------------------------------------------------------------------------------------------"
+                  @sub_group.each do |sgr|
+                    code_group_name = Category.find_by_code(sgr['sub_group_code']).name rescue nil
+                    if !@total_nombres_wg.include?(code_group_name)
+                      @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                      @total_nombres_fases << code_group_name
+                    end                        
+                    if artspec != ""
+                      Category.where("id IN (#{artspec.join(',')}").each do |cat|
+                        cad_in << cat.code
+                      end
+                      @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 8),6) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                    else
+                      @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
+                    end
+                    @specific.each do |spe|
+                      code_group_name = Category.find_by_code(spe['specifics']).name rescue nil
+                      if !@total_nombres_wg.include?(code_group_name)
+                        @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                        @total_nombres_fases << code_group_name
+                      end
+
+                      if sector != ""
+                        extra = Sector.where("id IN (#{sector.join(',')})")
+                        code = Array.new
+                        extra.each do |ex|
+                          code << ex.code
+                        end
+                        @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND se.code IN (#{code.join(',')} AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND LEFT(RIGHT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                      elsif subsector != ""
+                        @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo =  se.code", " AND se.id IN (#{subsector.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND LEFT(RIGHT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                      else
+                        @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND LEFT(RIGHT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                      end
+                      i = 1
+                      @sector.each do |se|
+                        if !@total_nombres_sector.include?(se['sector_padre'])
+                          @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
+                          @total_nombres_sector << se['sector_padre']
+                        end
+                        name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
+                        @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                        
+                        if art != ""
+                          Article.where("id IN (#{art.join(',')}").each do |cat|
+                            cad_in << cat.code
+                          end
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND art.code IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "art.code", cat)
+                        else
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
+                        end
+                        @article.each do |art|
+                          @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+
+          elsif second == "article"
+            if artgru != ""
+              Category.where("id IN (#{artgru.join(',')}").each do |cat|
+                cad_in << cat.code
+              end
+              @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 4),2) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "art.code", cat)
+            else
+              @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "art.code", cat)
+            end
+            @group.each do |gr|
+              code_group_name = Category.find_by_code(gr['group_code']).name
+              if !@total_nombres_wg.include?(code_group_name)
+                @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                @total_nombres_fases << code_group_name
+              end                      
+              if artsubgru != ""
+                Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
+                  cad_in << cat.code
+                end
+                @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 6),4) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "art.code", cat)
+              else
+                @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "art.code", cat)
+              end
+              @sub_group.each do |sgr|
+                code_group_name = Category.find_by_code(sgr['sub_group_code']).name rescue nil
+                if !@total_nombres_wg.include?(code_group_name)
+                  @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                  @total_nombres_fases << code_group_name
+                end                        
+                if artspec != ""
+                  Category.where("id IN (#{artspec.join(',')}").each do |cat|
+                    cad_in << cat.code
+                  end
+                  @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND RIGHT(LEFT(art.code, 8),6) IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "art.code", cat)
+                else
+                  @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "art.code", cat)
+                end
+                @specific.each do |spe|
+                  code_group_name = Category.find_by_code(spe['specifics']).name rescue nil
+                  if !@total_nombres_wg.include?(code_group_name)
+                    @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                    @total_nombres_fases << code_group_name
+                  end
+                  if third == "working_group" && fourth == "sector"
+                    if wg != ""
+                      @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                    elsif jf != ""
+                      wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                      ids = Array.new()
+                      wg.each do |w|
+                        ids << w.id
+                      end
+                      @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                    elsif jf != "" && exe != ""
+                      wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                      ids = Array.new()
+                      wg.each do |w|
+                        ids << w.id
+                      end
+                      @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                    elsif jf != "" && cap!= ""
+                      wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                      ids = Array.new()
+                      wg.each do |w|
+                        ids << w.id
+                      end
+                      @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                    elsif jf != "" && cap!= "" && exe != ""
+                      wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                      ids = Array.new()
+                      wg.each do |w|
+                        ids << w.id
+                      end
+                      @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "wg.name", cat)
+                    else
+                      @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "wg.name", cat)
+                    end
+                    @wg.each do |wg| 
+                      if !@total_nombres_wg.include?(wg['name'])
+                        @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                        @total_nombres_fases << wg['name']
+                      end
+                      if sector != ""
+                        extra = Sector.where("id IN (#{sector.join(',')})")
+                        code = Array.new
+                        extra.each do |ex|
+                          code << ex.code
+                        end
+                        @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND se.code IN (#{code.join(',')} AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                      elsif subsector != ""
+                        @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo =  se.code", " AND se.id IN (#{subsector.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                      else
+                        @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                      end
+                      @sector.each do |se|
+                        if !@total_nombres_sector.include?(se['sector_padre'])
+                          @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
+                          @total_nombres_sector << se['sector_padre']
+                        end
+                        name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
+                        @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                        if art != ""
+                          Article.where("id IN (#{art.join(',')}").each do |cat|
+                            cad_in << cat.code
+                          end
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND art.code IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "art.code", cat)
+                        else
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
+                        end
+                        @article.each do |art|
+                          @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                        end
+                      end
+                    end
+                  elsif third == "sector" && fourth == "working_group"
+                    if sector != ""
+                      extra = Sector.where("id IN (#{sector.join(',')})")
+                      code = Array.new
+                      extra.each do |ex|
+                        code << ex.code
+                      end
+                      @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND se.code IN (#{code.join(',')} AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                    elsif subsector != ""
+                      @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo =  se.code", " AND se.id IN (#{subsector.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                    else
+                      @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "se.code", cat)
+                    end
+                    @sector.each do |se|
+                      if !@total_nombres_sector.include?(se['sector_padre'])
+                        @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
+                        @total_nombres_sector << se['sector_padre']
+                      end
+                      name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
+                      @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                      if wg != ""
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} AND sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                      elsif jf != ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} AND sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                      elsif jf != "" && exe != ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} AND sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                      elsif jf != "" && cap!= ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} AND sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                      elsif jf != "" && cap!= "" && exe != ""
+                        wg = WorkingGroup.where("front_chief_id IN (#{jf.join(',')}) AND executor_id IN (#{exe.join(',')}) AND master_builder_id IN (#{cap.join(',')}) AND active = 1 AND cost_center_id = " + get_company_cost_center('cost_center').to_s )
+                        ids = Array.new()
+                        wg.each do |w|
+                          ids << w.id
+                        end
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{ids.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} AND sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
+                      else
+                        @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} AND sector_cod_hijo = #{se['sector_cod_hijo']} ", "wg.name", cat)
+                      end
+                      @wg.each do |wg| 
+                        if !@total_nombres_wg.include?(wg['name'])
+                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          @total_nombres_fases << wg['name']
+                        end
+                        if art != ""
+                          Article.where("id IN (#{art.join(',')}").each do |cat|
+                            cad_in << cat.code
+                          end
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND art.code IN (#{cad_in.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "art.code", cat)
+                        else
+                          @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
+                        end
+                        @article.each do |art|
+                          @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
+                        end                        
+                      end
+                    end
+                  end
+                end
+              end
+            end            
+          end
+        end
+      end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      # --------------------------- SECTOR PRIMERO ------------------------------------
+      if first == "sector"
+        if second == "phase"
+          if third == "article" && fourth == "working_group"
+            
+          elsif third == "working_group" && fourth == "article"
+            
+          end
+
+        elsif second == "article"
+          if third == "working_group" && fourth == "phase"
+            
+          elsif third == "phase" && fourth == "working_group"
+            
+          end
+
+        elsif second == "working_group"
+          if third == "phase" && fourth == "article"
+            
+          elsif third == "article" && fourth == "phase"
+            
+          end
+        end
+      end
+  
+      # --------------------------- WORKING GROUP PRIMERO ------------------------------------
+      if first == "working_group"
+        if second == "sector"
+          if third == "article" && fourth == "phase"
+            
+          elsif third == "phase" && fourth == "article"
+            
+          end
+
+        elsif second == "phase"
+          if third == "article" && fourth == "sector"
+            
+          elsif third == "sector" && fourth == "article"
+            
+          end
+        elsif second == "article"
+          if third == "phase" && fourth == "sector"
+            
+          elsif third == "sector" && fourth == "phase"
+            
+          end
+          
+        end
+      end
+
+      # --------------------------- ARTICLE CODE PRIMERO ------------------------------------
+      if first == "article" && second == "working_group" && third == "sector" && fourth == "phase"
+        
+      end
+
+      if first == "article" && second == "working_group" && third == "phase" && fourth == "sector"
+        
+      end
+
+      if first == "article" && second == "phase" && third == "working_group" && fourth == "sector"
+        
+      end
+
+      if first == "article" && second == "phase" && third == "sector" && fourth == "working_group"
+        
+      end
+
+      if first == "article" && second == "sector" && third == "phase" && fourth == "working_group"
+        
+      end
+
+      if first == "article" && second == "sector" && third == "working_group" && fourth == "phase"
+        
+      end
+      @total_nombres_fases = Array.new
+      @total_nombres_sector = Array.new
+      @total_nombres_wg = Array.new
+      @total_nombres_category = Array.new
     end
+
     render(partial: 'table_with_config.html', :layout => false)
   end   
 end
