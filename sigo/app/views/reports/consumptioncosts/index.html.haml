@@ -1,439 +1,444 @@
 #content-inside
   .row
-    .col-xs-6.col-sm-6.col-md-4.col-lg-4
-      .col-xs-6.col-sm-6.col-md-6.col-lg-6
-        %label Seleccionar Periodo:
-        %select#selected-month.form-control{:name => 'selected_month'}
-          - @dates.each do |d|
-            %option{:value => "#{d[1]}-#{d[0].to_s.rjust(2, '0')}"}= d[1].to_s + '-' + d[0].to_s
-      .col-xs-6.col-sm-6.col-md-6.col-lg-6
-        %label{:style => 'visibility:hidden; width: 100%;'}
-        %button#search-cost.btn.btn-primary{type: "button"}
-          %i.fa.fa-search
-            Consultar
-        %label{:style => 'visibility:hidden; width: 100%;'}
-      .col-xs-6.col-sm-6.col-md-6.col-lg-6
-        %label{:style => 'visibility:hidden; width: 100%;'}
-        %button#search-cost-config.btn.btn-primary{type: "button"}
-          %i.fa.fa-search
-            Consultar Micro        
+    - if @mssg_error.nil?
+      .col-xs-6.col-sm-6.col-md-4.col-lg-4
+        .col-xs-6.col-sm-6.col-md-6.col-lg-6
+          %label Seleccionar Periodo:
+          %select#selected-month.form-control{:name => 'selected_month'}
+            - @dates.each do |d|
+              %option{:value => "#{d[1]}-#{d[0].to_s.rjust(2, '0')}"}= d[1].to_s + '-' + d[0].to_s
+        .col-xs-6.col-sm-6.col-md-6.col-lg-6
+          %label{:style => 'visibility:hidden; width: 100%;'}
+          %button#search-cost.btn.btn-primary{type: "button"}
+            %i.fa.fa-search
+              Consultar
+          %label{:style => 'visibility:hidden; width: 100%;'}
 
-      
-    .col-md-4.col-lg-4
-    .col-xs-6.col-sm-6.col-md-4.col-lg-4
-      %button.btn.btn-primary{type: "button", 'data-toggle' => "modal", 'data-target' => "#showconfig"}
-        %i.fa.fa-eye
-          Ver Configuración
-      
-  - if flash[:notice] != nil
-    .alert.alert-success.fade.in{"style" => "clear:both"}
-      %button.close{"data-dismiss" => "alert"}
-        ×
-      %i.fa-fw.fa.fa-check
-      %strong Éxito
-      = flash[:notice]
-  - if flash[:error] != nil
-    .alert.alert-danger.fade.in
-      %button.close{"data-dismiss" => "alert"}
-        ×
-      %i.fa-fw.fa.fa-times
-      %strong Error!
-      = flash[:error]
-  %br
-  .row
-    #table-cost.col-xs-12.col-sm-12.col-md-12.col-lg-12
-    #table-cost-config.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        
+      .col-md-4.col-lg-4
+      .col-xs-6.col-sm-6.col-md-4.col-lg-4
+        %button.btn.btn-primary{type: "button", 'data-toggle' => "modal", 'data-target' => "#showconfig"}
+          %i.fa.fa-eye
+            Ver Configuración
 
-#showconfig.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalConfigLabel", role: "dialog", tabindex: "-1", keyboard: false, backdrop: 'static'}
-  .modal-dialog{ :style => 'width:80%;' }
-    .modal-content
-      .modal-header{:style => 'padding-bottom: 26px; border-bottom: 1px solid #7D7D7D;'}
-        %button{"class"=>"close", "data-dismiss"=>"modal"}
-          %span{"aria-hidden"=>"true"} &times;
-          %span{"class"=>"sr-only"} Close
-      
-      .modal-body
-        .row
-          %h4{:style => "font-weight: bold;"} Configuración Inicial
-          %br
-          .col-md-4
-            %form
-              %table.table
-                %tbody
-                  %tr
-                    %td{ :style => 'border-top:none;' }
-                      %select{ :name => 'sort_default_select', :multiple => true, :id => 'sortdefault', 'ondblclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
-                        %option{ :value => 'phase' } FASE
-                        %option{ :value => 'sector' } SECTOR
-                        %option{ :value => 'working_group' } GRUPO DE TRABAJO
-                        %option{ :value => 'articles' } ARTICULOS
-                    %td{ :valign => 'middle', :align => 'center', :style => 'border-top:none;' }
-                      %input{ :type => 'button', :name => 'right', :value => '>>', 'onclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
-                      %br
-                      %br
-                      %input{ :type => 'button', :name => 'left', :value => '<<', 'onclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
-                    %td{ :style => 'border-top:none;' }
-                      %select{ :name => 'final_sort_select', :multiple => true, :id => 'finalsort', 'ondblclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
-          .col-md-4
-            %label Primer Nivel
-            %select.form-control#first
-              %option{:value => "defecto", :selected => true} Defecto
-              %option{:value => "phase"} Fase
-              %option{:value => "sector"} Sector
-              %option{:value => "working_group"} Grupo de Trabajo
-              %option{:value => "article"} Articulo
-            %label Segundo Nivel
-            %select.form-control#second
-              %option{:value => "defecto", :selected => true} Defecto
-              %option{:value => "phase"} Fase
-              %option{:value => "sector"} Sector
-              %option{:value => "working_group"} Grupo de Trabajo
-              %option{:value => "article"} Articulo
-            %label Tercer Nivel
-            %select.form-control#third
-              %option{:value => "defecto", :selected => true} Defecto
-              %option{:value => "phase"} Fase
-              %option{:value => "sector"} Sector
-              %option{:value => "working_group"} Grupo de Trabajo
-              %option{:value => "article"} Articulo
-            %label Cuarto Nivel
-            %select.form-control#fourth
-              %option{:value => "defecto", :selected => true} Defecto
-              %option{:value => "phase"} Fase
-              %option{:value => "sector"} Sector
-              %option{:value => "working_group"} Grupo de Trabajo
-              %option{:value => "article"} Articulo
-          .col-md-12
-            .col-md-12
-              .col-md-4
-                %label Fase
-                %label.select
-                  %select.select2.config-class#phase{:name => 'selected_phase', :multiple=>true}
+      - if flash[:notice] != nil
+        .alert.alert-success.fade.in{"style" => "clear:both"}
+          %button.close{"data-dismiss" => "alert"}
+            ×
+          %i.fa-fw.fa.fa-check
+          %strong Éxito
+          = flash[:notice]
+      - if flash[:error] != nil
+        .alert.alert-danger.fade.in
+          %button.close{"data-dismiss" => "alert"}
+            ×
+          %i.fa-fw.fa.fa-times
+          %strong Error!
+          = flash[:error]
+      %br
+      .row
+        #table-cost.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        #table-cost-config.col-xs-12.col-sm-12.col-md-12.col-lg-12
+
+    - else
+      %br
+      %br
+      .col-xs-12.col-sm-12.col-md-12.col-lg-12
+        .alert.alert-warning.fade.in
+          %button.close{"data-dismiss" => "alert"}
+            ×
+          %i.fa-fw.fa.fa-check
+          %strong Oops! Aviso!
+          = @mssg_error
+
+- if @mssg_error.nil?
+  #showconfig.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalConfigLabel", role: "dialog", tabindex: "-1", keyboard: false, backdrop: 'static'}
+    .modal-dialog{ :style => 'width:60%;' }
+      .modal-content
+        .modal-header{:style => 'padding-bottom: 26px; border-bottom: 1px solid #7D7D7D;'}
+          %button{"class"=>"close", "data-dismiss"=>"modal"}
+            %span{"aria-hidden"=>"true"} &times;
+            %span{"class"=>"sr-only"} Close
+        
+        .modal-body
+          .row
+            %h4{:style => "font-weight: bold;"} Configuración Inicial
+            %br
+            .col-md-4
+              %form
+                %table.table
+                  %tbody
+                    %tr
+                      %td{ :style => 'border-top:none;' }
+                        %select{ :name => 'sort_default_select', :multiple => true, :id => 'sortdefault', 'ondblclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
+                          %option{ :value => 'phase' } FASE
+                          %option{ :value => 'sector' } SECTOR
+                          %option{ :value => 'working_group' } GRUPO DE TRABAJO
+                          %option{ :value => 'articles' } ARTICULOS
+                      %td{ :valign => 'middle', :align => 'center', :style => 'border-top:none;' }
+                        %input{ :type => 'button', :name => 'right', :value => '>>', 'onclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
+                        %br
+                        %br
+                        %input{ :type => 'button', :name => 'left', :value => '<<', 'onclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
+                      %td{ :style => 'border-top:none;' }
+                        %select{ :name => 'final_sort_select', :multiple => true, :id => 'finalsort', 'ondblclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
+            .col-md-4
+              %label Primer Nivel
+              %select.form-control#first 
+                %option{:value => "defecto", :selected => true} Defecto
+                %option{:value => "phase"} Fase
+                %option{:value => "sector"} Sector
+                %option{:value => "working_group"} Grupo de Trabajo
+                %option{:value => "article"} Articulo
+              %label Segundo Nivel
+              %select.form-control#second 
+                %option{:value => "defecto", :selected => true} Defecto
+                %option{:value => "phase"} Fase
+                %option{:value => "sector"} Sector
+                %option{:value => "working_group"} Grupo de Trabajo
+                %option{:value => "article"} Articulo
+              %label Tercer Nivel
+              %select.form-control#third
+                %option{:value => "defecto", :selected => true} Defecto
+                %option{:value => "phase"} Fase
+                %option{:value => "sector"} Sector
+                %option{:value => "working_group"} Grupo de Trabajo
+                %option{:value => "article"} Articulo
+              %label Cuarto Nivel
+              %select.form-control#fourth
+                %option{:value => "defecto", :selected => true} Defecto
+                %option{:value => "phase"} Fase
+                %option{:value => "sector"} Sector
+                %option{:value => "working_group"} Grupo de Trabajo
+                %option{:value => "article"} Articulo
+            .col-md-8
+              .col-md-12
+                .col-md-4
+                  %label Fase
+                  %select.form-control#phase{:name => 'selected_phase'}
+                    %option{:value => "phase", :selected => true} Seleccione
                     - @phase.each do |d|
                       %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
 
-              .col-md-4
-                %label Subfase
-                %label.select
-                  %select.select2.config-class#subphase{:name => 'selected_subphase',:multiple=>true}
-          .col-md-12                
-            .col-md-12 
-              .col-md-4
-                %label Sector
-                %label.select
-                  %select.select2.config-class#sector{:name => 'selected_sector', :multiple=>true}
+                .col-md-4
+                  %label Subfase
+                  %select.form-control#subphase{:name => 'selected_subphase'}
+                    %option{:value => "subphase", :selected => true} Seleccione
+              .col-md-12 
+                .col-md-4
+                  %label Sector
+                  %select.form-control#sector{:name => 'selected_sector'}
+                    %option{:value => "sector", :selected => true} Seleccione
                     - @sector.each do |d|
                       %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
 
-              .col-md-4
-                %label Subsector
-                %label.select
-                  %select.select2.config-class#subsector{:name => 'selected_subsector', :multiple=>true}
-          .col-md-12
-            .col-md-12
-              .col-md-3
-                %label Grupo de Trabajo
-                %label.select
-                  %select.select2.config-class#wg{:name => 'selected_working_group', :multiple=>true}
+                .col-md-4
+                  %label Subsector
+                  %select.form-control#subsector{:name => 'selected_subsector'}
+                    %option{:value => "subsector", :selected => true} Seleccione
+              .col-md-12
+                .col-md-3
+                  %label Grupo de Trabajo
+                  %select.form-control#wg{:name => 'selected_working_group'}
+                    %option{:value => "wg", :selected => true} Seleccione
                     - @working_group.each do |d|
                       %option{:value => "#{d.id}"}= d.name
-              .col-md-3
-                %label Jefe de frente
-                %label.select
-                  %select.select2.config-class#jf{:name => 'selected_jefefrente', :multiple=>true}
+                .col-md-3
+                  %label Jefe de frente
+                  %select.form-control#jf{:name => 'selected_jefefrente'}
+                    %option{:value => "jf", :selected => true} Seleccione
                     - @front_chiefs.each do |front_chief|
                       %option{:value => "#{front_chief.id}"}
                         = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s                
-              .col-md-3
-                %label Ejecutor
-                %label.select
-                  %select.select2.config-class#exe{:name => 'selected_ejecutor', :multiple=>true}
+                .col-md-3
+                  %label Ejecutor
+                  %select.form-control#exe{:name => 'selected_ejecutor'}
+                    %option{:value => "exe", :selected => true} Seleccione
                     - @executors.each do |ex|
                       %option{:value => "#{ex.id}"}
                         = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s                
-              .col-md-3
-                %label Capataz
-                %label.select
-                  %select.select2.config-class#cap{:name => 'selected_capataz', :multiple=>true}
+                .col-md-3
+                  %label Capataz
+                  %select.form-control#cap{:name => 'selected_capataz'}
+                    %option{:value => "cap", :selected => true} Seleccione
                     - @master_builders.each do |master_builder|
                       %option{:value => "#{master_builder.id}"}
                         = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s          
-          .col-md-12  
-            .col-md-12
-              .col-md-3
-                %label Grupo
-                %label.select
-                  %select.select2.config-class#artgru{:name => 'selected_group_article', :multiple=>true}
+              .col-md-12
+                .col-md-3
+                  %label Grupo
+                  %select.form-control#artgru{:name => 'selected_group_article'}
+                    %option{:value => "artgru", :selected => true} Seleccione
                     - @groups.each do |d|
                       %option{:value => "#{d.id}"}= '(' + d.code + ') ' + d.name
-              .col-md-3
-                %label Subgrupo
-                %label.select
-                  %select.select2.config-class#artsubgru{:name => 'selected_subgroup_article',:multiple=>true}
-              .col-md-3
-                %label Especifico
-                %label.select
-                  %select.select2.config-class#artspec{:name => 'selected_especific_article', :multiple=>true}
-              .col-md-3
-                %label Especifico final
-                %label.select
-                  %select.select2.config-class#art{:name => 'selected_fespecific_article', :multiple=>true}
-        %br
-        .row{:style => "border-top: 1px solid #7D7D7D;"}
+                .col-md-3
+                  %label Subgrupo
+                  %select.form-control#artsubgru{:name => 'selected_subgroup_article'}
+                    %option{:value => "artsubgru", :selected => true} Seleccione
+                .col-md-3
+                  %label Especifico
+                  %select.form-control#artspec{:name => 'selected_especific_article'}
+                    %option{:value => "artspec", :selected => true} Seleccione
+                .col-md-3
+                  %label Especifico final
+                  %select.form-control#art{:name => 'selected_fespecific_article'}
+                    %option{:value => "art", :selected => true} Seleccione
           %br
-          %h4{:style => "font-weight: bold;"} Configuración Avanzada
-          %br
-          .col-md-12
-            %h5 Vertical
-            .col-md-4
-              %select{ :name => 'sort_config_advance_select', :multiple => true, :id => 'sortconfigadvance' }
-                %option{ :value => 'phase_subphase' } FASE/SUBFASE
-                %option{ :value => 'sector_subsector' } SECTOR/SUBSECTOR
-                %option{ :value => 'working_group' } GRUPO DE TRABAJO
-                %option{ :value => 'articles' } ARTICULOS
-            .col-md-8
-              .row
-                .col-md-2
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} FASE
-                    = check_box_tag 'chbx_phase', 1, true
-                .col-md-3
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} SUBFASE
-                    = check_box_tag 'chbx_subphase', 1, true
-              .row
-                .col-md-3
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} SECTOR
-                    = check_box_tag 'chbx_sector', 1, true
-                .col-md-3
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} SUBSECTOR
-                    = check_box_tag 'chbx_subsector', 1, true
-              .row
-                .col-md-4
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} GRUPO DE TRABAJO
-                    = check_box_tag 'chbx_working_group', 1, true
-              .row
-                .col-md-2
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} GRUPO
-                    = check_box_tag 'chbx_group', 1, true
-                .col-md-3
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} SUBGRUPO
-                    = check_box_tag 'chbx_subgroup', 1, true
-                .col-md-3
-                  %label.checkbox{ :style => 'margin: 0;' }
-                    %span{:style => "position: relative;top: 0.3em;"} ESPECIFICO
-                    = check_box_tag 'chbx_specific', 1, true
+          .row{:style => "border-top: 1px solid #7D7D7D;"}
+            %br
+            %h4{:style => "font-weight: bold;"} Configuración Avanzada
+            %br
+            .col-md-12
+              %h5 Vertical
+              .col-md-4
+                %select{ :name => 'sort_config_advance_select', :multiple => true, :id => 'sortconfigadvance' }
+                  %option{ :value => 'phase_subphase' } FASE/SUBFASE
+                  %option{ :value => 'sector_subsector' } SECTOR/SUBSECTOR
+                  %option{ :value => 'working_group' } GRUPO DE TRABAJO
+                  %option{ :value => 'articles' } ARTICULOS
+              .col-md-8
+                .row
+                  .col-md-2
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} FASE
+                      = check_box_tag 'chbx_phase', 1, true
+                  .col-md-3
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} SUBFASE
+                      = check_box_tag 'chbx_subphase', 1, true
+                .row
+                  .col-md-3
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} SECTOR
+                      = check_box_tag 'chbx_sector', 1, true
+                  .col-md-3
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} SUBSECTOR
+                      = check_box_tag 'chbx_subsector', 1, true
+                .row
+                  .col-md-4
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} GRUPO DE TRABAJO
+                      = check_box_tag 'chbx_working_group', 1, true
+                .row
+                  .col-md-2
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} GRUPO
+                      = check_box_tag 'chbx_group', 1, true
+                  .col-md-3
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} SUBGRUPO
+                      = check_box_tag 'chbx_subgroup', 1, true
+                  .col-md-3
+                    %label.checkbox{ :style => 'margin: 0;' }
+                      %span{:style => "position: relative;top: 0.3em;"} ESPECIFICO
+                      = check_box_tag 'chbx_specific', 1, true
 
-          .col-md-12
-            %h5 Horizontal
-            // MOSTRANDO VALORES ACUMULADOS ANTERIORES, ACTUALES O SOLO VALORES ACTUALES (No acumulados)
-            .col-md-4
-              .col-md-12
+            .col-md-12
+              %h5 Horizontal
+              // MOSTRANDO VALORES ACUMULADOS ANTERIORES, ACTUALES O SOLO VALORES ACTUALES (No acumulados)
+              .col-md-4
+                .col-md-12
+                  %label.checkbox
+                    ACUMUL. ANTERIOR
+                    = check_box_tag 'chbx_all_previous_accumulates'
+
+                  %label.checkbox
+                    Programado
+                    = check_box_tag 'chbx_prev_programado'
+
+                  %label.checkbox
+                    Valorizado
+                    = check_box_tag 'chbx_prev_valorizado'
+
+                  %label.checkbox
+                    Valor Ganado
+                    = check_box_tag 'chbx_prev_valor_ganado'
+
+                  %label.checkbox
+                    Real
+                    = check_box_tag 'chbx_prev_real'
+
+                  %label.checkbox
+                    Meta
+                    = check_box_tag 'chbx_prev_meta'
+
+                .col-md-12{:style => "border-top: 1px solid #7D7D7D; border-bottom: 1px solid #7D7D7D;"}
+                  %label.checkbox
+                    ACUMULADO ACTUAL
+                    = check_box_tag 'chbx_all_actual_accumulate_values'
+
+                  %label.checkbox
+                    Programado
+                    = check_box_tag 'chbx_actual_accumulate_programado'
+
+                  %label.checkbox
+                    Valorizado
+                    = check_box_tag 'chbx_actual_accumulate_valorizado'
+
+                  %label.checkbox
+                    Valor ganado
+                    = check_box_tag 'chbx_actual_accumulate_valor_ganado'
+
+                  %label.checkbox
+                    Real
+                    = check_box_tag 'chbx_actual_accumulate_real'
+
+                  %label.checkbox
+                    Meta
+                    = check_box_tag 'chbx_actual_accumulate_meta'
+
+                .col-md-12
+
+                  %label.checkbox
+                    ACTUAL
+                    = check_box_tag 'chbx_all_actual_values'
+
+                  %label.checkbox
+                    Programado
+                    = check_box_tag 'chbx_actual_programado'
+
+                  %label.checkbox
+                    Valorizado
+                    = check_box_tag 'chbx_actual_valorizado'
+
+                  %label.checkbox
+                    Valor ganado
+                    = check_box_tag 'chbx_actual_valor_ganado'
+
+                  %label.checkbox
+                    Real
+                    = check_box_tag 'chbx_actual_real'
+
+                  %label.checkbox
+                    Meta
+                    = check_box_tag 'chbx_actual_meta'
+
+              // MOSTRANDO CANTIDAD O PARCIALES
+              .col-md-4
+                %h5 Montos
                 %label.checkbox
-                  ACUMUL. ANTERIOR
-                  = check_box_tag 'chbx_all_previous_accumulates'
+                  Cantidad
+                  = check_box_tag 'chbx_showme_amounts'
 
                 %label.checkbox
-                  Programado
-                  = check_box_tag 'chbx_prev_programado'
+                  Parcial
+                  = check_box_tag 'chbx_showme_partials'
+
+              // MOSTRANDO PROYECCIONES ACTUALES O ANTERIORES
+              .col-md-4
+                %h5 Proyecciones
+                %label.checkbox
+                  Actual
+                  = check_box_tag 'chbx_showme_actual_forecasts'
 
                 %label.checkbox
-                  Valorizado
-                  = check_box_tag 'chbx_prev_valorizado'
+                  Anterior
+                  = check_box_tag 'chbx_showme_previous_forecasts'
 
-                %label.checkbox
-                  Valor Ganado
-                  = check_box_tag 'chbx_prev_valor_ganado'
+        .modal-footer
+          %button#search-cost-config.btn.btn-primary{type: "button"}
+            %i.fa.fa-search
+              Guardar y Consultar
+    }
 
-                %label.checkbox
-                  Real
-                  = check_box_tag 'chbx_prev_real'
+  :javascript
+    
+    loadScript("#{ asset_path 'toolbox.min.js', type: :javascript }");
 
-                %label.checkbox
-                  Meta
-                  = check_box_tag 'chbx_prev_meta'
-
-              .col-md-12{:style => "border-top: 1px solid #7D7D7D; border-bottom: 1px solid #7D7D7D;"}
-                %label.checkbox
-                  ACUMULADO ACTUAL
-                  = check_box_tag 'chbx_all_actual_accumulate_values'
-
-                %label.checkbox
-                  Programado
-                  = check_box_tag 'chbx_actual_accumulate_programado'
-
-                %label.checkbox
-                  Valorizado
-                  = check_box_tag 'chbx_actual_accumulate_valorizado'
-
-                %label.checkbox
-                  Valor ganado
-                  = check_box_tag 'chbx_actual_accumulate_valor_ganado'
-
-                %label.checkbox
-                  Real
-                  = check_box_tag 'chbx_actual_accumulate_real'
-
-                %label.checkbox
-                  Meta
-                  = check_box_tag 'chbx_actual_accumulate_meta'
-
-              .col-md-12
-
-                %label.checkbox
-                  ACTUAL
-                  = check_box_tag 'chbx_all_actual_values'
-
-                %label.checkbox
-                  Programado
-                  = check_box_tag 'chbx_actual_programado'
-
-                %label.checkbox
-                  Valorizado
-                  = check_box_tag 'chbx_actual_valorizado'
-
-                %label.checkbox
-                  Valor ganado
-                  = check_box_tag 'chbx_actual_valor_ganado'
-
-                %label.checkbox
-                  Real
-                  = check_box_tag 'chbx_actual_real'
-
-                %label.checkbox
-                  Meta
-                  = check_box_tag 'chbx_actual_meta'
-
-            // MOSTRANDO CANTIDAD O PARCIALES
-            .col-md-4
-              %h5 Montos
-              %label.checkbox
-                Cantidad
-                = check_box_tag 'chbx_showme_amounts'
-
-              %label.checkbox
-                Parcial
-                = check_box_tag 'chbx_showme_partials'
-
-            // MOSTRANDO PROYECCIONES ACTUALES O ANTERIORES
-            .col-md-4
-              %h5 Proyecciones
-              %label.checkbox
-                Actual
-                = check_box_tag 'chbx_showme_actual_forecasts'
-
-              %label.checkbox
-                Anterior
-                = check_box_tag 'chbx_showme_previous_forecasts'
-
-      .modal-footer
-        %button#search-cost-config2.btn.btn-primary{type: "button"}
-          %i.fa.fa-search
-            Guardar y Consultar
-  }
-
-:javascript
-  
-  loadScript("#{ asset_path 'toolbox.min.js', type: :javascript }");
-  $(document).ready(function(){
-    $('.config-class').select2({ width: '200px' });
-  });
-  $('#search-cost-config').click(function(){
-    var first = $('#first').val();
-    var second = $('#second').val();
-    var third = $('#third').val();
-    var fourth = $('#fourth').val();
-    var phase = $('#phase').val();
-    var subphase = $('#subphase').val();
-    var sector = $('#sector').val();
-    var subsector = $('#subsector').val();
-    var wg = $('#wg').val();
-    var jf = $('#jf').val();
-    var exe = $('#exe').val();
-    var cap = $('#cap').val();
-    var artgru = $('#artgru').val();
-    var artsubgru = $('#artsubgru').val();
-    var artspec = $('#artspec').val();
-    var art = $('#art').val();
-    var month = $('#selected-month').val();
+    $('#search-cost-config').click(function(){
+      var first = $('#first').val();
+      var second = $('#second').val();
+      var third = $('#third').val();
+      var fourth = $('#fourth').val();
+      var phase = $('#phase').val();
+      var subphase = $('#subphase').val();
+      var sector = $('#sector').val();
+      var subsector = $('#subsector').val();
+      var wg = $('#wg').val();
+      var jf = $('#jf').val();
+      var exe = $('#exe').val();
+      var cap = $('#cap').val();
+      var artgru = $('#artgru').val();
+      var artsubgru = $('#artsubgru').val();
+      var artspec = $('#artspec').val();
+      var art = $('#art').val();
+      var month = $('#selected-month').val();
 
 
-    if(first != "defecto"  && second != "defecto"  && third != "defecto"  && fourth != "defecto"){
-      if(first != second && first != third && first != fourth && second != third && second != fourth && third != fourth){
-        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-        load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');      
+      if(first != "defecto"  && second != "defecto"  && third != "defecto"  && fourth != "defecto"){
+        if(first != second && first != third && first != fourth && second != third && second != fourth && third != fourth){
+          params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+          load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');      
+        }
       }
+
+      if(first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"){
+        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+        load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
+      }
+    });
+
+    $('#search-cost').click(function(){
+      month = $('#selected-month').val()
+      params = { date: month, authenticity_token: "#{form_authenticity_token}",  }
+      load_url_ajax("#{consult_reports_consumptioncosts_path}", 'table-cost', params, 'avoid-opacity', 'POST')
+    });
+
+    $('#create-tables').click(function(){
+      var parameters = { authenticity_token: "#{form_authenticity_token}" };
+      load_url_ajax("#{create_tables_missing_reports_consumptioncosts_path}", 'content', parameters, 'avoid-opacity', 'POST');
+    });
+
+    $('#phase').change(function(){
+      if($(this).val()=="phase"){
+        $('#subphase').empty();
+        $.each(newOptions, function(key,value){
+          $('#subphase').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
     }
 
-    if(first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"){
-      params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-      load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
-    }
-  });
+    $('#sector').change(function(){
+      if($(this).val()=="sector"){
+        $('#subsector').empty();
+        $('#subsector').append($("<option></option>").attr("value", "subsector").text("Seleccione").attr("selected", "selected"));
+      }else{
+        complete_subsector("#{get_subsector_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+      }
+    });
 
-  $('#search-cost').click(function(){
-    month = $('#selected-month').val()
-    params = { date: month, authenticity_token: "#{form_authenticity_token}",  }
-    load_url_ajax("#{consult_reports_consumptioncosts_path}", 'table-cost', params, 'avoid-opacity', 'POST')
-  });
+    $('#artgru').change(function(){
+      if($(this).val()=="artgru"){
+        $('#artsubgru').empty();
+        $('#artsubgru').append($("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected"));
+      }else{
+        complete_artsubgru("#{get_subgroup_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+      }
+    }); 
 
-  $('#create-tables').click(function(){
-    var parameters = { authenticity_token: "#{form_authenticity_token}" };
-    load_url_ajax("#{create_tables_missing_reports_consumptioncosts_path}", 'content', parameters, 'avoid-opacity', 'POST');
-  });
+    $('#artsubgru').change(function(){
+      if($(this).val()=="artsubgru"){
+        $('#artspec').empty();
+        $('#artspec').append($("<option></option>").attr("value", "artspec").text("Seleccione").attr("selected", "selected"));
+      }else{
+        complete_artspec("#{get_specific_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+      }
+    }); 
 
-  $('#phase').change(function(){
-    if($(this).val()=="phase"){
-      $('#subphase').empty();
-      $('#subphase').append($("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected"));
-    }else{
-      complete_subphase("#{get_subphase_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
-    }
-  });
+    $('#artspec').change(function(){
+      if($(this).val()=="artsubgru"){
+        $('#art').empty();
+        $('#art').append($("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected"));
+      }else{
+        complete_art("#{get_art_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
+      }
+    }); 
 
-  $('#sector').change(function(){
-    if($(this).val()=="sector"){
-      $('#subsector').empty();
-      $('#subsector').append($("<option></option>").attr("value", "subsector").text("Seleccione").attr("selected", "selected"));
-    }else{
-      complete_subsector("#{get_subsector_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
-    }
-  });
-
-  $('#artgru').change(function(){
-    if($(this).val()=="artgru"){
-      $('#artsubgru').empty();
-      $('#artsubgru').append($("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected"));
-    }else{
-      complete_artsubgru("#{get_subgroup_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
-    }
-  }); 
-
-  $('#artsubgru').change(function(){
-    if($(this).val()=="artsubgru"){
-      $('#artspec').empty();
-      $('#artspec').append($("<option></option>").attr("value", "artspec").text("Seleccione").attr("selected", "selected"));
-    }else{
-      complete_artspec("#{get_specific_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
-    }
-  }); 
-
-  $('#artspec').change(function(){
-    if($(this).val()=="artsubgru"){
-      $('#art').empty();
-      $('#art').append($("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected"));
-    }else{
-      complete_art("#{get_art_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
-    }
-  }); 
-
-  function complete_subphase(url, phase_id, form_token, default_value){
-    $.ajax({
+    function complete_subphase(url, phase_id, form_token, default_value){
+      $.ajax({
         type: "POST",
         url: url,
         async: false,
@@ -448,16 +453,19 @@
           newOptions.push(item);
         });
         $('#subphase').empty();
+        $('#subphase').append(
+              $("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected")
+            )
         $.each(newOptions, function(key,value){
           $('#subphase').append(
             $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
           )
         });
       });
-  }
+    }
 
-  function complete_subsector(url, sector_id, form_token, default_value){
-    $.ajax({
+    function complete_subsector(url, sector_id, form_token, default_value){
+      $.ajax({
         type: "POST",
         url: url,
         async: false,
@@ -478,10 +486,10 @@
           )
         });
       });
-  }
+    }
 
-  function complete_artsubgru(url, group_id, form_token, default_value){
-    $.ajax({
+    function complete_artsubgru(url, group_id, form_token, default_value){
+      $.ajax({
         type: "POST",
         url: url,
         async: false,
@@ -496,16 +504,19 @@
           newOptions.push(item);
         });
         $('#artsubgru').empty();
+        $('#artsubgru').append(
+              $("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected")
+            )
         $.each(newOptions, function(key,value){
           $('#artsubgru').append(
             $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
           )
         });
       });
-  }  
+    }
 
-  function complete_artspec(url, subgroup_id, form_token, default_value){
-    $.ajax({
+    function complete_artspec(url, subgroup_id, form_token, default_value){
+      $.ajax({
         type: "POST",
         url: url,
         async: false,
@@ -519,35 +530,34 @@
           item['id'] = value.id;
           newOptions.push(item);
         });
+      $('#artsubgru').empty();
+      $.each(newOptions, function(key,value){
+        $('#artsubgru').append(
+          $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+        )
+      });
+    }
+
+    function complete_art(url, specific_id, form_token, default_value){
+      $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { specific_id: specific_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.article, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
         $('#artspec').empty();
         $.each(newOptions, function(key,value){
-          $('#artspec').append(
+          $('#art').append(
             $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
           )
         });
       });
-  }
-
-  function complete_art(url, specific_id, form_token, default_value){
-    $.ajax({
-      type: "POST",
-      url: url,
-      async: false,
-      data: { specific_id: specific_id, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-      $.each(data.article, function(key, value){
-        item = {};
-        item['name'] = value.name;
-        item['code'] = value.code;
-        item['id'] = value.id;
-        newOptions.push(item);
-      });
-      $('#art').empty();
-      $.each(newOptions, function(key,value){
-        $('#art').append(
-          $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
-        )
-      });
-    });
-  }    
+    }
