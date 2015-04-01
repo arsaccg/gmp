@@ -59,7 +59,7 @@ class Payslip < ActiveRecord::Base
       rem_basic = 0
       total = 0
       por_hora = 0
-      from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 1).first
+      from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 1).first rescue nil
       if !from_contract.nil?
         if !from_contract.amount.nil?
           rem_basic = (from_contract.amount/total_hour.to_f)*row[7]

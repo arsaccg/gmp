@@ -608,7 +608,17 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def destroy
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
     if !PurchaseOrder.inspect_have_data(params[:id])
-      if @purchaseOrder.state == "pre_issued"
+        if @purchaseOrder.state == "pre_issued"
+        @purchaseOrder.purchase_order_details.each do |pod|
+          dod_id = pod.delivery_order_detail_id
+          sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
+          sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
+
+          if sql_purchase_order_partial_amount.first == sql_delivery_order_total_amount.first
+            @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
+            @deliveryOrderDetail.update_attributes(:requested => 0)
+          end
+        end
         @purchaseOrder.destroy
       else
         if @purchaseOrder.cancel!
