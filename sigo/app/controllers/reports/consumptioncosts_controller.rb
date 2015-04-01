@@ -3,41 +3,54 @@ class Reports::ConsumptioncostsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]  
 
   def index
-  	@dates = Array.new
-  	cost_center_detail_obj = CostCenter.find(get_company_cost_center('cost_center')).cost_center_detail
-  	start_date = cost_center_detail_obj.start_date_of_work
-  	end_date = start_date + cost_center_detail_obj.execution_term.days
-  	start_date.upto(end_date) do |a|
-  		@dates << [a.month, a.year]
-  	end
-  	@dates.uniq!
+    @dates = Array.new
+    @mssg_error = nil
+    cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    start_date = cost_center.start_date
+    end_date = cost_center.end_date
+    # start_date = cost_center_detail_obj.start_date_of_work
+    # end_date = start_date + cost_center_detail_obj.execution_term.days
+    if !start_date.nil?
+      if !end_date.nil?
+        start_date.upto(end_date) do |a|
+          @dates << [a.month, a.year]
+        end
+      else
+        start_date.upto(Date.parse(Time.now.strftime('%Y-%m-%d'))) do |a|
+          @dates << [a.month, a.year]
+        end
+      end
+      @dates.uniq!
 
-    # => Config
-    @phase = Phase.select(:id).select(:name).select(:code).where("code LIKE '__'")
+      # => Config
+      @phase = Phase.select(:id).select(:name).select(:code).where("code LIKE '__'")
 
-    @sector = Sector.select(:id).select(:name).select(:code).where("code LIKE '__'")
-    @cc = get_company_cost_center("cost_center")
-    @working_group = WorkingGroup.select(:id).select(:name)
-    front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
-    @front_chiefs = Worker.distinct.where(:id => front_chief_ids) # Jefes de Frentes
-    # PositionWorker.find(1).workers
-    master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).where("cost_center_id ="+@cc.to_s).map(&:master_builder_id)
-    @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
-    # PositionWorker.find(2).workers
-    executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
-    @executors = Entity.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
+      @sector = Sector.select(:id).select(:name).select(:code).where("code LIKE '__'")
+      @cc = get_company_cost_center("cost_center")
+      @working_group = WorkingGroup.select(:id).select(:name)
+      front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
+      @front_chiefs = Worker.distinct.where(:id => front_chief_ids) # Jefes de Frentes
+      # PositionWorker.find(1).workers
+      master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).where("cost_center_id ="+@cc.to_s).map(&:master_builder_id)
+      @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
+      # PositionWorker.find(2).workers
+      executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
+      @executors = Entity.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
 
-    @groups = Category.select(:id).select(:name).select(:code).where("code LIKE '__'")
+      @groups = Category.select(:id).select(:name).select(:code).where("code LIKE '__'")
+    else
+      @mssg_error = "Para el centro de costo " + cost_center.name + " no esta definida una fecha de inicio. Por favor ingresar antes de continuar."
+    end
 
-  	render layout: false
+    render layout: false
   end
 
   def consult
     @month = Date.parse(params[:date] + '-01').strftime('%B %Y')
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
-  	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
-  	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
-  	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, month)
+    cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
+    @cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
+    @magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, month)
     @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, month)
     @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, month)
 
@@ -56,7 +69,7 @@ class Reports::ConsumptioncostsController < ApplicationController
     @costo_total_accumulado_costo_real = @accumulated_result_dc['sum_costo_real'].to_f + @accumulated_result_ge['sum_costo_real'].to_f + @accumulated_result_gen_serv['sum_costo_real'].to_f
     @costo_total_accumulado_meta = @accumulated_result_dc['sum_meta'].to_f + @accumulated_result_ge['sum_meta'].to_f + @accumulated_result_gen_serv['sum_meta'].to_f
 
-  	render(partial: 'table', :layout => false)
+    render(partial: 'table', :layout => false)
   end
 
   def create_tables_missing

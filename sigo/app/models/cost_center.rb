@@ -21,6 +21,7 @@ class CostCenter < ActiveRecord::Base
   has_many :budgets
   has_one  :cost_center_detail
   has_many :wbsitems
+  has_many :cost_center_timelines
 
 	belongs_to :company
   accepts_nested_attributes_for :cost_center_detail

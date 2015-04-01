@@ -1,11 +1,13 @@
 class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
-  def some_method
-    CostCenter.select(:id).all.each do |x|
-      p x
-      CALL procedure1(cost_center_id, start_date, end_date) # => Macro
-      CALL procedure2(cost_center_id, start_date, end_date) # => Micro
+  def execute_bi_values
+    CostCenter.select(:id).all.each do |costCenter|
+      cost_center_id, start_date, end_date = costCenter.id, costCenter
+      sql_macro = "CALL SHOWME_MACRO_VALUES_BI(" + costCenter.id.to_s + ", " + costCenter + ", " + costCenter + ")"
+      sql_micro = "CALL SHOWME_MICRO_VALUES_BI(" + costCenter.id.to_s + ", " + costCenter + ", " + costCenter + ")"
+      ActiveRecord::Base.connection.execute(sql_macro)
+      ActiveRecord::Base.connection.execute(sql_micro)
     end
   end
 

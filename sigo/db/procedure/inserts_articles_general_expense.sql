@@ -1,7 +1,7 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `inserts_articles_general_expenses`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserts_articles_general_expenses`()
+DROP PROCEDURE IF EXISTS `SHOWME_MICRO_VALUES_BI`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOWME_MICRO_VALUES_BI`(IN vi_cost_center_id INT, IN vi_start_date CHAR(10), IN vi_end_date CHAR(10))
 BEGIN
   DECLARE done INT DEFAULT FALSE;
 
