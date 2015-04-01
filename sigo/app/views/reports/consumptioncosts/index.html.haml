@@ -363,11 +363,20 @@
       var artsubgru = $('#artsubgru').val();
       var artspec = $('#artspec').val();
       var art = $('#art').val();
+      var month = $('#selected-month').val();
 
 
-      month = $('#selected-month').val()
-      params = { date: month, authenticity_token: "#{form_authenticity_token}", phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-      load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST')
+      if(first != "defecto"  && second != "defecto"  && third != "defecto"  && fourth != "defecto"){
+        if(first != second && first != third && first != fourth && second != third && second != fourth && third != fourth){
+          params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+          load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');      
+        }
+      }
+
+      if(first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"){
+        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+        load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
+      }
     });
 
     $('#search-cost').click(function(){
@@ -384,11 +393,13 @@
     $('#phase').change(function(){
       if($(this).val()=="phase"){
         $('#subphase').empty();
-        $('#subphase').append($("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected"));
-      }else{
-        complete_subphase("#{get_subphase_reports_consumptioncosts_path}", $(this).val(), "#{form_authenticity_token}, 0");
-      }
-    });
+        $.each(newOptions, function(key,value){
+          $('#subphase').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+    }
 
     $('#sector').change(function(){
       if($(this).val()=="sector"){
@@ -428,110 +439,103 @@
 
     function complete_subphase(url, phase_id, form_token, default_value){
       $.ajax({
-          type: "POST",
-          url: url,
-          async: false,
-          data: { phase_id: phase_id, authenticity_token: form_token}
-        }).done(function( data ) {
-          newOptions = [];
-          $.each(data.subphase, function(key, value){
-            item = {};
-            item['name'] = value.name;
-            item['code'] = value.code;
-            item['id'] = value.id;
-            newOptions.push(item);
-          });
-          $('#subphase').empty();
-          $('#subphase').append(
-                $("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected")
-              )
-          $.each(newOptions, function(key,value){
-            $('#subphase').append(
-              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
-            )
-          });
+        type: "POST",
+        url: url,
+        async: false,
+        data: { phase_id: phase_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subphase, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
         });
+        $('#subphase').empty();
+        $('#subphase').append(
+              $("<option></option>").attr("value", "subphase").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#subphase').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
     }
 
     function complete_subsector(url, sector_id, form_token, default_value){
       $.ajax({
-          type: "POST",
-          url: url,
-          async: false,
-          data: { sector_id: sector_id, authenticity_token: form_token}
-        }).done(function( data ) {
-          newOptions = [];
-          $.each(data.subsector, function(key, value){
-            item = {};
-            item['name'] = value.name;
-            item['code'] = value.code;
-            item['id'] = value.id;
-            newOptions.push(item);
-          });
-          $('#subsector').empty();
-          $('#subsector').append(
-                $("<option></option>").attr("value", "subsector").text("Seleccione").attr("selected", "selected")
-              )
-          $.each(newOptions, function(key,value){
-            $('#subsector').append(
-              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
-            )
-          });
+        type: "POST",
+        url: url,
+        async: false,
+        data: { sector_id: sector_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subsector, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
         });
+        $('#subsector').empty();
+        $.each(newOptions, function(key,value){
+          $('#subsector').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
     }
 
     function complete_artsubgru(url, group_id, form_token, default_value){
       $.ajax({
-          type: "POST",
-          url: url,
-          async: false,
-          data: { group_id: group_id, authenticity_token: form_token}
-        }).done(function( data ) {
-          newOptions = [];
-          $.each(data.subgroup, function(key, value){
-            item = {};
-            item['name'] = value.name;
-            item['code'] = value.code;
-            item['id'] = value.id;
-            newOptions.push(item);
-          });
-          $('#artsubgru').empty();
-          $('#artsubgru').append(
-                $("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected")
-              )
-          $.each(newOptions, function(key,value){
-            $('#artsubgru').append(
-              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
-            )
-          });
+        type: "POST",
+        url: url,
+        async: false,
+        data: { group_id: group_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subgroup, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
         });
-    }  
+        $('#artsubgru').empty();
+        $('#artsubgru').append(
+              $("<option></option>").attr("value", "artsubgru").text("Seleccione").attr("selected", "selected")
+            )
+        $.each(newOptions, function(key,value){
+          $('#artsubgru').append(
+            $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+          )
+        });
+      });
+    }
 
     function complete_artspec(url, subgroup_id, form_token, default_value){
       $.ajax({
-          type: "POST",
-          url: url,
-          async: false,
-          data: { subgroup_id: subgroup_id, authenticity_token: form_token}
-        }).done(function( data ) {
-          newOptions = [];
-          $.each(data.specific, function(key, value){
-            item = {};
-            item['name'] = value.name;
-            item['code'] = value.code;
-            item['id'] = value.id;
-            newOptions.push(item);
-          });
-          $('#artspec').empty();
-          $('#artspec').append(
-                $("<option></option>").attr("value", "artspec").text("Seleccione").attr("selected", "selected")
-              )
-          $.each(newOptions, function(key,value){
-            $('#artspec').append(
-              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
-            )
-          });
+        type: "POST",
+        url: url,
+        async: false,
+        data: { subgroup_id: subgroup_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.specific, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
         });
+      $('#artsubgru').empty();
+      $.each(newOptions, function(key,value){
+        $('#artsubgru').append(
+          $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
+        )
+      });
     }
 
     function complete_art(url, specific_id, form_token, default_value){
@@ -549,14 +553,11 @@
           item['id'] = value.id;
           newOptions.push(item);
         });
-        $('#art').empty();
-        $('#art').append(
-          $("<option></option>").attr("value", "art").text("Seleccione").attr("selected", "selected")
-        );
+        $('#artspec').empty();
         $.each(newOptions, function(key,value){
           $('#art').append(
             $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name)
           )
         });
       });
-    }    
+    }

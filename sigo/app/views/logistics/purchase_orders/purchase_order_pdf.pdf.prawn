@@ -64,7 +64,19 @@ index=1
       style(columns(0..10), :size => 7.5)
     end
     move_down 2
-    text "#{data.description}", :size => 7.5
+    "#{data.description}".split( /\r?\n/ ).each do |a|
+      text a, :size => 7.5
+      if cursor()<100
+        a = ""
+        start_new_page
+        total = "#{pdf.page_count}"
+        index2 += 1
+        bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
+          text "Página #{index2}", :size => 7
+        end
+        move_down 152
+      end
+    end      
   }
   stroke_horizontal_rule
   move_down 2
