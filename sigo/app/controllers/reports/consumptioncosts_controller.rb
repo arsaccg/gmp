@@ -196,6 +196,7 @@ class Reports::ConsumptioncostsController < ApplicationController
           end
         end
       end
+
       # ----------------------------------- EMPIEZAN COMBINACIONES -----------------------------------
       # --------------------------- FASE PRIMERO ------------------------------------
       if first == "phase"
@@ -830,42 +831,28 @@ class Reports::ConsumptioncostsController < ApplicationController
       end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       # --------------------------- SECTOR PRIMERO ------------------------------------
       if first == "sector"
+        if sector != ""
+          extra = Sector.where("id IN (#{sector.join(',')})")
+          code = Array.new
+          extra.each do |ex|
+            code << ex.code
+          end
+          @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND se.code IN (#{code.join(',')} AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "se.code", cat)
+        elsif subsector != ""
+          @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo =  se.code", " AND se.id IN (#{subsector.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "se.code", cat)
+        else
+          @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']}", "se.code", cat)
+        end
+        @sector.each do |se|
+          if !@total_nombres_sector.include?(se['sector_padre'])
+            @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
+            @total_nombres_sector << se['sector_padre']
+          end
+          name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
+          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+        end
         if second == "phase"
           if third == "article" && fourth == "working_group"
             
@@ -889,6 +876,40 @@ class Reports::ConsumptioncostsController < ApplicationController
         end
       end
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       # --------------------------- WORKING GROUP PRIMERO ------------------------------------
       if first == "working_group"
         if second == "sector"

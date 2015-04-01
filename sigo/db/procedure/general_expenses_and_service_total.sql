@@ -145,7 +145,7 @@ BEGIN
         WHERE b.cost_center_id = v_id
         AND b.type_of_budget = 1
         AND b.id = v.budget_id
-        AND v.valorization_date BETWEEN '2015-02-01' AND '2015-02-28';
+        AND v.valorization_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_val_dir_cost = TRUE;
 
       OPEN valorizations;
@@ -209,7 +209,7 @@ BEGIN
       SELECT ibb.id, ibb.budget_id, ibb.order
       FROM part_works pw, part_work_details pwd, itembybudgets ibb
       WHERE pw.cost_center_id = v_id 
-      AND pw.date_of_creation BETWEEN '2015-02-01' AND '2015-02-28'
+      AND pw.date_of_creation BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
       AND pw.id = pwd.part_work_id
       AND pwd.itembybudget_id = ibb.id;
       DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_meta_dir_cos = TRUE;
@@ -258,7 +258,7 @@ BEGIN
               AND si.cost_center_id = v_id
               AND si.status =  'A'
               AND sid.stock_input_id = si.id
-              AND si.issue_date BETWEEN '2015-02-01' AND '2015-02-28'
+              AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
               AND sid.article_id = art.id
               GROUP BY art.id) AS stock_output
         WHERE dod.article_id = stock_output.article_id
@@ -302,7 +302,7 @@ BEGIN
         FROM order_of_service_details osd, phases p, order_of_services os, articles art
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
-        AND os.date_of_issue BETWEEN '2015-02-01' AND '2015-02-28'
+        AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
         AND p.code  > '0___' AND p.code < '89__'
@@ -350,7 +350,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
            GROUP BY p.worker_id) AS payslips_worker
         WHERE ppd.part_person_id = pp.id
         AND payslips_worker.worker_id = ppd.worker_id
@@ -368,7 +368,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
            GROUP BY p.worker_id) AS payslips_worker
         WHERE pw.cost_center_id = v_id
         AND pw.id = pwd.part_worker_id
@@ -425,7 +425,7 @@ BEGIN
       SELECT d.code as 'budgetCode', di.value as 'measured', d.budget_id 'budgetId' 
       FROM distributions d, distribution_items di 
       WHERE di.distribution_id = d.id 
-      AND di.month BETWEEN '2015-02-01' AND '2015-02-28'
+      AND di.month BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
       AND d.cost_center_id = v_id
       AND di.value IS NOT NULL;
       DECLARE CONTINUE HANDLER FOR NOT FOUND SET done_program = TRUE;
@@ -465,7 +465,7 @@ BEGIN
         FROM general_expense_details ged, general_expenses ge
         WHERE ged.general_expense_id = ge.id
         AND ge.cost_center_id = v_id
-        AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
+        AND DATE_FORMAT( ged.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         AND ge.code_phase = 90
         GROUP BY (ged.type_article);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done2 = TRUE;
@@ -508,7 +508,7 @@ BEGIN
               AND si.cost_center_id = v_id
               AND si.status =  'A'
               AND sid.stock_input_id = si.id
-              AND si.issue_date BETWEEN '2015-02-01' AND '2015-02-28'
+              AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
               AND sid.article_id = art.id
               GROUP BY art.id) AS stock_output
         WHERE dod.article_id = stock_output.article_id
@@ -554,7 +554,7 @@ BEGIN
         FROM order_of_service_details osd, phases p, order_of_services os, articles art
         WHERE osd.phase_id = p.id
         AND os.id = osd.order_of_service_id
-        AND os.date_of_issue BETWEEN '2015-02-01' AND '2015-02-28'
+        AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         AND os.cost_center_id = v_id
         AND osd.article_id = art.id
         AND p.code LIKE  '90__'
@@ -604,7 +604,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
            GROUP BY p.worker_id) AS payslips_worker
         WHERE ppd.part_person_id = pp.id
         AND payslips_worker.worker_id = ppd.worker_id
@@ -622,7 +622,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
            GROUP BY p.worker_id) AS payslips_worker
         WHERE pw.cost_center_id = v_id
         AND pw.id = pwd.part_worker_id
@@ -722,7 +722,7 @@ BEGIN
         WHERE ge.cost_center_id = v_id
         AND ge.id = ged.general_expense_id
         AND ge.code_phase > 90
-        AND DATE_FORMAT( ge.created_at,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
+        AND DATE_FORMAT( ge.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         GROUP BY ged.type_article;
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donege = TRUE;
       OPEN meta;
@@ -757,7 +757,7 @@ BEGIN
         FROM diverse_expenses_of_managements dem, diverse_expenses_of_management_details demd
         WHERE dem.cost_center_id = v_id
         AND dem.id = demd.diverse_expenses_of_management_id
-        AND DATE_FORMAT( dem.created_at,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
+        AND DATE_FORMAT( dem.created_at,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         GROUP BY LEFT(dem.article_code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donedem = TRUE;
       OPEN meta;
@@ -811,7 +811,7 @@ BEGIN
         AND sid.phase_id = p.id
         AND p.code > '91__'
         AND art.id = stock_output_prices.artid
-        AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
+        AND DATE_FORMAT( si.issue_date,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET donesi = TRUE;
       OPEN stock_outputs_gs;
@@ -852,7 +852,7 @@ BEGIN
         AND osd.article_id = art.id
         AND p.code > '91__'
         AND os.state =  'approved'
-        AND DATE_FORMAT( os.date_of_issue,  '%Y-%m-%d' ) BETWEEN '2015-02-01' AND '2015-02-28'
+        AND DATE_FORMAT( os.date_of_issue,  '%Y-%m-%d' ) BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
         GROUP BY LEFT(art.code, 2);
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneos = TRUE;
       OPEN order_of_services;
@@ -898,7 +898,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
            GROUP BY p.worker_id) AS payslips_worker
         WHERE ppd.part_person_id = pp.id
         AND payslips_worker.worker_id = ppd.worker_id
@@ -916,7 +916,7 @@ BEGIN
           (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
            FROM payslips p
            WHERE p.cost_center_id = v_id
-           AND p.date_begin BETWEEN '2015-02-01' AND '2015-02-28'
+           AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(CURDATE(), INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(CURDATE(), INTERVAL -1 DAY)
            GROUP BY p.worker_id) AS payslips_worker
         WHERE pw.cost_center_id = v_id
         AND pw.id = pwd.part_worker_id
