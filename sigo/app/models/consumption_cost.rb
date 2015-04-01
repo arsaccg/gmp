@@ -1,6 +1,14 @@
 class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
+  def some_method
+    CostCenter.select(:id).all.each do |x|
+      p x
+      CALL procedure1(cost_center_id, start_date, end_date) # => Macro
+      CALL procedure2(cost_center_id, start_date, end_date) # => Micro
+    end
+  end
+
   # => Methods for Macro Report
 
   def self.apply_all_general_expenses cc_id, date
