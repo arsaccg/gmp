@@ -60,7 +60,7 @@ class Reports::ConsumptioncostsController < ApplicationController
     @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
 
     @costo_total_programado = @magic_result_dc['sum_programado'].to_f
-    @costo_total_valorizado = @magic_result_dc['sum_valorizado'].to_f # => FALTA el valorizado de Gastos Generales
+    @costo_total_valorizado = @magic_result_dc['sum_valorizado'].to_f # => FALTA SUMARLES el valorizado de Gastos Generales
     @costo_total_valor_ganado = @magic_result_dc['sum_valorganado'].to_f
     @costo_total_costo_real = @magic_result_dc['sum_costo_real'].to_f + @magic_result_ge['sum_costo_real'].to_f + @magic_result_gen_serv['sum_costo_real'].to_f
     @costo_total_meta = @magic_result_dc['sum_meta'].to_f + @magic_result_ge['sum_meta'].to_f + @magic_result_gen_serv['sum_meta'].to_f

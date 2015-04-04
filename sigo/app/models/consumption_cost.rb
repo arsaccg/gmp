@@ -2,8 +2,19 @@ class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
   def execute_bi_values
-    CostCenter.select(:id).all.each do |costCenter|
-      cost_center_id, start_date, end_date = costCenter.id, costCenter
+    @iteractions = Array.new
+    CostCenter.select(:id).select(:start_date).select(:end_date).each do |costCenter|
+      cost_center_id, start_date, end_date = costCenter.id, costCenter.start_date, costCenter.end_date
+      if !end_date.nil?
+        start_date.upto(end_date) do |a|
+          # month = a.year.to_s + a.month + a.day
+          # @iteractions << [cost_center_id, ]
+        end
+      elsif end_date.nil?
+        start_date.upto(Date.parse(Time.now.strftime('%Y-%m-%d'))) do |a|
+          
+        end
+      end
       sql_macro = "CALL SHOWME_MACRO_VALUES_BI(" + costCenter.id.to_s + ", " + costCenter + ", " + costCenter + ")"
       sql_micro = "CALL SHOWME_MICRO_VALUES_BI(" + costCenter.id.to_s + ", " + costCenter + ", " + costCenter + ")"
       ActiveRecord::Base.connection.execute(sql_macro)
