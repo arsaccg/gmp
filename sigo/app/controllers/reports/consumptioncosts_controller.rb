@@ -371,7 +371,7 @@ class Reports::ConsumptioncostsController < ApplicationController
                     @total_nombres_specific_category = Array.new
                   end
                   @total_nombres_sub_category = Array.new
-                end 
+                end
 
               elsif third == "working_group" && fourth == "article"
                 if wg != ""
@@ -510,9 +510,13 @@ class Reports::ConsumptioncostsController < ApplicationController
                           end
                         end
                       end
+                      @total_nombres_specific_category = Array.new
                     end
+                    @total_nombres_sub_category = Array.new
                   end
+                  @total_nombres_category = Array.new
                 end
+                @total_nombres_wg = Array.new
               end
             end
 
@@ -616,22 +620,33 @@ class Reports::ConsumptioncostsController < ApplicationController
                             @total_nombres_wg << wg['name']                            
                           end
 
-
                           if !@total_nombres_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
                             @total_nombres_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
-
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
+                          
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name                            
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
@@ -639,8 +654,11 @@ class Reports::ConsumptioncostsController < ApplicationController
                           
                         end
                       end
+                      @total_nombres_specific_category = Array.new
                     end
+                    @total_nombres_sub_category = Array.new
                   end
+                  @total_nombres_category = Array.new
                 end
 
               elsif third == "article" && fourth == "sector"
@@ -716,41 +734,65 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code                            
+                          end
 
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]                          
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]                          
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code                            
+                          end
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_sector = Array.new
+                      @total_nombres_padre_sector = Array.new
                     end
+                    @total_nombres_specific_category = Array.new
                   end
+                  @total_nombres_sub_category = Array.new
                 end
+                @total_nombres_category = Array.new
               end
             end
+            @total_nombres_wg = Array.new
 
           elsif second == "article"
             if artgru != ""
@@ -837,36 +879,57 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+                          
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end 
 
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                          
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                          
+                            @total_nombres_sector << name_se.code
+                          end
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_sector = Array.new
+                      @total_nombres_padre_sector = Array.new
                     end
+                    @total_nombres_wg =Array.new
                   elsif third == "sector" && fourth == "working_group"
                     if sector != ""
                       extra = Sector.where("id IN (#{sector.join(',')})")
@@ -939,36 +1002,60 @@ class Reports::ConsumptioncostsController < ApplicationController
                             @total_nombres_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_padre_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category <<  code_group_name
+                          end
                            
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                             
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                             
+                            @total_nombres_sector << name_se.code
+                          end
                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end                        
                         end
                       end
+                      @total_nombres_wg = Array.new
                     end
+                    @total_nombres_sector = Array.new
+                    @total_nombres_padre_sector = Array.new
                   end
                 end
+                @total_nombres_specific_category = Array.new
               end
-            end            
+              @total_nombres_sub_category = Array.new
+            end
+            @total_nombres_category = Array.new
           end
         end
       end
@@ -1074,39 +1161,61 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+                          
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
                           
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_wg = Array.new
                     end
+                    @total_nombres_specific_category = Array.new
                   end
-                end                 
+                  @total_nombres_sub_category = Array.new
+                end
+                @total_nombres_category = Array.new
               elsif third == "working_group" && fourth == "article"
                 if wg != ""
                   @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
@@ -1198,39 +1307,61 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]                          
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]                          
+                            @total_nombres_wg << wg['name']
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
                            
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_specific_category = Array.new
                     end
+                    @total_nombres_sub_category = Array.new
                   end
+                  @total_nombres_category = Array.new
                 end
+                @total_nombres_wg = Array.new
               end
               
             end
@@ -1320,37 +1451,58 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+                          
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name'] 
+                          end 
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end                        
                         end
-                      end    
+                      end
+                      @total_nombres_padre_fases = Array.new
+                      @total_nombres_fases = Array.new
                     end
+                    @total_nombres_wg = Array.new
 
                   elsif third == "phase" && fourth == "working_group"
                     if phase != ""
@@ -1419,42 +1571,65 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
+                          
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end 
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
-                    end                
+                      @total_nombres_wg = Array.new
+                    end
+                    @total_nombres_fases = Array.new
+                    @total_nombres_padre_fases = Array.new
                   end
                 end
+                @total_nombres_specific_category = Array.new
               end
+              @total_nombres_sub_category = Array.new
             end 
-
+            @total_nombres_category = Array.new
           elsif second == "working_group"
             if wg != ""
               @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`, `wg`.`name`", ", `working_groups` wg", "working_group_id =  wg.id", " AND wg.id IN (#{wg.join(',')}) AND acc.sector_cod_hijo = #{se['sector_cod_hijo']}", "wg.name", cat)
@@ -1540,38 +1715,62 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0 
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total_nombres_category << code_group_name
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_specific_category = Array.new
                     end
-                  end                  
+                    @total_nombres_sub_category = Array.new
+                  end
+                  @total_nombres_category = Array.new
                 end
+                @total_nombres_padre_fases = Array.new
+                @total_nombres_fases = Array.new
               elsif third == "article" && fourth == "phase"
                 if artgru != ""
                   Category.where("id IN (#{artgru.join(',')})").each do |cat|
@@ -1643,30 +1842,48 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total_nombres_wg << wg['name']
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]                          
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]                          
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                            @total_nombres_fases << name.code
+                          end
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
@@ -1674,10 +1891,14 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                       end
                     end
+                    @total_nombres_specific_category = Array.new
                   end
-                end                
+                  @total_nombres_sub_category = Array.new
+                end
+                @total_nombres_category= Array.new
               end
             end
+            @total_nombres_wg = Array.new
           end
         end
       end
@@ -1782,38 +2003,62 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']}", "art.code", cat)
                         end
                         if @article.count > 0
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
                            
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+                          
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end                        
                         end
                       end
+                      @total_nombres_fases = Array.new
+                      @total_nombres_padre_fases = Array.new
                     end
+                    @total_nombres_specific_category = Array.new
                   end
-                end            
+                  @total_nombres_sub_category = Array.new
+                end
+                @total_nombres_category = Array.new
 
               elsif third == "phase" && fourth == "article"
                 if phase != ""
@@ -1886,39 +2131,62 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
                            
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                          
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_specific_category = Array.new
                     end
-                  end                  
+                    @total_nombres_sub_category = Array.new
+                  end
+                  @total_nombres_category = Array.new
                 end
+                @total_nombres_fases = Array.new
+                @total_nombres_padre_fases = Array.new
               end
             end
           elsif second == "phase"
@@ -1935,12 +2203,6 @@ class Reports::ConsumptioncostsController < ApplicationController
               @phase = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`fase_cod_hijo`, CONCAT(`acc`.`fase_cod_padre`, ' - ', `acc`.`fase_cod_padre_nombre`) AS phase_father", ", `phases` ph", "fase_cod_hijo =  ph.code", " AND acc.working_group_id = #{wg['working_group_id']} ", "ph.code", cat)
             end
             @phase.each do |fa|
-              if !@total_nombres_fases.include?(fa['phase_father'])
-                @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                @total_nombres_fases << fa['phase_father']
-              end
-              name = Phase.find_by_code(fa['fase_cod_hijo'])
-              @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]            
               if third == "sector" && fourth == "article"
                 if sector != ""
                   extra = Sector.where("id IN (#{sector.join(',')})")
@@ -1955,12 +2217,6 @@ class Reports::ConsumptioncostsController < ApplicationController
                   @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`, CONCAT(`acc`.`sector_cod_padre`, ' - ', `acc`.`sector_cod_padre_nombre`) AS sector_padre", ", `sectors` se", "sector_cod_hijo = se.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "se.code", cat)
                 end
                 @sector.each do |se|
-                  if !@total_nombres_sector.include?(se['sector_padre'])
-                    @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                    @total_nombres_sector << se['sector_padre']
-                  end
-                  name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                  @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
                   if artgru != ""
                     Category.where("id IN (#{artgru.join(',')})").each do |cat|
                       cad_in << cat.code
@@ -1970,11 +2226,6 @@ class Reports::ConsumptioncostsController < ApplicationController
                     @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                   end                  
                   @group.each do |gr|
-                    code_group_name = Category.find_by_code(gr['group_code']).name
-                    if !@total_nombres_wg.include?(code_group_name)
-                      @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
-                      @total_nombres_fases << code_group_name
-                    end                      
                     if artsubgru != ""
                       Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
                         cad_in << cat.code
@@ -1983,12 +2234,7 @@ class Reports::ConsumptioncostsController < ApplicationController
                     else
                       @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                     end
-                    @sub_group.each do |sgr|
-                      code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                      if !@total_nombres_wg.include?(code_group_name)
-                        @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
-                        @total_nombres_fases << code_group_name
-                      end                        
+                    @sub_group.each do |sgr|                     
                       if artspec != ""
                         Category.where("id IN (#{artspec.join(',')}").each do |cat|
                           cad_in << cat.code
@@ -1998,11 +2244,6 @@ class Reports::ConsumptioncostsController < ApplicationController
                         @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                       end
                       @specific.each do |spe|
-                        code_group_name = Category.find_by_code(spe['specifics']).name
-                        if !@total_nombres_wg.include?(code_group_name)
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                          @total_nombres_fases << code_group_name
-                        end
                         if art != ""
                           Article.where("id IN (#{art.join(',')}").each do |cat|
                             cad_in << cat.code
@@ -2012,40 +2253,62 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(art.code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
                            
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]                          
-                          
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_specific_category = Array.new
                     end
+                    @total_nombres_sub_category = Array.new
                   end
+                  @total_nombres_category = Array.new
                 end
-
+                @total_nombres_sector = Array.new
+                @total_nombres_padre_sector = Array.new
               elsif third == "article" && fourth == "sector"
                 if artgru != ""
                   Category.where("id IN (#{artgru.join(',')})").each do |cat|
@@ -2055,12 +2318,7 @@ class Reports::ConsumptioncostsController < ApplicationController
                 else
                   @group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,4),2) AS group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                 end
-                @group.each do |gr|
-                  code_group_name = Category.find_by_code(gr['group_code']).name
-                  if !@total_nombres_wg.include?(code_group_name)
-                    @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
-                    @total_nombres_fases << code_group_name
-                  end                      
+                @group.each do |gr|                   
                   if artsubgru != ""
                     Category.where("id IN (#{artsubgru.join(',')}").each do |cat|
                       cad_in << cat.code
@@ -2069,12 +2327,7 @@ class Reports::ConsumptioncostsController < ApplicationController
                   else
                     @sub_group = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,6),4) AS sub_group_code", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                   end
-                  @sub_group.each do |sgr|
-                    code_group_name = Category.find_by_code(sgr['sub_group_code']).name rescue nil
-                    if !@total_nombres_wg.include?(code_group_name)
-                      @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
-                      @total_nombres_fases << code_group_name
-                    end                        
+                  @sub_group.each do |sgr|                  
                     if artspec != ""
                       Category.where("id IN (#{artspec.join(',')}").each do |cat|
                         cad_in << cat.code
@@ -2084,12 +2337,6 @@ class Reports::ConsumptioncostsController < ApplicationController
                       @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                     end
                     @specific.each do |spe|
-                      code_group_name = Category.find_by_code(spe['specifics']).name rescue nil
-                      if !@total_nombres_wg.include?(code_group_name)
-                        @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                        @total_nombres_fases << code_group_name
-                      end
-
                       if sector != ""
                         extra = Sector.where("id IN (#{sector.join(',')})")
                         code = Array.new
@@ -2104,12 +2351,6 @@ class Reports::ConsumptioncostsController < ApplicationController
                       end
                       i = 1
                       @sector.each do |se|
-                        if !@total_nombres_sector.include?(se['sector_padre'])
-                          @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                          @total_nombres_sector << se['sector_padre']
-                        end
-                        name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                        @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                        
                         if art != ""
                           Article.where("id IN (#{art.join(',')}").each do |cat|
                             cad_in << cat.code
@@ -2119,39 +2360,62 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]                          
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
                            
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
-                          
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_sector = Array.new
+                      @total_nombres_padre_sector = Array.new
                     end
+                    @total_nombres_specific_category = Array.new
                   end
+                  @total_nombres_sub_category = Array.new
                 end
+                @total_nombres_category = Array.new
               end
             end
           elsif second == "article"
@@ -2245,37 +2509,58 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0 
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                          
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
                           
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_sector = Array.new
+                      @total_nombres_padre_sector = Array.new
                     end
+                    @total_nombres_fases = Array.new
+                    @total_nombres_padre_fases = Array.new
                   elsif third == "sector" && fourth == "phase"
                     if sector != ""
                       extra = Sector.where("id IN (#{sector.join(',')})")
@@ -2324,41 +2609,65 @@ class Reports::ConsumptioncostsController < ApplicationController
                           @article = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "CONCAT(`acc`.`article_code` , ' - ', `acc`.`article_name`, ' - ', `acc`.`article_unit`) AS article, acc.`programado_specific_lvl1`, acc.`meta_specific_lvl_1`, acc.`real_specific_lvl_1`, acc.`valorizado_specific_lvl_1`, acc.`valor_ganado_specific_lvl_1`", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']} AND RIGHT(LEFT(acc.article_code,8),6) = #{spe['specifics']} ", "art.code", cat)
                         end
                         if @article.count > 0
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                          
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
                           
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_fases = Array.new
+                      @total_nombres_padre_fases = Array.new
                     end
+                    @total_nombres_sector = Array.new
+                    @total_nombres_padre_sector = Array.new
                   end
                 end
+                @total_nombres_specific_category = Array.new
               end
+              @total_nombres_sub_category = Array.new
             end
+            @total_nombres_category = Array.new
           end
         end
       end
@@ -2464,36 +2773,58 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                         if @article.count > 0
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
+
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+                          
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                          
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
                         
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_sector = Array.new
+                      @total_nombres_padre_sector = Array.new
                     end
+                    @total_nombres_fases = Array.new
+                    @total_nombres_padre_fases = Array.new
                   elsif third == "sector" && fourth == "phase"
                     if sector != ""
                       extra = Sector.where("id IN (#{sector.join(',')})")
@@ -2531,39 +2862,61 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                         if @article.count > 0
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
 
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
+                          
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
-                           
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end
                       end
+                      @total_nombres_fases = Array.new
+                      @total_nombres_padre_fases = Array.new
                     end
+                    @total_nombres_sector = Array.new
+                    @total_nombres_padre_sector = Array.new
                   end
                 end
-                  
+                @total_nombres_wg = Array.new
               elsif second == "phase"
                 if phase != ""
                   extra = Phase.where("id IN (#{phase.join(',')})")
@@ -2636,36 +2989,57 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                         if @article.count > 0
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+                          
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
+
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]                          
-                           
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end
                         end 
                       end
+                      @total_nombres_sector = Array.new
+                      @total_nombres_padre_sector = Array.new
                     end
+                    @total_nombres_wg = Array.new
                   elsif third == "sector" && fourth == "working_group"
                     if sector != ""
                       extra = Sector.where("id IN (#{sector.join(',')})")
@@ -2724,38 +3098,61 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                         if @article.count > 0 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+                          
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]                          
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
+
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
 
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end                        
                         end
                       end
+                      @total_nombres_wg = Array.new
                     end
+                    @total_nombres_sector = Array.new
+                    @total_nombres_padre_sector = Array.new
                   end
                 end
+                @total_nombres_padre_fases = Array.new
+                @total_nombres_fases = Array.new
               elsif second == "sector"
                 if sector != ""
                   extra = Sector.where("id IN (#{sector.join(',')})")
@@ -2828,36 +3225,57 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                         if @article.count > 0
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
 
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
+                          
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
-                          
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end                        
                         end
-                      end    
+                      end
+                      @total_nombres_fases = Array.new
+                      @total_nombres_padre_fases = Array.new
                     end
+                    @total_nombres_wg = Array.new
 
                   elsif third == "phase" && fourth == "working_group"
                     if phase != ""
@@ -2917,42 +3335,68 @@ class Reports::ConsumptioncostsController < ApplicationController
                         end
                         if @article.count > 0 
                           code_group_name = Category.find_by_code(gr['group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                          if !@total_nombres_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article group"]
+                            @total_nombres_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(sgr['sub_group_code']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                          if !@total_nombres_sub_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article sub_group"]
+                            @total_nombres_sub_category << code_group_name
+                          end
 
                           code_group_name = Category.find_by_code(spe['specifics']).name
-                          @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
-                           
-                          if !@total_nombres_sector.include?(se['sector_padre'])
+                          if !@total_nombres_specific_category.include?(code_group_name)
+                            @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
+                            @total_nombres_specific_category << code_group_name
+                          end
+
+                          if !@total_nombres_padre_sector.include?(se['sector_padre'])
                             @total << [se['sector_padre'],nil,nil,nil,nil,nil,"sector padre"]
-                            @total_nombres_sector << se['sector_padre']
+                            @total_nombres_padre_sector << se['sector_padre']
                           end
                           name_se = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code = " + se['sector_cod_hijo'].to_s).first
-                          @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
-
-                          if !@total_nombres_fases.include?(fa['phase_father'])
+                          if !@total_nombres_sector.include?(name_se.code)
+                            @total << [name_se.code + " - " + name_se.name,nil,nil,nil,nil,nil,"sector hija"]
+                            @total_nombres_sector << name_se.code
+                          end
+                          
+                          if !@total_nombres_padre_fases.include?(fa['phase_father'])
                             @total << [fa['phase_father'],nil,nil,nil,nil,nil,"fase padre"]
-                            @total_nombres_fases << fa['phase_father']
+                            @total_nombres_padre_fases << fa['phase_father']
                           end
                           name = Phase.find_by_code(fa['fase_cod_hijo'])
-                          @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
-                           
-                          @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
-                          
+                          if !@total_nombres_fases.include?(name.code)
+                            @total << [name.code + " - " + name.name,nil,nil,nil,nil,nil,"fase hija"]                          
+                            @total_nombres_fases << name.code
+                          end
+
+                          if !@total_nombres_wg.include?(wg['name'])
+                            @total << [wg['name'],nil,nil,nil,nil,nil,"working_group"]
+                            @total_nombres_wg << wg['name']
+                          end
+
                           @article.each do |art|
                             @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
                           end                        
                         end
                       end
-                    end                
+                      @total_nombres_wg = Array.new
+                    end
+                    @total_nombres_padre_fases = Array.new
+                    @total_nombres_fases = Array.new
                   end
-                end                
+                end
+                @total_nombres_sector = Array.new
+                @total_nombres_padre_sector = Array.new
               end
             end
+            @total_nombres_specific_category = Array.new
           end
+          @total_nombres_sub_category = Array.new
         end
+        @total_nombres_category = Array.new
       end
 
       @total_nombres_fases = Array.new
