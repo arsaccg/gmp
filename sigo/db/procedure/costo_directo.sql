@@ -412,6 +412,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_valorizado_por_articu
 BEGIN
   DECLARE done INT DEFAULT FALSE;
   DECLARE ibi_done INT DEFAULT FALSE;
+  DECLARE insumos_mo INT DEFAULT FALSE;
+  DECLARE insumos_material INT DEFAULT FALSE;
+  DECLARE insumos_equipment INT DEFAULT FALSE;
+  DECLARE insumos_subcontract INT DEFAULT FALSE;
+  DECLARE insumos_service INT DEFAULT FALSE;
 
   DECLARE v_valorization_id INT;
   DECLARE v_budget_id INT;
@@ -468,8 +473,8 @@ BEGIN
   read_loop: LOOP
     FETCH valorizations INTO v_valorization_id, v_budget_id;
   IF done THEN
-      LEAVE read_loop;
-    END IF;
+    LEAVE read_loop;
+  END IF;
 
   -- MONTOS VALORIZADOS
   BLOCK: BEGIN
@@ -485,7 +490,7 @@ BEGIN
       LEAVE read_loop_ibb;
     END IF;
 
-      SET @i_identify = (SELECT p.id FROM itembywbses ibw, wbsitems wi, phases p WHERE ibw.wbsitem_id = wi.id AND p.code > '0___' AND p.code < '89__' AND wi.phase_id = p.id AND ibw.budget_id = v_budget_id AND ibw.order_budget LIKE v_order GROUP BY p.id);
+    SET @i_identify = (SELECT p.id FROM itembywbses ibw, wbsitems wi, phases p WHERE ibw.wbsitem_id = wi.id AND p.code > '0___' AND p.code < '89__' AND wi.phase_id = p.id AND ibw.budget_id = v_budget_id AND ibw.order_budget LIKE v_order GROUP BY p.id);
 
     IF @i_identify IS NOT NULL THEN
 
@@ -494,100 +499,164 @@ BEGIN
       SELECT p.name INTO v_phase_cod_padre_name FROM phases p WHERE p.code LIKE v_phase_cod_padre;
       -- GENERAL
       
-      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-      INTO v_partial_mo, v_amount_mo, v_cod_input_mo
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE '01%' 
-      AND ibi.budget_id = v_budget_id 
-      AND ib.budget_id = v_budget_id 
-      AND ibi.`order` LIKE CONCAT(v_order, '%') 
-      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
-      GROUP BY ibi.cod_input;
+      BLOCKMO: BEGIN
+        DECLARE manoObraInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE '01%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_mo = TRUE;
 
-      SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
+        OPEN manoObraInsumos;
+          read_loop_mo: LOOP
+            FETCH manoObraInsumos INTO v_partial_mo, v_amount_mo, v_cod_input_mo;
+            IF insumos_mo THEN
+              LEAVE read_loop_mo;
+            END IF;
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-        "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-        VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-      PREPARE stmt FROM @SQL;
-      EXECUTE stmt;
-      DEALLOCATE PREPARE stmt;
+            SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
 
-      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-      INTO v_partial_material, v_amount_material, v_cod_input_material
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE '02%' 
-      AND ibi.budget_id = v_budget_id 
-      AND ib.budget_id = v_budget_id 
-      AND ibi.`order` LIKE CONCAT(v_order, '%') 
-      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
-      GROUP BY ibi.cod_input;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+            "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+            VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, "','", v_phase_cod_padre,"','",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+          END LOOP read_loop_mo;
+        CLOSE manoObraInsumos;
+      END BLOCKMO;
 
-      SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
+      BLOCKMATERIAL: BEGIN
+        DECLARE materialInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE '02%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_material = TRUE;
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-        "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-        VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-      PREPARE stmt FROM @SQL;
-      EXECUTE stmt;
-      DEALLOCATE PREPARE stmt;
+        OPEN materialInsumos;
+          read_loop_material: LOOP
+            FETCH materialInsumos INTO v_partial_material, v_amount_material, v_cod_input_material;
+            IF insumos_material THEN
+              LEAVE read_loop_material;
+            END IF;
 
-      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-      INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE '03%' 
-      AND ibi.budget_id = v_budget_id 
-      AND ib.budget_id = v_budget_id 
-      AND ibi.`order` LIKE CONCAT(v_order, '%') 
-      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
-      GROUP BY ibi.cod_input;
+            SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
 
-      SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, "','", v_phase_cod_padre, "','",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-        "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-        VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-      PREPARE stmt FROM @SQL;
-      EXECUTE stmt;
-      DEALLOCATE PREPARE stmt;
+          END LOOP read_loop_material;
+        CLOSE materialInsumos;
+      END BLOCKMATERIAL;
 
-      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-      INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE '04%' 
-      AND ibi.budget_id = v_budget_id 
-      AND ib.budget_id = v_budget_id 
-      AND ibi.`order` LIKE CONCAT(v_order, '%') 
-      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
-      GROUP BY ibi.cod_input;
+      BLOCKEQUIPMENT: BEGIN
+        DECLARE equiposInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE '03%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_equipment = TRUE;
 
-      SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+        OPEN equiposInsumos;
+          read_loop_equipment: LOOP
+            FETCH equiposInsumos INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment;
+            IF insumos_equipment THEN
+              LEAVE read_loop_equipment;
+            END IF;
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-        "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-        VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-      PREPARE stmt FROM @SQL;
-      EXECUTE stmt;
-      DEALLOCATE PREPARE stmt;
+            SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
 
-      SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-      INTO v_partial_service, v_amount_service, v_cod_input_service
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE '05%' 
-      AND ibi.budget_id = v_budget_id 
-      AND ib.budget_id = v_budget_id 
-      AND ibi.`order` LIKE CONCAT(v_order, '%') 
-      AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
-      GROUP BY ibi.cod_input;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, "','", v_phase_cod_padre, "','", v_phase_cod_padre_name, "','", v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-      SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+          END LOOP read_loop_equipment;
+        CLOSE equiposInsumos;
+      END BLOCKEQUIPMENT;
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-        "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-        VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-      PREPARE stmt FROM @SQL;
-      EXECUTE stmt;
-      DEALLOCATE PREPARE stmt;
+      BLOCKSUBCONTRACT: BEGIN
+        DECLARE subcontratosInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE '04%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_subcontract = TRUE;
+
+        OPEN subcontratosInsumos;
+          read_loop_subcontracts: LOOP
+            FETCH subcontratosInsumos INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract;
+            IF insumos_subcontract THEN
+              LEAVE read_loop_subcontracts;
+            END IF;
+
+            SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, "','", v_phase_cod_padre,"','",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+
+          END LOOP read_loop_subcontracts;
+        CLOSE subcontratosInsumos;
+      END BLOCKSUBCONTRACT;
+
+      BLOCKSERVICE: BEGIN
+        DECLARE servicioInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE '05%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' ) 
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_service = TRUE;
+
+        OPEN servicioInsumos;
+          read_loop_service: LOOP
+            FETCH servicioInsumos INTO v_partial_service, v_amount_service, v_cod_input_service;
+            IF insumos_service THEN
+              LEAVE read_loop_service;
+            END IF;
+
+            SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valorizado_specific_lvl_1`, `measured_valorizado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, "','", v_phase_cod_padre, "','", v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+
+          END LOOP read_loop_service;
+        CLOSE servicioInsumos;
+      END BLOCKSERVICE;
 
     END IF;
 
@@ -606,6 +675,11 @@ DROP PROCEDURE IF EXISTS `costo_directo_meta_por_articulo`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_meta_por_articulo`(IN vi_cost_center_id INT, IN vi_start_date CHAR(10), IN vi_end_date CHAR(10))
 BEGIN
   DECLARE done INT DEFAULT FALSE;
+  DECLARE insumos_mo INT DEFAULT FALSE;
+  DECLARE insumos_material INT DEFAULT FALSE;
+  DECLARE insumos_equipment INT DEFAULT FALSE;
+  DECLARE insumos_subcontract INT DEFAULT FALSE;
+  DECLARE insumos_service INT DEFAULT FALSE;
 
   DECLARE v_itembybudget_id INT;
   DECLARE v_budget_id INT;
@@ -683,99 +757,164 @@ BEGIN
     SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre;
     -- GENERAL
 
-    SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_mo, v_amount_mo, v_cod_input_mo
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '01%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+    BLOCKMO: BEGIN
+      DECLARE manoObraInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '01%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_mo = TRUE;
 
-    SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
+        OPEN manoObraInsumos;
+          read_loop_mo: LOOP
+            FETCH manoObraInsumos INTO v_partial_mo, v_amount_mo, v_cod_input_mo;
+            IF insumos_mo THEN
+              LEAVE read_loop_mo;
+            END IF;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+            SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
 
-    SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_material, v_amount_material, v_cod_input_material
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '02%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+              VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, "','", v_phase_cod_padre, "','", v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-    SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
+          END LOOP read_loop_mo;
+        CLOSE manoObraInsumos;
+    END BLOCKMO;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+    BLOCKMATERIAL: BEGIN
+      DECLARE materialInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '02%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_material = TRUE;
 
-    SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE  '03%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' );
+      OPEN materialInsumos;
+        read_loop_material: LOOP
+          FETCH materialInsumos INTO v_partial_material, v_amount_material, v_cod_input_material;
+          IF insumos_material THEN
+            LEAVE read_loop_material;
+          END IF;
 
-    SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
+          SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+            "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+            VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, "','", v_phase_cod_padre,"','",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          PREPARE stmt FROM @SQL;
+          EXECUTE stmt;
+          DEALLOCATE PREPARE stmt;
 
-    SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '04%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+        END LOOP read_loop_material;
+      CLOSE materialInsumos;
+    END BLOCKMATERIAL;
 
-    SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+    BLOCKEQUIPMENT: BEGIN
+      DECLARE equiposInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '03%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' );
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_equipment = TRUE;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+        OPEN equiposInsumos;
+          read_loop_equipment: LOOP
+            FETCH equiposInsumos INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment;
+            IF insumos_equipment THEN
+              LEAVE read_loop_equipment;
+            END IF;
 
-    SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_service, v_amount_service, v_cod_input_service
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '05%' 
-      AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+            SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
 
-    SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+              VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, "','", v_phase_cod_padre, "','", v_phase_cod_padre_name, "','", v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+          END LOOP read_loop_equipment;
+        CLOSE equiposInsumos;
+    END BLOCKEQUIPMENT;
+
+    BLOCKSUBCONTRACT: BEGIN
+      DECLARE subcontratosInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '04%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_subcontract = TRUE;
+
+      OPEN subcontratosInsumos;
+        read_loop_subcontracts: LOOP
+          FETCH subcontratosInsumos INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract;
+          IF insumos_subcontract THEN
+            LEAVE read_loop_subcontracts;
+          END IF;
+
+          SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+            "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+            VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, "','", v_phase_cod_padre, "','", v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          PREPARE stmt FROM @SQL;
+          EXECUTE stmt;
+          DEALLOCATE PREPARE stmt;
+
+        END LOOP read_loop_subcontracts;
+      CLOSE subcontratosInsumos;
+    END BLOCKSUBCONTRACT;
+
+    BLOCKSERVICE: BEGIN
+      DECLARE servicioInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '05%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_service = TRUE;
+
+      OPEN servicioInsumos;
+        read_loop_service: LOOP
+          FETCH servicioInsumos INTO v_partial_service, v_amount_service, v_cod_input_service;
+          IF insumos_service THEN
+            LEAVE read_loop_service;
+          END IF;
+
+          SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+            "`(`article_code`, `article_name`, `article_unit`, `meta_specific_lvl_1`, `measured_meta`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+            VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, "','", v_phase_cod_padre, "','", v_phase_cod_padre_name, "','", v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          PREPARE stmt FROM @SQL;
+          EXECUTE stmt;
+          DEALLOCATE PREPARE stmt;
+
+        END LOOP read_loop_service;
+      CLOSE servicioInsumos;
+    END BLOCKSERVICE;
 
   END IF;
 
@@ -789,6 +928,11 @@ DROP PROCEDURE IF EXISTS `costo_directo_valor_ganado_por_articulo`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_valor_ganado_por_articulo`(IN vi_cost_center_id INT, IN vi_start_date CHAR(10), IN vi_end_date CHAR(10))
 BEGIN
   DECLARE done INT DEFAULT FALSE;
+  DECLARE insumos_mo INT DEFAULT FALSE;
+  DECLARE insumos_material INT DEFAULT FALSE;
+  DECLARE insumos_equipment INT DEFAULT FALSE;
+  DECLARE insumos_subcontract INT DEFAULT FALSE;
+  DECLARE insumos_service INT DEFAULT FALSE;
 
   DECLARE v_itembybudget_id INT;
   DECLARE v_itembybudget_sale_id INT;
@@ -847,114 +991,181 @@ BEGIN
   OPEN itembybudgets;
   read_loop: LOOP
     FETCH itembybudgets INTO v_itembybudget_id, v_order, v_budget_id, v_bill_of_quantity, v_sector_id, v_working_group_id;
-  IF done THEN
+    IF done THEN
       LEAVE read_loop;
     END IF;
   
-  SET @i_identify = (SELECT p.id FROM itembywbses ibw, wbsitems wi, phases p WHERE ibw.wbsitem_id = wi.id AND p.code > '0___' AND p.code < '89__' AND wi.phase_id = p.id AND ibw.budget_id = v_budget_id AND ibw.order_budget LIKE v_order GROUP BY p.id);
+    SET @i_identify = (SELECT p.id FROM itembywbses ibw, wbsitems wi, phases p WHERE ibw.wbsitem_id = wi.id AND p.code > '0___' AND p.code < '89__' AND wi.phase_id = p.id AND ibw.budget_id = v_budget_id AND ibw.order_budget LIKE v_order GROUP BY p.id);
 
-  IF @i_identify IS NOT NULL THEN
+    IF @i_identify IS NOT NULL THEN
     
-    -- GENERAL
-    SELECT LEFT(s.code, 2), s.code, s.name INTO v_sector_cod_padre, v_sector_cod_hijo, v_sector_cod_hijo_name FROM sectors s WHERE s.id = v_sector_id;
-    SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre;
-    -- GENERAL
+      -- GENERAL
+      SELECT LEFT(s.code, 2), s.code, s.name INTO v_sector_cod_padre, v_sector_cod_hijo, v_sector_cod_hijo_name FROM sectors s WHERE s.id = v_sector_id;
+      SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre;
+      SET v_itembybudget_sale_id = (SELECT eoi.sale_item_by_budget_id FROM equivalence_of_items eoi WHERE eoi.target_item_by_budget_id = v_itembybudget_id);
+      SET v_percentage = (SELECT eoi.percentage FROM equivalence_of_items eoi WHERE eoi.target_item_by_budget_id = v_itembybudget_id);
+      -- GENERAL
 
-    SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * IFNULL(v_bill_of_quantity,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_mo, v_amount_mo, v_cod_input_mo
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '01%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+      BLOCKMO: BEGIN
+        DECLARE manoObraInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'cantidad', ibi.cod_input
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE  '01%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_mo = TRUE;
 
-    SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
+          OPEN manoObraInsumos;
+            read_loop_mo: LOOP
+              FETCH manoObraInsumos INTO v_partial_mo, v_amount_mo, v_cod_input_mo;
+              IF insumos_mo THEN
+                LEAVE read_loop_mo;
+              END IF;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+              SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
 
-    SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * IFNULL(v_bill_of_quantity,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_material, v_amount_material, v_cod_input_material
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '02%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+              SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+                "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+                VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              PREPARE stmt FROM @SQL;
+              EXECUTE stmt;
+              DEALLOCATE PREPARE stmt;
 
-    SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
+            END LOOP read_loop_mo;
+          CLOSE manoObraInsumos;
+      END BLOCKMO;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+      BLOCKMATERIAL: BEGIN
+        DECLARE materialInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'cantidad', ibi.cod_input
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE  '02%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_material = TRUE;
 
-    SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * IFNULL(v_bill_of_quantity,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment
-      FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-      WHERE ibi.cod_input LIKE  '03%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' );
+        OPEN materialInsumos;
+          read_loop_material: LOOP
+            FETCH materialInsumos INTO v_partial_material, v_amount_material, v_cod_input_material;
+            IF insumos_material THEN
+              LEAVE read_loop_material;
+            END IF;
 
-    SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
+            SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+              VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-    SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * IFNULL(v_bill_of_quantity,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '04%' 
-    AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+          END LOOP read_loop_material;
+        CLOSE materialInsumos;
+      END BLOCKMATERIAL;
 
-    SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+      BLOCKEQUIPMENT: BEGIN
+        DECLARE equiposInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'cantidad', ibi.cod_input
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE  '03%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' );
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_equipment = TRUE;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+          OPEN equiposInsumos;
+            read_loop_equipment: LOOP
+              FETCH equiposInsumos INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment;
+              IF insumos_equipment THEN
+                LEAVE read_loop_equipment;
+              END IF;
 
-    SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * IFNULL(v_bill_of_quantity,0) ) as 'cantidad',ibi.cod_input
-    INTO v_partial_service, v_amount_service, v_cod_input_service
-    FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-    WHERE ibi.cod_input LIKE  '05%' 
-      AND ibi.budget_id = v_budget_id 
-    AND ib.budget_id = v_budget_id 
-    AND ibi.`order` LIKE CONCAT(v_order, '%') 
-    AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-    GROUP BY ibi.cod_input;
+              SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
 
-    SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+              SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+                "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+                VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+              PREPARE stmt FROM @SQL;
+              EXECUTE stmt;
+              DEALLOCATE PREPARE stmt;
 
-    SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
-      VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, ",", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+            END LOOP read_loop_equipment;
+          CLOSE equiposInsumos;
+      END BLOCKEQUIPMENT;
 
-  END IF;
+      BLOCKSUBCONTRACT: BEGIN
+        DECLARE subcontratosInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'cantidad', ibi.cod_input
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE  '04%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_subcontract = TRUE;
+
+        OPEN subcontratosInsumos;
+          read_loop_subcontracts: LOOP
+            FETCH subcontratosInsumos INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract;
+            IF insumos_subcontract THEN
+              LEAVE read_loop_subcontracts;
+            END IF;
+
+            SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+              VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+
+          END LOOP read_loop_subcontracts;
+        CLOSE subcontratosInsumos;
+      END BLOCKSUBCONTRACT;
+
+      BLOCKSERVICE: BEGIN
+        DECLARE servicioInsumos CURSOR FOR
+          SELECT SUM( ibi.quantity * ibi.price * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'parcial', SUM( ibi.quantity * (IFNULL(v_bill_of_quantity,0)*(IFNULL(v_percentage,0)/100)) ) as 'cantidad', ibi.cod_input
+          FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+          WHERE ibi.cod_input LIKE  '05%' 
+          AND ibi.budget_id = v_budget_id 
+          AND ib.budget_id = v_budget_id 
+          AND ibi.`order` LIKE CONCAT(v_order, '%') 
+          AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+          GROUP BY ibi.cod_input;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_service = TRUE;
+
+        OPEN servicioInsumos;
+          read_loop_service: LOOP
+            FETCH servicioInsumos INTO v_partial_service, v_amount_service, v_cod_input_service;
+            IF insumos_service THEN
+              LEAVE read_loop_service;
+            END IF;
+
+            SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `valor_ganado_specific_lvl_1`, `measured_valor_ganado`, `sector_cod_padre`, `sector_cod_padre_nombre`, `sector_cod_hijo`, `sector_cod_hijo_nombre`, `type`, `working_group_id`, `insertion_date`)
+              VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, "','", v_sector_cod_padre, "','", v_sector_cod_padre_name, "','", v_sector_cod_hijo, "','", v_sector_cod_hijo_name, "','", 'CD', "','", v_working_group_id, "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+
+          END LOOP read_loop_service;
+        CLOSE servicioInsumos;
+      END BLOCKSERVICE;
+
+    END IF;
 
   END LOOP read_loop;
   CLOSE itembybudgets;
@@ -965,6 +1176,11 @@ DROP PROCEDURE IF EXISTS `costo_directo_programado_por_articulo`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `costo_directo_programado_por_articulo`(IN vi_cost_center_id INT, IN vi_start_date CHAR(10), IN vi_end_date CHAR(10))
 BEGIN
   DECLARE done INT DEFAULT FALSE;
+  DECLARE insumos_mo INT DEFAULT FALSE;
+  DECLARE insumos_material INT DEFAULT FALSE;
+  DECLARE insumos_equipment INT DEFAULT FALSE;
+  DECLARE insumos_subcontract INT DEFAULT FALSE;
+  DECLARE insumos_service INT DEFAULT FALSE;
 
   DECLARE v_phase_cod_padre CHAR(6);
   DECLARE v_phase_cod_padre_name CHAR(200);
@@ -1018,104 +1234,169 @@ BEGIN
   OPEN distributions;
   read_loop: LOOP
     FETCH distributions INTO v_order, v_measured, v_budget_id;
-  IF done THEN
+    IF done THEN
       LEAVE read_loop;
     END IF;
 
-  SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-  INTO v_partial_mo, v_amount_mo, v_cod_input_mo
-  FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-  WHERE ibi.cod_input LIKE  '01%' 
-  AND ibi.budget_id = v_budget_id 
-  AND ib.budget_id = v_budget_id 
-  AND ibi.`order` LIKE CONCAT(v_order, '%') 
-  AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-  GROUP BY ibi.cod_input;
+    BLOCKMO: BEGIN
+      DECLARE manoObraInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '01%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_mo = TRUE;
 
-  SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
+        OPEN manoObraInsumos;
+          read_loop_mo: LOOP
+            FETCH manoObraInsumos INTO v_partial_mo, v_amount_mo, v_cod_input_mo;
+            IF insumos_mo THEN
+              LEAVE read_loop_mo;
+            END IF;
 
-  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-    "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl_1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-    VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-  PREPARE stmt FROM @SQL;
-  EXECUTE stmt;
-  DEALLOCATE PREPARE stmt;
+            SELECT a.name, u.name INTO v_cod_input_mo_name, v_cod_input_mo_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_mo AND a.unit_of_measurement_id = u.id;
 
-  SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-  INTO v_partial_material, v_amount_material, v_cod_input_material
-  FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-  WHERE ibi.cod_input LIKE  '02%' 
-  AND ibi.budget_id = v_budget_id 
-  AND ib.budget_id = v_budget_id 
-  AND ibi.`order` LIKE CONCAT(v_order, '%') 
-  AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-  GROUP BY ibi.cod_input;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_mo, "','", v_cod_input_mo_name, "','", v_cod_input_mo_unit, "','", v_partial_mo, "','", v_amount_mo, "','", IFNULL(v_phase_cod_padre, ''), "','", IFNULL(v_phase_cod_padre_name, ''), "','", IFNULL(v_phase_cod_hijo, ''), "','", IFNULL(v_phase_cod_hijo_name, ''), "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-  SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
+          END LOOP read_loop_mo;
+        CLOSE manoObraInsumos;
+    END BLOCKMO;
 
-  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-    "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl_1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-    VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-  PREPARE stmt FROM @SQL;
-  EXECUTE stmt;
-  DEALLOCATE PREPARE stmt;
+    BLOCKMATERIAL: BEGIN
+      DECLARE materialInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '02%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_material = TRUE;
 
-  SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-  INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment
-  FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-  WHERE ibi.cod_input LIKE  '03%' 
-  AND ibi.budget_id = v_budget_id 
-  AND ib.budget_id = v_budget_id 
-  AND ibi.`order` LIKE CONCAT(v_order, '%') 
-  AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-  GROUP BY ibi.cod_input;
+      OPEN materialInsumos;
+        read_loop_material: LOOP
+          FETCH materialInsumos INTO v_partial_material, v_amount_material, v_cod_input_material;
+          IF insumos_material THEN
+            LEAVE read_loop_material;
+          END IF;
 
-  SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
+          SELECT a.name, u.name INTO v_cod_input_material_name, v_cod_input_material_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_material AND a.unit_of_measurement_id = u.id;
 
-  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-    "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl_1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-    VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-  PREPARE stmt FROM @SQL;
-  EXECUTE stmt;
-  DEALLOCATE PREPARE stmt;
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+            "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+            VALUES ('",v_cod_input_material, "','", v_cod_input_material_name, "','", v_cod_input_material_unit, "','", v_partial_material, "','", v_amount_material, "','", IFNULL(v_phase_cod_padre, ''), "','", IFNULL(v_phase_cod_padre_name, ''), "','", IFNULL(v_phase_cod_hijo, ''), "','", IFNULL(v_phase_cod_hijo_name, ''), "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          PREPARE stmt FROM @SQL;
+          EXECUTE stmt;
+          DEALLOCATE PREPARE stmt;
 
-  SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-  INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract
-  FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-  WHERE ibi.cod_input LIKE  '04%' 
-  AND ibi.budget_id = v_budget_id 
-  AND ib.budget_id = v_budget_id 
-  AND ibi.`order` LIKE CONCAT(v_order, '%') 
-  AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-  GROUP BY ibi.cod_input;
+        END LOOP read_loop_material;
+      CLOSE materialInsumos;
+    END BLOCKMATERIAL;
 
-  SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+    BLOCKEQUIPMENT: BEGIN
+      DECLARE equiposInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '03%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_equipment = TRUE;
 
-  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-    "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl_1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-    VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-  PREPARE stmt FROM @SQL;
-  EXECUTE stmt;
-  DEALLOCATE PREPARE stmt;
+        OPEN equiposInsumos;
+          read_loop_equipment: LOOP
+            FETCH equiposInsumos INTO v_partial_equipment, v_amount_equipment, v_cod_input_equipment;
+            IF insumos_equipment THEN
+              LEAVE read_loop_equipment;
+            END IF;
 
-  SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
-  INTO v_partial_service, v_amount_service, v_cod_input_service
-  FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
-  WHERE ibi.cod_input LIKE  '05%' 
-  AND ibi.budget_id = v_budget_id 
-  AND ib.budget_id = v_budget_id 
-  AND ibi.`order` LIKE CONCAT(v_order, '%') 
-  AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
-  GROUP BY ibi.cod_input;
+            SELECT a.name, u.name INTO v_cod_input_equipment_name, v_cod_input_equipment_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_equipment AND a.unit_of_measurement_id = u.id;
 
-  SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+            SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_equipment, "','", v_cod_input_equipment_name, "','", v_cod_input_equipment_unit, "','", v_partial_equipment, "','", v_amount_equipment, "','", IFNULL(v_phase_cod_padre, ''), "','", IFNULL(v_phase_cod_padre_name, ''), "','", IFNULL(v_phase_cod_hijo, ''), "','", IFNULL(v_phase_cod_hijo_name, ''), "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
 
-  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
-      "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl_1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
-      VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, ",", v_phase_cod_padre,",",v_phase_cod_padre_name,"','",v_phase_cod_hijo, "','", v_phase_cod_hijo_name, "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
-    PREPARE stmt FROM @SQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+          END LOOP read_loop_equipment;
+        CLOSE equiposInsumos;
+    END BLOCKEQUIPMENT;
+
+    BLOCKSUBCONTRACT: BEGIN
+      DECLARE subcontratosInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '04%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_subcontract = TRUE;
+
+      OPEN subcontratosInsumos;
+        read_loop_subcontracts: LOOP
+          FETCH subcontratosInsumos INTO v_partial_subcontract, v_amount_subcontract, v_cod_input_subcontract;
+          IF insumos_subcontract THEN
+            LEAVE read_loop_subcontracts;
+          END IF;
+
+          SELECT a.name, u.name INTO v_cod_input_subcontract_name, v_cod_input_subcontract_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_subcontract AND a.unit_of_measurement_id = u.id;
+
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+            "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+            VALUES ('",v_cod_input_subcontract, "','", v_cod_input_subcontract_name, "','", v_cod_input_subcontract_unit, "','", v_partial_subcontract, "','", v_amount_subcontract, "','", IFNULL(v_phase_cod_padre, ''), "','", IFNULL(v_phase_cod_padre_name, ''), "','", IFNULL(v_phase_cod_hijo, ''), "','", IFNULL(v_phase_cod_hijo_name, ''), "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+          PREPARE stmt FROM @SQL;
+          EXECUTE stmt;
+          DEALLOCATE PREPARE stmt;
+
+        END LOOP read_loop_subcontracts;
+      CLOSE subcontratosInsumos;
+    END BLOCKSUBCONTRACT;
+
+    BLOCKSERVICE: BEGIN
+      DECLARE servicioInsumos CURSOR FOR
+        SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input 
+        FROM inputbybudgetanditems AS ibi, itembybudgets AS ib 
+        WHERE ibi.cod_input LIKE  '05%' 
+        AND ibi.budget_id = v_budget_id 
+        AND ib.budget_id = v_budget_id 
+        AND ibi.`order` LIKE CONCAT(v_order, '%') 
+        AND ibi.`order` LIKE CONCAT( ib.`order` ,  '%' )
+        GROUP BY ibi.cod_input;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET insumos_service = TRUE;
+
+      OPEN servicioInsumos;
+        read_loop_service: LOOP
+          FETCH servicioInsumos INTO v_partial_service, v_amount_service, v_cod_input_service;
+          IF insumos_service THEN
+            LEAVE read_loop_service;
+          END IF;
+
+          SELECT a.name, u.name INTO v_cod_input_service_name, v_cod_input_service_unit FROM articles a, unit_of_measurements u WHERE a.code LIKE v_cod_input_service AND a.unit_of_measurement_id = u.id;
+
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
+              "`(`article_code`, `article_name`, `article_unit`, `programado_specific_lvl1`, `measured_programado`, `fase_cod_padre`, `fase_cod_padre_nombre`, `fase_cod_hijo`, `fase_cod_hijo_nombre`, `type`, `insertion_date`)
+              VALUES ('",v_cod_input_service, "','", v_cod_input_service_name, "','", v_cod_input_service_unit, "','", v_partial_service, "','", v_amount_service, "','", IFNULL(v_phase_cod_padre, ''), "','", IFNULL(v_phase_cod_padre_name, ''), "','", IFNULL(v_phase_cod_hijo, ''), "','", IFNULL(v_phase_cod_hijo_name, ''), "','", 'CD', "','", DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -1 DAY),'%Y-%m-%d'),"');");
+            PREPARE stmt FROM @SQL;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+
+        END LOOP read_loop_service;
+      CLOSE servicioInsumos;
+    END BLOCKSERVICE;
 
   END LOOP read_loop;
   CLOSE distributions;
@@ -1160,7 +1441,7 @@ BEGIN
             AND si.cost_center_id = vi_cost_center_id
             AND si.status =  'A'
             AND sid.stock_input_id = si.id
-            AND si.issue_date BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(vi_start_date, INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(vi_start_date, INTERVAL -1 DAY)
+            AND si.issue_date BETWEEN vi_start_date AND vi_end_date
             AND sid.article_id = art.id
             GROUP BY art.id) AS stock_output
       WHERE dod.article_id = stock_output.article_id
@@ -1187,7 +1468,7 @@ BEGIN
       SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = vi_cost_center_id);
       SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = vi_cost_center_id);
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
+      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
         "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
           `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
           `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
@@ -1215,7 +1496,7 @@ BEGIN
       WHERE osd.phase_id = p.id
       AND osd.sector_id = se.id
       AND os.id = osd.order_of_service_id
-      AND os.date_of_issue BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(vi_start_date, INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(vi_start_date, INTERVAL -1 DAY)
+      AND os.date_of_issue BETWEEN vi_start_date AND vi_end_date
       AND os.cost_center_id = vi_cost_center_id
       AND osd.article_id = art.id
       AND p.code > '0___' AND p.code < '89__'
@@ -1236,7 +1517,7 @@ BEGIN
       SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = vi_cost_center_id);
 
 
-      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
+      SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
         "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
           `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
           `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
@@ -1272,7 +1553,7 @@ BEGIN
         (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
          FROM payslips p
          WHERE p.cost_center_id = vi_cost_center_id
-         AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(vi_start_date, INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(vi_start_date, INTERVAL -1 DAY)
+         AND p.date_begin BETWEEN vi_start_date AND vi_end_date
          GROUP BY p.worker_id) AS payslips_worker
       WHERE ppd.part_person_id = pp.id
       AND payslips_worker.worker_id = ppd.worker_id
@@ -1290,7 +1571,7 @@ BEGIN
         (SELECT p.worker_id AS worker_id, p.date_begin AS date_begin, p.date_end AS date_end, IFNULL(SUM(CAST(REPLACE( SUBSTRING_INDEX( aport_and_amounts, '","', 1 ) , '{"neto":"', '' ) as DECIMAL(9,2))),0) AS Neto
          FROM payslips p
          WHERE p.cost_center_id = vi_cost_center_id
-         AND p.date_begin BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(vi_start_date, INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(vi_start_date, INTERVAL -1 DAY)
+         AND p.date_begin BETWEEN vi_start_date AND vi_end_date
          GROUP BY p.worker_id) AS payslips_worker
       WHERE pw.cost_center_id = vi_cost_center_id
       AND pw.id = pwd.part_worker_id
@@ -1323,7 +1604,7 @@ BEGIN
           AND pp.blockweekly = 1
           AND pp.cost_center_id =1
           AND ppd.phase_id = p.id
-          AND pp.date_of_creation BETWEEN CONCAT(DATE_FORMAT( DATE_ADD(vi_start_date, INTERVAL -1 DAY),  '%Y-%m' ), "-01" ) AND DATE_ADD(vi_start_date, INTERVAL -1 DAY)
+          AND pp.date_of_creation BETWEEN vi_start_date AND vi_end_date
           AND p.code > '0___' AND p.code < '89__'
           AND ppd.worker_id = w.id
           AND wc.worker_id = w.id
@@ -1343,7 +1624,7 @@ BEGIN
           SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = v_id);
           SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = v_id);
 
-          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
             "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
               `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
               `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
@@ -1406,7 +1687,7 @@ BEGIN
           SET @sector_padre = (SELECT name FROM sectors WHERE code = LEFT(v_sector_code_hijo,2) AND cost_center_id = vi_cost_center_id);
           SET @sector_nombre = (SELECT name FROM sectors WHERE code = v_sector_code_hijo AND cost_center_id = vi_cost_center_id);
 
-          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 DAY),'%m%Y'),
+          SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_values_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
             "`(`article_code`,`article_name`,`article_unit`,`real_specific_lvl_1`,
               `fase_cod_hijo`,`fase_cod_hijo_nombre`,`fase_cod_padre`,`fase_cod_padre_nombre`,
               `sector_cod_hijo`,`sector_cod_hijo_nombre`,`sector_cod_padre`,`sector_cod_padre_nombre`,
