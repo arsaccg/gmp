@@ -450,6 +450,9 @@ class Reports::ConsumptioncostsController < ApplicationController
                         @specific = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "RIGHT(LEFT(`acc`.`article_code`,8),6) AS specifics", ", `articles` art", "article_code =  art.code", " AND acc.fase_cod_hijo = #{fa['fase_cod_hijo']} AND acc.sector_cod_hijo = #{se['sector_cod_hijo']} AND acc.working_group_id = #{wg['working_group_id']}", "art.code", cat)
                       end
                       @specific.each do |spe|
+                        p '-----------'
+                        p spe['specific']
+                        p '-----------'
                         code_group_name = Category.find_by_code(spe['specifics']).name
                         if !@total_nombres_wg.include?(code_group_name)
                           @total << [code_group_name,nil,nil,nil,nil,nil,"article specific"]
@@ -3408,5 +3411,6 @@ class Reports::ConsumptioncostsController < ApplicationController
     end
 
     render(partial: 'table_with_config.html', :layout => false)
-  end   
+  end
+
 end
