@@ -7,18 +7,24 @@ class ConsumptionCost < ActiveRecord::Base
       cost_center_id, start_date, end_date = costCenter.id, costCenter.start_date, costCenter.end_date
       if !end_date.nil?
         start_date.upto(end_date) do |a|
-          # month = a.year.to_s + a.month + a.day
-          # @iteractions << [cost_center_id, ]
+          start_date_month = Date.new(a.year.to_s, a.month.to_s, 1).strftime('%Y-%m-%d')
+          end_date_month = Date.new(a.year.to_s, a.month.to_s, 1).next_month.prev_day.strftime('%Y-%m-%d')
+          @iteractions << [cost_center_id, start_date_month, end_date_month]
         end
       elsif end_date.nil?
         start_date.upto(Date.parse(Time.now.strftime('%Y-%m-%d'))) do |a|
-          
+          start_date_month = Date.new(a.year.to_s, a.month.to_s, 1).strftime('%Y-%m-%d')
+          end_date_month = Date.new(a.year.to_s, a.month.to_s, 1).next_month.prev_day.strftime('%Y-%m-%d')
+          @iteractions << [cost_center_id, start_date_month, end_date_month]
         end
       end
-      sql_macro = "CALL SHOWME_MACRO_VALUES_BI(" + costCenter.id.to_s + ", " + costCenter + ", " + costCenter + ")"
-      sql_micro = "CALL SHOWME_MICRO_VALUES_BI(" + costCenter.id.to_s + ", " + costCenter + ", " + costCenter + ")"
-      ActiveRecord::Base.connection.execute(sql_macro)
-      ActiveRecord::Base.connection.execute(sql_micro)
+      @iteractions = @iteractions.uniq
+      @iteractions.each do |i|
+        sql_macro = "CALL SHOWME_MACRO_VALUES_BI(" + i[0].to_s + ", " + i[1].to_s + ", " + i[2].to_s + ")"
+        sql_micro = "CALL SHOWME_MICRO_VALUES_BI(" + i[0].to_s + ", " + i[1].to_s + ", " + i[2].to_s + ")"
+        ActiveRecord::Base.connection.execute(sql_macro)
+        ActiveRecord::Base.connection.execute(sql_micro)
+      end
     end
   end
 

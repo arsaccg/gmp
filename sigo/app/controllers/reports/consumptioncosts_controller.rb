@@ -51,13 +51,13 @@ class Reports::ConsumptioncostsController < ApplicationController
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
 
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
-  	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
-    @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
-    @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
+  	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, month) # => MODIFICAR A MONTH
+    @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, month) # => MODIFICAR A MONTH
+    @magic_result_dc = ConsumptionCost.apply_all_direct_cost(cost_center_obj.id, month) # => MODIFICAR A MONTH
 
-    @accumulated_result_ge = ConsumptionCost.apply_all_accumulated_general_expenses(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
-    @accumulated_result_gen_serv = ConsumptionCost.apply_all_accumulated_general_services(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
-    @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, Time.now.to_date.strftime('%m%Y')) # => MODIFICAR A MONTH
+    @accumulated_result_ge = ConsumptionCost.apply_all_accumulated_general_expenses(cost_center_obj.id, month) # => MODIFICAR A MONTH
+    @accumulated_result_gen_serv = ConsumptionCost.apply_all_accumulated_general_services(cost_center_obj.id, month) # => MODIFICAR A MONTH
+    @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, month) # => MODIFICAR A MONTH
 
     @costo_total_programado = @magic_result_dc['sum_programado'].to_f
     @costo_total_valorizado = @magic_result_dc['sum_valorizado'].to_f # => FALTA SUMARLES el valorizado de Gastos Generales
