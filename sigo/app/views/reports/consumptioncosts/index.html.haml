@@ -82,35 +82,6 @@
                         %input{ :type => 'button', :name => 'left', :value => '<<', 'onclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
                       %td{ :style => 'border-top:none;' }
                         %select{ :name => 'final_sort_select', :multiple => true, :id => 'finalsort', 'ondblclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
-            .col-md-4
-              %label Primer Nivel
-              %select.form-control#first
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-              %label Segundo Nivel
-              %select.form-control#second
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-              %label Tercer Nivel
-              %select.form-control#third
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-              %label Cuarto Nivel
-              %select.form-control#fourth
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
             .col-md-12
               .col-md-12
                 .col-md-4
@@ -340,10 +311,10 @@
                   = check_box_tag 'chbx_showme_previous_forecasts'
 
         .modal-footer
-          %button#search-cost-config.btn.btn-primary{type: "button"}
+          %button#search_with_config.btn.btn-primary{type: "button"}
             %i.fa.fa-search
               Guardar y Consultar
-    }
+    
 
   :javascript
     
@@ -351,11 +322,12 @@
     $(document).ready(function(){
       $('.config-class').select2({ width: '200px' });
     });
-    $('#search-cost-config').click(function(){
-      var first = $('#first').val();
-      var second = $('#second').val();
-      var third = $('#third').val();
-      var fourth = $('#fourth').val();
+
+    $('#search_with_config').click(function(){
+      var first = "";
+      var second = "";
+      var third = "";
+      var fourth = "";
       var phase = $('#phase').val();
       var subphase = $('#subphase').val();
       var sector = $('#sector').val();
@@ -370,18 +342,21 @@
       var art = $('#art').val();
       var month = $('#selected-month').val();
 
-
-      if(first != "defecto"  && second != "defecto"  && third != "defecto"  && fourth != "defecto"){
-        if(first != second && first != third && first != fourth && second != third && second != fourth && third != fourth){
-          params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-          load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');      
-        }
+      var array_orden = [];
+      var i = 0;
+      if($('#finalsort').children().size() == 4){
+        $('#finalsort').children().each(function(){
+          array_orden[i] = $(this).val();
+          i+=1;
+        });
+        first = array_orden[0];
+        second = array_orden[1];
+        third = array_orden[2];
+        fourth = array_orden[3];
       }
 
-      if(first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"){
-        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-        load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
-      }
+      params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+      load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');      
     });
 
     $('#search-cost').click(function(){

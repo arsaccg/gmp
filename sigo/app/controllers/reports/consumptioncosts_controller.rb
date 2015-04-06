@@ -165,57 +165,14 @@ class Reports::ConsumptioncostsController < ApplicationController
     @total_nombres_sub_category = Array.new
     @total_nombres_specific_category = Array.new
 
+    if first == "" && second == "" && third == "" && fourth == ""
+      first = "phase"
+      second = "sector"
+      third = "working_group"
+      fourth = "article"
+    end
+
     ["CD","GG","SG"].each do |cat|
-      if first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"
-
-        @phases = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`fase_cod_hijo`", ", `phases` ph", "fase_cod_hijo =  ph.code", " ", "ph.code", cat)
-        @phases.to_a.each do |ph|
-          phs = Phase.find_by_code(ph['fase_cod_hijo'])
-          php = Phase.find_by_code(phs.code[0..1])
-          if !@total_nombres_fases.include?(php.name)
-            @total << [php.code + " - " + php.name,nil,nil,nil,nil,nil,"fase padre"]
-            @total_nombres_fases << php.name
-          end
-          @total << [phs.code + " - " + phs.name,nil,nil,nil,nil,nil,"fase hija"]
-          @sector = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`sector_cod_hijo`", ", `sectors` sc", "sector_cod_hijo =  sc.code", " AND acc.fase_cod_hijo = #{phs.code}", "sc.code", cat)
-          if !@sector.empty?
-            @sector.each do |se|
-              ses = Sector.find_by_code(se['sector_cod_hijo'])
-              sep = Sector.find_by_code(ses.code[0..1])
-              if !@total_nombres_sector.include?(sep.name)
-                @total << [sep.code + " - " + sep.name,nil,nil,nil,nil,nil,"sector padre"]
-                @total_nombres_sector << sep.name
-              end          
-              @total << [ses.code + " - " + ses.name,nil,nil,nil,nil,nil,"sector hija"]
-              @wg = ConsumptionCost.get_phases_sector_wg(cc, Time.now.to_date.strftime('%m%Y'), Time.now.to_date.strftime('%Y-%m-%d'), "`acc`.`working_group_id`", ", `working_groups` wg", "working_group_id =  wg.id", " AND acc.fase_cod_hijo = #{phs.code} AND acc.sector_cod_hijo = #{ses.code}", "wg.name", cat)
-              if !@wg.empty?
-                @wg.each do |wg|
-                  wgs = WorkingGroup.find(wg['working_group_id'])
-                  if !@total_nombres_wg.include?(wgs.name)
-                    @total << [wgs.name,nil,nil,nil,nil,nil,"working_group"]
-                    @total_nombres_wg << wgs.name
-                  end
-                  @articles = ConsumptionCost.get_articles_from_cwgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.code, ses.code, wgs.id)
-                  @articles.each do |ar|
-                    @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
-                  end
-                end
-              else
-                @articles = ConsumptionCost.get_articles_from_swgsf(cc, Time.now.to_date.strftime('%m%Y'), phs.code, ses.code)
-                @articles.each do |ar|
-                  @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
-                end
-              end
-            end
-          else
-            @articles =ConsumptionCost.get_articles_from_phases(cc, Time.now.to_date.strftime('%m%Y'), phs.code)
-            @articles.each do |ar|
-              @total << [art['article'], art['programado_specific_lvl1'],art['meta_specific_lvl_1'], art['real_specific_lvl_1'], art['valorizado_specific_lvl_1'], art['valor_ganado_specific_lvl_1'], "article"]
-            end        
-          end
-        end
-      end
-
       # ----------------------------------- EMPIEZAN COMBINACIONES -----------------------------------
       # --------------------------- FASE PRIMERO ------------------------------------
       if first == "phase"
