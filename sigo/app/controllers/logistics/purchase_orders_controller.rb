@@ -588,17 +588,19 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(4).round(2)
       )
     end
-
+    puts " ------------------------------------- empieza verificacion -----------------------------------------------------------------------------------"
     verificacion_id.each do |ver|
       val = PurchaseOrderDetail.find(ver) rescue nil
+      p val.inspect
+      p verificacion_id.index(ver)
       if val.nil?
-        DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)]).update_attributes(:requested => 0)
+        DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)]).update_attributes(:requested => nil)
       else
         del = DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)])
         if del.amount == val.amount
           del.update_attributes(:requested => 1)
         else
-          del.update_attributes(:requested => 0)
+          del.update_attributes(:requested => nil)
         end
       end
     end
@@ -636,8 +638,11 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
           if sql_purchase_order_partial_amount.first == sql_delivery_order_total_amount.first
             @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
-            @deliveryOrderDetail.update_attributes(:requested => 0)
+            @deliveryOrderDetail.update_attributes(:requested => nil)
           end
+        end
+        @purchaseOrder.purchase_order_details.each do |pod|
+          pod.destroy
         end
         @purchaseOrder.destroy
       else
