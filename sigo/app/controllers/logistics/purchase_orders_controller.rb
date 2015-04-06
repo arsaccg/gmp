@@ -529,8 +529,14 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def update
     purchaseOrder = PurchaseOrder.find(params[:id])
+    verificacion_id = Array.new
+    verificacion_order_id = Array.new
+    purchaseOrder.purchase_order_details.each do |pod|
+      verificacion_id << pod.id
+      verificacion_order_id << pod.delivery_order_detail_id
+    end
     purchaseOrder.update_attributes(purchase_order_parameters)
-    PurchaseOrder.find(purchaseOrder.id).purchase_order_details.each do |po|
+    purchaseOrder.purchase_order_details.each do |po|
       if po.quantity_igv.to_f == 0.0
         po.update(:igv=>nil)
       end
@@ -581,6 +587,20 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :unit_price_before_igv => ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f).round(4).round(2), 
         :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(4).round(2)
       )
+    end
+
+    verificacion_id.each do |ver|
+      val = PurchaseOrderDetail.find(ver) rescue nil
+      if val.nil?
+        DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)]).update_attributes(:requested => 0)
+      else
+        del = DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)])
+        if del.amount == val.amount
+          del.update_attributes(:requested => 1)
+        else
+          del.update_attributes(:requested => 0)
+        end
+      end
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
