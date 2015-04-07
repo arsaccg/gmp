@@ -112,7 +112,7 @@ class Administration::PartWorkersController < ApplicationController
     @phase = params[:phase].to_i
     @sector = params[:sector].to_i
     @wg = params[:wg].to_i
-    date = params[:date].to_s
+    @date = params[:date].to_s
     @company = session[:company]
     @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @reg_n = ((Time.now.to_f)*100).to_i
@@ -124,8 +124,8 @@ class Administration::PartWorkersController < ApplicationController
       AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
       AND e.id = w.entity_id
       AND w.id = wc.worker_id
-      AND wc.start_date <=  '#{date}'
-      AND wc.end_date >=  '#{date}'
+      AND wc.start_date <=  '#{@date}'
+      AND wc.end_date >=  '#{@date}'
       ORDER BY CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ' ', e.name,  ' ', e.second_name ) 
       ")
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
