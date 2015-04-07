@@ -1,47 +1,21 @@
-- if @orders_po.count > 0
-  %h2 Ordenes de Compra
-  %table#list-orders_po.table.table-striped.table-bordered.table-hover.smart-form
-    %thead
-      %tr
-        %th Código de la orden
-        %th Fecha de Emisión
-        %th Descripción
-        %th Seleccionar
+- if @orders_po.count > 0 || @orders_oos.count > 0
+  =hidden_field_tag 'select-all', 0
+  %h2 Ordenes: 
+  %select#select-orders{:name =>"orders[]", :style => 'width:80%;padding: 0;border: none;', :multiple => true}
     - @orders_po.each do |order|
-      %tr
-        %td
-          = order.code.to_s.rjust(5, '0')
-        %td
-          = order.date_of_issue.strftime("%d-%m-%Y")
-        %td
-          = order.description
-        %td.orders-checked
-          %label.checkbox
-            = check_box("order_selected", "selected", { class: 'order_check' }, order.id)
-            %i
-
-- elsif @orders_oos.count > 0
-  %h2 Ordenes de Servicio
-  %table#list-orders_oos.table.table-striped.table-bordered.table-hover.smart-form
-    %thead
-      %tr
-        %th Código de la orden
-        %th Fecha de Emisión
-        %th Descripción
-        %th Seleccionar
+      %option{ :value => "OC-#{order[0]}" }
+        = "OC - " + order[2].rjust(5, '0') + " - " + order[3].to_s
     - @orders_oos.each do |order|
-      %tr
-        %td
-          = order.id.to_s.rjust(5, '0')
-        %td
-          = order.date_of_issue.strftime("%d-%m-%Y")
-        %td
-          = order.description
-        %td.orders-checked
-          %label.checkbox
-            = check_box("order_selected", "selected", { class: 'order_check' }, order.id)
-            %i
+      %option{ :value => "OS-#{order.id}" }
+        = "OS - " + order.code.rjust(5, '0') + " - " + order.description.to_s
+  %button.btn.btn-sm.btn-primary#search_deliv_orders{type: "button", :style => "margin-left: 10px;", :onclick => 'show_me_the_details();' }
+    %i.fa.fa-search
+    Buscar        
 
+  :javascript
+    $(document).ready(function(){
+      $('#select-orders').select2();
+    });
 -  else
 
   %h3{:style => 'text-align:center;'}
@@ -49,8 +23,6 @@
 
 %br
 
-%button.btn.btn-info{ :type => 'button', :onclick => 'show_me_the_details();' }
-  Ver detalle de lo Seleccionado
 %button.btn.btn-danger{ :type => 'button', 'data-dismiss' => "modal" }
   Cerrar
 

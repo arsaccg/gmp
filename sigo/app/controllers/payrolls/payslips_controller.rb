@@ -145,7 +145,7 @@ class Payrolls::PayslipsController < ApplicationController
       wo = ActiveRecord::Base.connection.execute("
         SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname )
         FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-        WHERE pp.company_id = "+get_company_cost_center('company').to_s+"
+        WHERE pp.cost_center_id = "+get_company_cost_center('cost_center').to_s+"
         AND ppd.part_worker_id = pp.id
         AND ppd.assistance =  'si'
         AND pp.date_of_creation BETWEEN '" + inicio.to_s + "' AND  '" + d.to_s + "'

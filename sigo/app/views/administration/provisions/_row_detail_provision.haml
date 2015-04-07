@@ -103,5 +103,12 @@
         escapeMarkup: function (m) { return m; }
       });
 
+      $('#money-select').children().each(function(){
+        if($(this).val()==#{data_order_detail[17]}){
+          $(this).attr("selected", true);
+        }
+      });
+
+      $('#provision_exchange_of_rate').val(#{data_order_detail[18]})
     });     
   - @reg_n += 1

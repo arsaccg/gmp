@@ -37,7 +37,7 @@
                       %i.fa.fa-calendar
 
           %fieldset
-            .col-md-3
+            .col-md-4
               .form-group
                 %label.col-md-4.control-label Tipo Documento
                 .col-md-8
@@ -49,7 +49,7 @@
                       - else
                         %option{:value => "#{x.id}"}
                           = x.name
-            .col-md-2
+            .col-md-4
               .form-group
                 %label.col-md-3.control-label Serie
                 .col-md-8
@@ -58,7 +58,7 @@
                     %span.input-group-addon
                       %i.fa.fa-money
 
-            .col-md-3
+            .col-md-4
               .form-group
                 %label.col-md-4.control-label N° Doc.
                 .col-md-8
@@ -66,7 +66,25 @@
                     = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
                     %span.input-group-addon
                       %i.fa.fa-calendar
-
+          %fieldset
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Moneda
+                .col-md-8
+                  .input-group
+                    %select#money-select{:name =>"provision[money_id]"}
+                      %option{:value => nil, :disabled => true, :selected => true} Seleccione un tipo 
+                      - @money.each do |money|
+                        %option{:value => "#{money.id}", :selected => money.id==@provision.money_id}
+                          = money.name
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Tipo de cambio
+                .col-md-8
+                  .input-group
+                    = text_field(:provision, :exchange_of_rate, :value => @provision.exchange_of_rate, class: "form-control")
+                    %span.input-group-addon
+                      %i.fa.fa-warning
             .col-md-4
               .form-group
                 %label.col-md-2.control-label Glosa
@@ -320,7 +338,7 @@
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
           .row
-            %button.btn.btn-primary{type: "submit"}
+            %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
               %i.fa.fa-save
                 Guardar
 
@@ -333,6 +351,8 @@
 
   $(document).ready(function(){ 
     $('select').select2();
+    $('#s2id_money-select').remove();
+    $('#money-select').attr("class","form-control");
     $('#proveedor-select').select2({
       placeholder: "Buscar proveedor...",
       minimumInputLength: 3,
@@ -402,6 +422,7 @@
       beforeSubmit: function() {
         $('#new_provision').validate({
           // Rules for form validation
+          ignore: "",
           rules : {
             'provision[entity_id]' : {
               required : true
@@ -438,31 +459,45 @@
               required : 'El número de serie es requerida.'
             }
           },
-          highlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-          },
-          unhighlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-          },
-          errorElement: 'span',
-          errorClass: 'help-block',
-          errorPlacement: function (error, element) {
-            if (element.parent('.input-group').length) {
-              error.insertAfter(element.parent());
-            } else {
-              error.insertAfter(element);
-            }
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('em.invalid').attr("style", "color:#CC0000");
           }
         });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000");
+        // Client Valid
+        if( $('#new_provision').valid() ){
+          $('#modalLoadingLabelading').modal();
+          $('em.invalid').attr("style", "color:#CC0000");
+        }
+        // Client Valid
         return $('#new_provision').valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000");
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000");
+      }
     });
 
     $('form[id^="edit_"]').ajaxForm({
       beforeSubmit: function() {
         $('form[id^="edit_"]').validate({
           // Rules for form validation
+          ignore: '',          
           rules : {
             'provision[entity_id]' : {
               required : true
@@ -499,26 +534,37 @@
               required : 'El número de serie es requerida.'
             }
           },
-          highlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-          },
-          unhighlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-          },
-          errorElement: 'span',
-          errorClass: 'help-block',
-          errorPlacement: function (error, element) {
-            if (element.parent('.input-group').length) {
-              error.insertAfter(element.parent());
-            } else {
-              error.insertAfter(element);
-            }
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
           }
         });
-
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000");
+        // Client Valid
+        if( $('form[id^="edit_"]').valid() ){
+          $('#modalLoadingLabelading').modal();
+          $('em.invalid').attr("style", "color:#CC0000");
+        }
+        // Client Valid
         return $('form[id^="edit_"]').valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000");
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr("style", "color:#CC0000");
+      }
     });
   });
 
@@ -674,127 +720,19 @@
   }
 
   function show_me_the_details(){
-
-    status_po = false;
-    status_oos = false;
-
-    var data_orders_po = new Array();
-    var data_orders_oos = new Array();
-
-    if( ( $('#list-orders_po tbody tr td.orders-checked').length > 0 ) && ( $('#list-orders_oos tbody tr td.orders-checked').length > 0 ) ){
-
-      var index = 0;
-      $('#list-orders_po tbody tr td.orders-checked .checkbox .order_check').each(function(){
-        if( $(this).is(':checked') ){
-          status_po = true
-          data_orders_po[index] = $(this).val();
-          index++;
-        }
-      });
-
-      var jndex = 0;
-      $('#list-orders_oos tbody tr td.orders-checked .checkbox .order_check').each(function(){
-        if( $(this).is(':checked') ){
-          status_oos = true
-          data_orders_oos[jndex] = $(this).val();
-          jndex++;
-        }
-      });
-
-      if((status_po) && (status_oos)){
-
-        data = { data_orders_po: data_orders_po, data_orders_oos: data_orders_oos, authenticity_token: "#{form_authenticity_token}" }
-        load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);
-
-      } else { 
-
-        e.preventDefault();
-        $.smallBox({
-          title: "Antes de continuar debes de haber seleccionado alguna Orden.",
-          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-          color: "#c46a69",
-          iconSmall: "fa fa-times bounce animated",
-          timeout: 4000
-        });
-      }
-
-    } else {
-
-      if( ( $('#list-orders_po tbody tr td.orders-checked').length > 0 ) ) {
-
-        var index = 0;
-        $('#list-orders_po tbody tr td.orders-checked .checkbox .order_check').each(function(){
-          if( $(this).is(':checked') ){
-            status_po = true
-            data_orders_po[index] = $(this).val();
-            index++;
-          }
-        });
-
-        if(status_po){
-
-          data = { data_orders_po: data_orders_po, authenticity_token: "#{form_authenticity_token}" }
-          load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);
-
-        } else { 
-
-          e.preventDefault();
-          $.smallBox({
-            title: "Antes de continuar debes de haber seleccionado alguna Orden.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#c46a69",
-            iconSmall: "fa fa-times bounce animated",
-            timeout: 4000
-          });
-        }
-
-      } else {
-
-        if( ( $('#list-orders_oos tbody tr td.orders-checked').length > 0 ) ) {
-
-          var jndex = 0;
-          $('#list-orders_oos tbody tr td.orders-checked .checkbox .order_check').each(function(){
-            if( $(this).is(':checked') ){
-              status_oos = true
-              data_orders_oos[jndex] = $(this).val();
-              jndex++;
-            }
-          });
-
-          if(status_oos){
-
-            data = { data_orders_oos: data_orders_oos, authenticity_token: "#{form_authenticity_token}" }
-            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);
-
-          } else { 
-
-            e.preventDefault();
-            $.smallBox({
-              title: "Antes de continuar debes de haber seleccionado alguna Orden.",
-              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-              color: "#c46a69",
-              iconSmall: "fa fa-times bounce animated",
-              timeout: 4000
-            });
-          }
-
-        } else {
-
-          e.preventDefault();
-          $.smallBox({
-            title: "Antes de continuar debes de haber seleccionado alguna Orden.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#c46a69",
-            iconSmall: "fa fa-times bounce animated",
-            timeout: 4000
-          });
-
-        }
-
-      }
-
+    var orders = $('#select-orders').val();
+    if(orders!=null){
+      data = { data_orders: orders, authenticity_token: "#{form_authenticity_token}" }
+      load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);      
+    }else{
+      $.smallBox({
+        title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+        content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+        color: "#c46a69",
+        iconSmall: "fa fa-times bounce animated",
+        timeout: 4000
+      });    
     }
-
   }
 
   function put_the_details(){
@@ -826,7 +764,7 @@
           iconSmall: "fa fa-check bounce animated",
           timeout: 4000
         });
-
+        
       } else {
 
         e.preventDefault();
