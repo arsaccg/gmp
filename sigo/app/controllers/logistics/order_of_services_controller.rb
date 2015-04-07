@@ -455,7 +455,7 @@ class Logistics::OrderOfServicesController < ApplicationController
       end
     end
     @igv_neto = @total*@igv
-    @total_neto = @total - @igv_neto
+    @total_neto = @total + @igv_neto
 
     if @orderOfService.state == 'pre_issued'
       @state_per_order_purchase_approved = @orderOfService.state_per_order_of_services.where("state LIKE 'pre_issued'").last
