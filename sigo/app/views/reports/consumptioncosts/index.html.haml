@@ -308,10 +308,10 @@
                   = check_box_tag 'chbx_showme_previous_forecasts'
 
         .modal-footer
-          %button#search-cost-config.btn.btn-primary{type: "button"}
+          %button#search_with_config.btn.btn-primary{type: "button"}
             %i.fa.fa-search
               Guardar y Consultar
-    }
+    
 
   :javascript
     
@@ -320,6 +320,7 @@
       size = $('.config-class').parent().parent().outerHeight();
       $('.config-class').select2({ width: '130px' });
     });
+    
     $('#search-cost-config').click(function(){
       var first = ''; var second = ''; var third = ''; var fourth = '';
       $('#finalsort').find('option').each(function(i,dom){
@@ -372,7 +373,6 @@
           icon : "fa fa-bell"
         });
       }
-
     });
 
     $('#search-cost').click(function(){

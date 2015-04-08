@@ -32,7 +32,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     workers.each do |wo|
       totalworker = 0
       wor = Worker.find(wo)
-      contract = WorkerContract.where("worker_id = ? AND status = 1",wo).first
+      contract = WorkerContract.where("worker_id = ? AND start_date <= ? AND end_date >= ?",wo,@schedule.start_date, @schedule.end_date).first
       if !contract.nil?
         cadenita = index.to_s + ';' + contract.article.code.to_s + ';' + contract.article.name.to_s + ';' + wor.entity.dni.to_s + ';' + wor.entity.paternal_surname.to_s + " " + wor.entity.maternal_surname.to_s + ', ' + wor.entity.name.to_s + ' ' + wor.entity.second_name.to_s
         @dias_habiles.each do |dh|

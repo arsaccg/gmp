@@ -35,6 +35,23 @@ class Administration::ProvisionsController < ApplicationController
     flag = Provision.where("entity_id = ? AND series = ? AND number_document_provision = ? AND document_provision_id = 1", provision.entity_id, provision.series,provision.number_document_provision)
     if flag.count == 0
       if provision.save
+        provision.provision_direct_purchase_details.each do |pdpd|
+          if pdpd.type_order == "purchase_order"
+            pod = PurchaseOrderDetail.find(pdpd.order_detail_id)
+            if pdpd.amount.to_f == pod.amount.to_f
+              pod.update_attributes(:received_provision => 1)
+            else
+              pod.update_attributes(:received_provision => 0)
+            end
+          elsif pdpd.type_order == "service_order"
+            ood = OrderOfServiceDetail.find(pdpd.order_detail_id)
+            if pdpd.amount.to_f == ood.amount.to_f
+              ood.update_attributes(:received_provision => 1)
+            else
+              ood.update_attributes(:received_provision => 0)
+            end
+          end
+        end
         flash[:notice] = "Se ha creado correctamente la nueva provision."
         redirect_to :controller => :provision_articles, :action => :index
       else
@@ -64,7 +81,40 @@ class Administration::ProvisionsController < ApplicationController
 
   def update
     provision = Provision.find(params[:id])
+    ver_ids = Array.new
+    ver_type = Array.new
+    provision.provision_direct_purchase_details.each do |det|
+      ver_ids << det.order_detail_id
+      ver_type << det.type_order
+    end
     provision.update_attributes(provision_direct_purchase_parameters)
+
+    ver_ids.each do |vid|
+      if provision.provision_direct_purchase_details.where("order_detail_id = " + vid.to_s).empty?
+        if ver_type[ver_ids.index(vid)] == "purchase_order"
+          PurchaseOrderDetail.find(vid).update_attributes(:received_provision => 0)
+        elsif ver_type[ver_ids.index(vid)] == "service_order"
+          OrderOfServiceDetail.find(vid).update_attributes(:received_provision => 0)
+        end
+      end
+    end
+    provision.provision_direct_purchase_details.each do |det|
+      if det.type_order == "purchase_order"
+        order = PurchaseOrderDetail.find(det.order_detail_id)
+        if order.amount == det.amount
+          order.update_attributes(:received_provision => 1)
+        else
+          order.update_attributes(:received_provision => 0)
+        end
+      elsif det.type_order == "service_order"
+        order = OrderOfServiceDetail.find(det.order_detail_id)
+        if order.amount == det.amount
+          order.update_attributes(:received_provision => 1)
+        else
+          order.update_attributes(:received_provision => 0)
+        end          
+      end
+    end
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :controller => :provision_articles, :action => :index
   rescue ActiveRecord::StaleObjectError
@@ -97,104 +147,106 @@ class Administration::ProvisionsController < ApplicationController
   def display_orders
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
-    @orders_po = PurchaseOrder.select(:id).select(:date_of_issue).select(:code).select(:description).where('entity_id = ? AND state = ?', supplier, 'approved')
-    @orders_oos = OrderOfService.where('entity_id = ? AND state = ?', supplier, 'approved')
+    @orders_po = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod WHERE po.state = 'approved' AND po.id = pod.purchase_order_id AND pod.delivery_order_detail_id = dod.id AND dod.requested = 1 AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)
+    @orders_oos = OrderOfService.where('entity_id = ? AND state = ? AND cost_center_id = ?', supplier, 'approved', get_company_cost_center('cost_center'))
 
     render(:partial => 'table_list_orders', :layout => false)
   end
 
   def display_details_orders
-    orders_po = params[:data_orders_po]
-    orders_oos = params[:data_orders_oos]
-    @type_order = params[:type_of_order_selected]
+    orders = params[:data_orders]
     @data_orders = Array.new
 
     @igv = FinancialVariable.where("name LIKE '%IGV%'").first.value # IGV in Percent
+    if !orders.nil?
+      orders.each do |ord|
+        type = ord.split("-")
 
-    if !orders_po.nil?
-      orders_po.each do |order_id|
-        if PurchaseOrder.find(order_id).approved?
-          PurchaseOrder.find(order_id).purchase_order_details.each do |purchase_detail|
-            if !purchase_detail.received_provision
-              detail_order = purchase_detail.delivery_order_detail
-              # Lo que falta Atender
-              pending = 0
-              current_amount = 0
-              currency = ''
-              provision = ProvisionDetail.where(order_detail_id: purchase_detail.id)
-              if provision.count > 0
-                provision.each do |prov|
-                  current_amount += prov.amount
+        if type[0]=="OC"
+          if PurchaseOrder.find(type[1]).approved?
+            PurchaseOrder.find(type[1]).purchase_order_details.each do |purchase_detail|
+              if !purchase_detail.received_provision
+                detail_order = purchase_detail.delivery_order_detail
+                # Lo que falta Atender
+                pending = 0
+                current_amount = 0
+                currency = ''
+                provision = ProvisionDirectPurchaseDetail.where(order_detail_id: purchase_detail.id)
+                if provision.count > 0
+                  provision.each do |prov|
+                    current_amount += prov.amount
+                  end
+                  pending = purchase_detail.amount - current_amount
+                else
+                  pending = purchase_detail.amount
                 end
-                pending = purchase_detail.amount - current_amount
-              else
-                pending = purchase_detail.amount
-              end
-              currency = purchase_detail.purchase_order.money.symbol
+                currency = purchase_detail.purchase_order.money.symbol
 
-              data_pod = PurchaseOrderDetail.calculate_amounts(purchase_detail.id, pending, purchase_detail.unit_price, @igv)
-              
-              if pending > 0
+                data_pod = PurchaseOrderDetail.calculate_amounts(purchase_detail.id, pending, purchase_detail.unit_price, @igv)
+                order_code = "OC - " + purchase_detail.purchase_order.code
+                if pending > 0
+                  @data_orders << [ 
+                    detail_order.article.code, 
+                    detail_order.article.name, 
+                    purchase_detail.amount, 
+                    data_pod[5].round(2), 
+                    purchase_detail.unit_price, 
+                    purchase_detail.description, 
+                    purchase_detail.id, 
+                    pending, 
+                    currency, 
+                    'purchase',
+                    (purchase_detail.quantity_igv.to_f).round(2), 
+                    data_pod[3].round(2),
+                    order_code
+                  ]
+                end
+              end
+            end
+          end
+          
+        elsif type[0]=="OS"
+          if OrderOfService.find(type[1]).approved?
+            OrderOfService.find(type[1]).order_of_service_details.each do |service_detail|
+              if !service_detail.received
+                # Lo que falta Atender
+                pending = 0
+                current_amount = 0
+                currency = ''
+                provision = ProvisionDetail.where(order_detail_id: service_detail.id)
+                if provision.count > 0
+                  provision.each do |prov|
+                    current_amount += prov.amount
+                  end
+                  pending = service_detail.amount - current_amount
+                else
+                  pending = service_detail.amount
+                end
+                currency = service_detail.order_of_service.money.symbol rescue 'S/.'
+                order_code = "OS - " + service_detail.order_of_service.code
                 @data_orders << [ 
-                  detail_order.article.code, 
-                  detail_order.article.name, 
-                  purchase_detail.amount, 
-                  data_pod[5].round(2), 
-                  purchase_detail.unit_price, 
-                  purchase_detail.description, 
-                  purchase_detail.id, 
+                  service_detail.article.code, 
+                  service_detail.article.name, 
+                  service_detail.amount, 
+                  (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), 
+                  service_detail.unit_price_before_igv.to_f, 
+                  service_detail.description, 
+                  service_detail.id, 
                   pending, 
                   currency, 
-                  'purchase',
-                  (purchase_detail.quantity_igv.to_f).round(2), 
-                  data_pod[3].round(2)
+                  'service',
+                  (service_detail.quantity_igv.to_f*-1).round(2),
+                  service_detail.unit_price_before_igv.to_f.round(2),
+                  order_code
                 ]
               end
             end
           end
+          
         end
+
       end
     end
-
-    if !orders_oos.nil?
-      orders_oos.each do |order_id|
-        if OrderOfService.find(order_id).approved?
-          OrderOfService.find(order_id).order_of_service_details.each do |service_detail|
-            if !service_detail.received
-              # Lo que falta Atender
-              pending = 0
-              current_amount = 0
-              currency = ''
-              provision = ProvisionDetail.where(order_detail_id: service_detail.id)
-              if provision.count > 0
-                provision.each do |prov|
-                  current_amount += prov.amount
-                end
-                pending = service_detail.amount - current_amount
-              else
-                pending = service_detail.amount
-              end
-              currency = service_detail.order_of_service.money.symbol rescue 'S/.'
-              @data_orders << [ 
-                service_detail.article.code, 
-                service_detail.article.name, 
-                service_detail.amount, 
-                (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), 
-                service_detail.unit_price_before_igv.to_f, 
-                service_detail.description, 
-                service_detail.id, 
-                pending, 
-                currency, 
-                'service',
-                (service_detail.quantity_igv.to_f*-1).round(2),
-                service_detail.unit_price_before_igv.to_f.round(2)
-              ]
-            end
-          end
-        end
-      end
-    end
-
     render(:partial => 'table_list_details_orders', :layout => false)
   end
 
@@ -223,6 +275,8 @@ class Administration::ProvisionsController < ApplicationController
           @sector = @order.delivery_order_detail.sector_id
           @phase = @order.delivery_order_detail.phase_id
           @code = @order.purchase_order.code.to_s.rjust(5, '0')
+          @money_id = @order.purchase_order.money_id
+          @exchange_rate = @order.purchase_order.exchange_of_rate
         elsif data[1]== 'service'
           @order = OrderOfServiceDetail.find(data[0])
           @order_ec = @order.order_service_extra_calculations.where("apply LIKE 'before' AND extra_calculation_id = 1")
@@ -234,7 +288,9 @@ class Administration::ProvisionsController < ApplicationController
           @money  = @order.order_of_service.money.symbol
           @sector = @order.sector_id
           @phase = @order.phase_id
-          @code = @order.order_of_service.code.to_s.rjust(5, '0')    
+          @code = @order.order_of_service.code.to_s.rjust(5, '0') 
+          @money_id = @order.order_of_service.money_id
+          @exchange_rate = @order.order_of_service.exchange_of_rate
         end
       end
 
@@ -298,7 +354,9 @@ class Administration::ProvisionsController < ApplicationController
         @code,
         @sector,
         @phase,
-        @type_order
+        @type_order,
+        @money_id,
+        @exchange_rate
       ]
     end
 
@@ -339,6 +397,8 @@ class Administration::ProvisionsController < ApplicationController
       :series, 
       :description,
       :number_of_guide,
+      :money_id,
+      :exchange_of_rate,
       provision_direct_purchase_details_attributes: [
         :id,
         :provision_id,

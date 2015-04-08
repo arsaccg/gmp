@@ -18,7 +18,7 @@ class Administration::ProvisionArticlesController < ApplicationController
     @documentProvisions = DocumentProvision.all
     @suppliers = TypeEntity.find_by_preffix('P').entities
     @cost_center = get_company_cost_center("cost_center")
-
+    @money = Money.all
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       @igv = val.value.to_f+1
     end
@@ -67,10 +67,12 @@ class Administration::ProvisionArticlesController < ApplicationController
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       @igv= val.value.to_f+1
     end
+    @money = Money.all
     @account_accountants = AccountAccountant.where("code LIKE  '_______'")
     @reg_n = ((Time.now.to_f)*100).to_i
     @extra_calculations = ExtraCalculation.all
     @action = 'edit'
+    @cost_center = get_company_cost_center('cost_center')
     render layout: false
   end
 

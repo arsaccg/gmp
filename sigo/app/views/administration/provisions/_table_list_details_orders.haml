@@ -3,6 +3,7 @@
   %table#list-orders-details.table.table-striped.table-bordered.table-hover.smart-form
     %thead
       %tr
+        %th Codigo de Orden
         %th Código del Insumo
         %th Nombre del Insumo
         %th Cantidad
@@ -11,9 +12,12 @@
         %th Parcial
         %th IGV
         %th Parcial con IGV
-        %th Seleccionar
+        %th 
+          %button.btn-xs.btn-success{ :type => 'button', :onclick => 'check_all_checkboxes();' }
+            %i.fa.fa-hand-o-down        
     - @data_orders.each do |order|
       %tr
+        %td= order[12].to_s
         %td
           = order[0].to_s
         %td
@@ -35,13 +39,26 @@
           %label.checkbox
             = check_box("order_selected", "selected", { class: 'order_check' }, (order[6].to_s + '-' + order[9].to_s))
             %i
+
+  :javascript
+    function check_all_checkboxes(){
+      num = parseInt($('#select-all').val());
+      if(num%2==0){
+        $('.order_check').prop("checked",true);
+        $('#select-all').val(num+1);
+      }else{
+        $('.order_check').prop("checked",false);
+        $('#select-all').val(num+1);
+      }
+    }
 -  else
   %h3{:style => 'text-align:center;'}
     = "Esta Orden no tiene detalle para Seleccionar. Por favor intentar con otra Orden"
 
 %br
 
-%button.btn.btn-info{ :type => 'button', :onclick => 'put_the_details();' }
+%button.btn.btn-info{ :type => 'button', :onclick => 'put_the_details();', 'data-dismiss' => "modal" }
   Agregar items Seleccionados
 %button.btn.btn-danger{ :type => 'button', 'data-dismiss' => "modal" }
   Cerrar 
+

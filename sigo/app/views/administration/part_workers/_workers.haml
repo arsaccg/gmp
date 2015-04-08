@@ -17,7 +17,7 @@
       %tbody
         - @workers.each do |worker|
           - worker = Worker.find(worker[0])
-          -contract = worker.worker_contracts.where("status = 1").last
+          -contract = worker.worker_contracts.where(" start_date <=  '#{@date}' AND end_date >=  '#{@date}'").last
           -if !contract.nil?
             %tr
               %td.bank-id(style="display:none")
