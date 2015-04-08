@@ -1,0 +1,95 @@
+.col-md-12
+  %h4= @cost_center_str
+  %h1{:style => 'text-align:center;'}
+    = "COSTO POR CONSUMO PERIODO: " + @month
+
+.col-md-4
+  %p
+    %strong TIPO DE REPORTE: GENERAL
+
+.col-md-4
+  %p
+    %strong FILTRO: TODOS
+
+.col-md-12
+  %table.table.table-bordered.table-hover{:style => 'background-color: #fff;'}
+    %tr
+      %th
+      %th{:colspan => "5", :style => 'text-align:center;'} 
+        %strong ACTUAL
+      %th{:colspan => "5", :style => 'text-align:center;'} 
+        %strong ACUM. ACTUAL
+      %th{:rowspan => "2", :style => 'text-align:center;'}
+        %strong 
+          COSTO AL
+          %br>/
+          TERMINO
+      %th{:rowspan => "2", :style => 'text-align:center;'}
+        %strong 
+          COSTO AL
+          %br>/
+          TERMINO
+          %br>/
+          ANTERIOR
+    %tr
+      %td{:style => 'text-align:center;'}
+        %strong Descripción
+      %td{:style => 'text-align:center;'}
+        %strong PROGRAMADO
+      %td{:style => 'text-align:center;'}
+        %strong VALORIZADO
+      %td{:style => 'text-align:center;'}
+        %strong VALOR GANADO
+      %td{:style => 'text-align:center;'}
+        %strong COSTO REAL
+      %td{:style => 'text-align:center;'}
+        %strong META
+      %td{:style => 'text-align:center;'}
+        %strong PROGRAMADO
+      %td{:style => 'text-align:center;'}
+        %strong VALORIZADO
+      %td{:style => 'text-align:center;'}
+        %strong VALOR GANADO
+      %td{:style => 'text-align:center;'}
+        %strong COSTO REAL
+      %td{:style => 'text-align:center;'}
+        %strong META
+    - @treeOrders.each do |tree_order|
+      - tree_order.children.each do |first_node|
+        %tr
+          %td= first_node.name
+        - if first_node.children.count > 0
+          - first_node.children.each do |second_node|
+            %tr
+              %td
+                %span{:style => 'visibility:hidden'}
+                  = '-'*2
+                = second_node.name
+            - if second_node.children.count > 0
+              - second_node.children.each do |third_node|
+                %tr
+                  %td
+                    %span{:style => 'visibility:hidden'}
+                      = '-'*4
+                    = third_node.name
+                - if third_node.children.count > 0
+                  - third_node.children.each do |fourth_node|
+                    %tr
+                      %td
+                        %span{:style => 'visibility:hidden'}
+                          = '-'*6
+                        = third_node.name
+                    - if fourth_node.children.count > 0
+                      - fourth_node.children.each do |five_node|
+                        %tr
+                          %td
+                            %span{:style => 'visibility:hidden'}
+                              = '-'*8
+                            = five_node.name
+                        - if five_node.children.count > 0
+                          - five_node.children.each do |six_node|
+                            %tr
+                              %td
+                                %span{:style => 'visibility:hidden'}
+                                  = '-'*10
+                                = six_node.name

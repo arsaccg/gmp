@@ -120,7 +120,7 @@ class ConsumptionCost < ActiveRecord::Base
     return array_dc
   end
 
-  # => Methods for Macro Report
+  # => Methods for Micro Report
   def self.get_phases_sector_wg  cc_id, date, insertion_date, select, table, condition_id, condition, order, cat
     #AND acc.insertion_date = '" + insertion_date.to_s+ "'
     array_dc = connection.select_all("
@@ -423,4 +423,80 @@ class ConsumptionCost < ActiveRecord::Base
       start_date = start_date + 1.month
     end
   end
+
+  def self.do_order array_order, table_name
+    @treeOrderCD = Tree::TreeNode.new('Costo Directo')
+    @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
+    @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
+
+    # => Make Tree-Order
+    fase_index = array_order.index('fase')
+    if !fase_index.nil?
+      array_order.insert(fase_index+1, 'fase_cod_hijo')
+      array_order[fase_index] = 'fase_cod_padre'
+    end
+    sector_index = array_order.index('sector')
+    if !sector_index.nil?
+      array_order.insert(sector_index+1, 'sector_cod_hijo')
+      array_order[sector_index] = 'sector_cod_padre'
+    end
+    article_index = array_order.index('article')
+    if !article_index.nil?
+      array_order[article_index] = "article_code"
+    end
+    
+    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD')
+    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG')
+    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG')
+    
+    return @treeOrderCD, @treeOrderGG, @treeOrderSG
+  end
+
+  def self.make_tree obj_tree, array_order, table_name, type
+    index = 0
+    count_element = array_order.count
+
+    if !array_order[index].nil? && !array_order[index+1].nil?
+      sql = "SELECT DISTINCT " + array_order[index].to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " != 'NULL' AND " + array_order[index].to_s + " != '';"
+      connection.select_all(sql).each do |row|
+        obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s)
+        msql = "SELECT DISTINCT " + array_order[index+1].to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+        connection.select_all(msql).each do |mrow|
+          obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s)
+          if !array_order[index+2].nil?
+            mssql = "SELECT DISTINCT " + array_order[index+2].to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+            connection.select_all(mssql).each do |mmrow|
+              obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s)
+              if !array_order[index+3].nil?
+                rsql = "SELECT DISTINCT " + array_order[index+3].to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                connection.select_all(rsql).each do |rrow|
+                  obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s)
+                  if !array_order[index+4].nil?
+                    mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                    connection.select_all(mrsql).each do |mrrow|
+                      obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s)
+                      if !array_order[index+5].nil?
+                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '';"
+                        connection.select_all(rrpsql).each do |rprow|
+                          obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]][mrrow[array_order[index+4].to_s].to_s] << Tree::TreeNode.new(rprow[array_order[index+5].to_s].to_s)
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    elsif !array_order[index].nil?
+      sql = "SELECT " + array_order[index].to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index] + " != 'NULL' AND " + array_order[index] + " != '';"
+      ActiveRecord::Base.connection.execute(sql).each do |row|
+        obj_tree << Tree::TreeNode.new(row)
+      end
+    end
+    
+    return obj_tree
+  end
+
 end

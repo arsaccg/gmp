@@ -1,527 +1,538 @@
-.col-md-12
-  %h4= @cost_center_str
-  %h1{:style => 'text-align:center;'}
-    = "COSTO POR CONSUMO PERIODO - " + @month
+- if @mssg_error.nil?
+  .col-md-12
+    %h4= @cost_center_str
+    %h1{:style => 'text-align:center;'}
+      = "COSTO POR CONSUMO PERIODO - " + @month
 
-.col-md-4
-  %p
-    %strong TIPO DE REPORTE: GENERAL
+  .col-md-4
+    %p
+      %strong TIPO DE REPORTE: GENERAL
 
-.col-md-4
-  %p
-    %strong FILTRO: TODOS
+  .col-md-4
+    %p
+      %strong FILTRO: TODOS
 
-.col-md-12
-  %table.table.table-bordered.table-hover{:style => 'background-color: #fff;'}
-    %tr
-      %th
-      %th{:colspan => "5", :style => 'text-align:center;'} 
-        %strong ACTUAL
-      %th{:colspan => "5", :style => 'text-align:center;'} 
-        %strong ACUM. ACTUAL
-      %th{:rowspan => "2", :style => 'text-align:center;'}
-        %strong 
-          COSTO AL
-          %br>/
-          TERMINO
-      %th{:rowspan => "2", :style => 'text-align:center;'}
-        %strong 
-          COSTO AL
-          %br>/
-          TERMINO
-          %br>/
-          ANTERIOR
-    %tr
-      %td{:style => 'text-align:center;'}
-        %strong Descripción
-      %td{:style => 'text-align:center;'}
-        %strong PROGRAMADO
-      %td{:style => 'text-align:center;'}
-        %strong VALORIZADO
-      %td{:style => 'text-align:center;'}
-        %strong VALOR GANADO
-      %td{:style => 'text-align:center;'}
-        %strong COSTO REAL
-      %td{:style => 'text-align:center;'}
-        %strong META
-      %td{:style => 'text-align:center;'}
-        %strong PROGRAMADO
-      %td{:style => 'text-align:center;'}
-        %strong VALORIZADO
-      %td{:style => 'text-align:center;'}
-        %strong VALOR GANADO
-      %td{:style => 'text-align:center;'}
-        %strong COSTO REAL
-      %td{:style => 'text-align:center;'}
-        %strong META
-    %tr
-      %td
-        %strong COSTO TOTAL
-      %th= number_to_currency @costo_total_programado.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_valorizado.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_valor_ganado.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_costo_real.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_meta.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_accumulado_programado.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_accumulado_valorizado.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_accumulado_valor_ganado.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_accumulado_costo_real.to_f, :unit => "", :precision => 2
-      %th= number_to_currency @costo_total_accumulado_meta.to_f, :unit => "", :precision => 2
-      %th
-      %th
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ----
-        %strong Costo Directo
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_dc['sum_programado'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_dc['sum_valorizado'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_dc['sum_valorganado'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_dc['sum_costo_real'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_dc['sum_meta'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_dc['sum_programado'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_dc['sum_valorizado'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_dc['sum_valorganado'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_dc['sum_costo_real'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_dc['sum_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Mano de Obra
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mo_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mo_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mo_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mo_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mo_meta'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mo_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mo_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mo_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mo_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mo_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Material
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mat_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mat_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mat_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mat_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_mat_meta'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mat_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mat_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mat_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mat_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_mat_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Equipo
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_equip_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_equip_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_equip_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_equip_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_equip_meta'].to_f, :unit => "", :precision => 2      
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_equip_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_equip_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_equip_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_equip_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_equip_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Subcontrato
-      %td=number_to_currency @magic_result_dc['direct_cost_subcont_prog'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @magic_result_dc['direct_cost_subcont_valoriz'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @magic_result_dc['direct_cost_subcont_valgan'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @magic_result_dc['direct_cost_subcont_costreal'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @magic_result_dc['direct_cost_subcont_meta'].to_f, :unit => "", :precision => 2      
-      %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_prog'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_valoriz'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_valgan'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_costreal'].to_f, :unit => "", :precision => 2
-      %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_meta'].to_f, :unit => "", :precision => 2    
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Servicio
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_serv_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_serv_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_serv_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_serv_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_dc['direct_cost_serv_meta'].to_f, :unit => "", :precision => 2            
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_serv_prog'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_serv_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_serv_valgan'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_serv_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_dc['direct_cost_serv_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ----
-        %strong GASTOS GENERALES
-      %td
-        = '-'
-      %td
-      %td
-        = '-'
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_ge['sum_costo_real'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_ge['sum_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-'
-      %td
-      %td
-        = '-'
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_ge['sum_costo_real'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_ge['sum_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Mano de Obra
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_mo_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_mo_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_mo_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_mo_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_mo_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_mo_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Material
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_mat_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_mat_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_mat_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_mat_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_mat_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_mat_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Equipo
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_equip_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_equip_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_equip_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_equip_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_equip_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_equip_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Subcontrato
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_subcont_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_subcont_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_subcont_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_subcont_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_subcont_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_subcont_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td
-        %span{:style => 'visibility: hidden;'} ---------
-        Servicio
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_serv_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_serv_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_ge['general_exp_serv_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_serv_valoriz'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_serv_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_ge['general_exp_serv_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td 
-        %span{:style => 'visibility: hidden;'} ---
-        %strong SERVICIOS GENERALES
-      %td
-        = '-'
-      %td
-        = '-'
-      %td
-        = '-'
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_gen_serv['sum_costo_real'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @magic_result_gen_serv['sum_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-'
-      %td
-        = '-'
-      %td
-        = '-'
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_gen_serv['sum_costo_real'].to_f, :unit => "", :precision => 2
-      %td{ :style => 'font-weight:bold;' } 
-        = number_to_currency @accumulated_result_gen_serv['sum_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td 
-        %span{:style => 'visibility: hidden;'} ---------
-        Mano de Obra
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_mo_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_mo_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_mo_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_mo_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td 
-        %span{:style => 'visibility: hidden;'} ---------
-        Material
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_mat_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_mat_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_mat_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_mat_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td 
-        %span{:style => 'visibility: hidden;'} ---------
-        Equipo
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_equip_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_equip_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_equip_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_equip_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td 
-        %span{:style => 'visibility: hidden;'} ---------
-        Subcontrato
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_subcont_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_subcont_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_subcont_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_subcont_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
-    %tr
-      %td 
-        %span{:style => 'visibility: hidden;'} ---------
-        Servicio
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_service_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @magic_result_gen_serv['gen_serv_service_meta'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_service_costreal'].to_f, :unit => "", :precision => 2
-      %td
-        =number_to_currency @accumulated_result_gen_serv['gen_serv_service_meta'].to_f, :unit => "", :precision => 2
-      %td
-      %td
+  .col-md-12
+    %table.table.table-bordered.table-hover{:style => 'background-color: #fff;'}
+      %tr
+        %th
+        %th{:colspan => "5", :style => 'text-align:center;'} 
+          %strong ACTUAL
+        %th{:colspan => "5", :style => 'text-align:center;'} 
+          %strong ACUM. ACTUAL
+        %th{:rowspan => "2", :style => 'text-align:center;'}
+          %strong 
+            COSTO AL
+            %br>/
+            TERMINO
+        %th{:rowspan => "2", :style => 'text-align:center;'}
+          %strong 
+            COSTO AL
+            %br>/
+            TERMINO
+            %br>/
+            ANTERIOR
+      %tr
+        %td{:style => 'text-align:center;'}
+          %strong Descripción
+        %td{:style => 'text-align:center;'}
+          %strong PROGRAMADO
+        %td{:style => 'text-align:center;'}
+          %strong VALORIZADO
+        %td{:style => 'text-align:center;'}
+          %strong VALOR GANADO
+        %td{:style => 'text-align:center;'}
+          %strong COSTO REAL
+        %td{:style => 'text-align:center;'}
+          %strong META
+        %td{:style => 'text-align:center;'}
+          %strong PROGRAMADO
+        %td{:style => 'text-align:center;'}
+          %strong VALORIZADO
+        %td{:style => 'text-align:center;'}
+          %strong VALOR GANADO
+        %td{:style => 'text-align:center;'}
+          %strong COSTO REAL
+        %td{:style => 'text-align:center;'}
+          %strong META
+      %tr
+        %td
+          %strong COSTO TOTAL
+        %th= number_to_currency @costo_total_programado.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_valorizado.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_valor_ganado.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_costo_real.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_meta.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_accumulado_programado.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_accumulado_valorizado.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_accumulado_valor_ganado.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_accumulado_costo_real.to_f, :unit => "", :precision => 2
+        %th= number_to_currency @costo_total_accumulado_meta.to_f, :unit => "", :precision => 2
+        %th
+        %th
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ----
+          %strong Costo Directo
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_dc['sum_programado'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_dc['sum_valorizado'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_dc['sum_valorganado'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_dc['sum_costo_real'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_dc['sum_meta'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_dc['sum_programado'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_dc['sum_valorizado'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_dc['sum_valorganado'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_dc['sum_costo_real'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_dc['sum_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Mano de Obra
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mo_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mo_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mo_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mo_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mo_meta'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mo_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mo_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mo_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mo_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mo_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Material
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mat_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mat_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mat_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mat_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_mat_meta'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mat_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mat_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mat_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mat_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_mat_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Equipo
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_equip_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_equip_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_equip_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_equip_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_equip_meta'].to_f, :unit => "", :precision => 2      
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_equip_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_equip_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_equip_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_equip_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_equip_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Subcontrato
+        %td=number_to_currency @magic_result_dc['direct_cost_subcont_prog'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @magic_result_dc['direct_cost_subcont_valoriz'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @magic_result_dc['direct_cost_subcont_valgan'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @magic_result_dc['direct_cost_subcont_costreal'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @magic_result_dc['direct_cost_subcont_meta'].to_f, :unit => "", :precision => 2      
+        %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_prog'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_valoriz'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_valgan'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_costreal'].to_f, :unit => "", :precision => 2
+        %td=number_to_currency @accumulated_result_dc['direct_cost_subcont_meta'].to_f, :unit => "", :precision => 2    
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Servicio
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_serv_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_serv_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_serv_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_serv_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_dc['direct_cost_serv_meta'].to_f, :unit => "", :precision => 2            
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_serv_prog'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_serv_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_serv_valgan'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_serv_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_dc['direct_cost_serv_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ----
+          %strong GASTOS GENERALES
+        %td
+          = '-'
+        %td
+        %td
+          = '-'
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_ge['sum_costo_real'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_ge['sum_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-'
+        %td
+        %td
+          = '-'
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_ge['sum_costo_real'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_ge['sum_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Mano de Obra
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_mo_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_mo_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_mo_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_mo_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_mo_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_mo_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Material
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_mat_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_mat_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_mat_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_mat_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_mat_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_mat_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Equipo
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_equip_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_equip_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_equip_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_equip_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_equip_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_equip_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Subcontrato
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_subcont_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_subcont_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_subcont_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_subcont_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_subcont_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_subcont_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td
+          %span{:style => 'visibility: hidden;'} ---------
+          Servicio
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_serv_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_serv_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_ge['general_exp_serv_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_serv_valoriz'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_ge['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_serv_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_ge['general_exp_serv_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td 
+          %span{:style => 'visibility: hidden;'} ---
+          %strong SERVICIOS GENERALES
+        %td
+          = '-'
+        %td
+          = '-'
+        %td
+          = '-'
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_gen_serv['sum_costo_real'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @magic_result_gen_serv['sum_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-'
+        %td
+          = '-'
+        %td
+          = '-'
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_gen_serv['sum_costo_real'].to_f, :unit => "", :precision => 2
+        %td{ :style => 'font-weight:bold;' } 
+          = number_to_currency @accumulated_result_gen_serv['sum_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td 
+          %span{:style => 'visibility: hidden;'} ---------
+          Mano de Obra
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_mo_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_mo_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_mo_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_mo_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td 
+          %span{:style => 'visibility: hidden;'} ---------
+          Material
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_mat_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_mat_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_mat_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_mat_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td 
+          %span{:style => 'visibility: hidden;'} ---------
+          Equipo
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_equip_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_equip_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_equip_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_equip_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td 
+          %span{:style => 'visibility: hidden;'} ---------
+          Subcontrato
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_subcont_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_subcont_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_subcont_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_subcont_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+      %tr
+        %td 
+          %span{:style => 'visibility: hidden;'} ---------
+          Servicio
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @magic_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_service_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @magic_result_gen_serv['gen_serv_service_meta'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          = '-' #number_to_currency @accumulated_result_gen_serv['0'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_service_costreal'].to_f, :unit => "", :precision => 2
+        %td
+          =number_to_currency @accumulated_result_gen_serv['gen_serv_service_meta'].to_f, :unit => "", :precision => 2
+        %td
+        %td
+- else
+  %br
+  %br
+  .col-md-12
+    .alert.alert-danger.fade.in
+      %button.close{"data-dismiss" => "alert"}
+        ×
+      %i.fa-fw.fa.fa-check
+      %strong Oops! Error de consulta!
+      = @mssg_error

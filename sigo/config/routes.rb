@@ -331,6 +331,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'consult'
         post 'consult_with_config'
+        post 'consult_with_config_2'
         post 'create_tables_missing'
         post 'get_subphase'
         post 'get_subsector'

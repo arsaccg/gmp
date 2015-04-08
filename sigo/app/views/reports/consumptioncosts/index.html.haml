@@ -71,10 +71,10 @@
                     %tr
                       %td{ :style => 'border-top:none;' }
                         %select{ :name => 'sort_default_select', :multiple => true, :id => 'sortdefault', 'ondblclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
-                          %option{ :value => 'phase' } FASE
+                          %option{ :value => 'fase' } FASE
                           %option{ :value => 'sector' } SECTOR
-                          %option{ :value => 'working_group' } GRUPO DE TRABAJO
-                          %option{ :value => 'articles' } ARTICULOS
+                          %option{ :value => 'working_group_id' } GRUPO DE TRABAJO
+                          %option{ :value => 'article' } ARTICULOS
                       %td{ :valign => 'middle', :align => 'center', :style => 'border-top:none;' }
                         %input{ :type => 'button', :name => 'right', :value => '>>', 'onclick' => "moveSelectedOptions(this.form['sortdefault'],this.form['finalsort'],true)" }
                         %br
@@ -82,37 +82,8 @@
                         %input{ :type => 'button', :name => 'left', :value => '<<', 'onclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
                       %td{ :style => 'border-top:none;' }
                         %select{ :name => 'final_sort_select', :multiple => true, :id => 'finalsort', 'ondblclick' => "moveSelectedOptions(this.form['finalsort'],this.form['sortdefault'],true)" }
-            .col-md-4
-              %label Primer Nivel
-              %select.form-control#first
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-              %label Segundo Nivel
-              %select.form-control#second
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-              %label Tercer Nivel
-              %select.form-control#third
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-              %label Cuarto Nivel
-              %select.form-control#fourth
-                %option{:value => "defecto", :selected => true} Defecto
-                %option{:value => "phase"} Fase
-                %option{:value => "sector"} Sector
-                %option{:value => "working_group"} Grupo de Trabajo
-                %option{:value => "article"} Articulo
-            .col-md-12
-              .col-md-12
+            .col-md-8
+              .col-md-12{ :style => 'padding: 0;' }
                 .col-md-4
                   %label Fase
                   %label.select
@@ -124,8 +95,7 @@
                   %label Subfase
                   %label.select
                     %select.select2.config-class#subphase{:name => 'selected_subphase',:multiple=>true}
-            .col-md-12                
-              .col-md-12 
+              .col-md-12{ :style => 'padding: 0;' }
                 .col-md-4
                   %label Sector
                   %label.select
@@ -137,8 +107,7 @@
                   %label Subsector
                   %label.select
                     %select.select2.config-class#subsector{:name => 'selected_subsector', :multiple=>true}
-            .col-md-12
-              .col-md-12
+              .col-md-12{ :style => 'padding: 0;' }
                 .col-md-3
                   %label Grupo de Trabajo
                   %label.select
@@ -151,23 +120,22 @@
                     %select.select2.config-class#jf{:name => 'selected_jefefrente', :multiple=>true}
                       - @front_chiefs.each do |front_chief|
                         %option{:value => "#{front_chief.id}"}
-                          = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s                
+                          = front_chief.entity.name.to_s + ' ' + front_chief.entity.second_name.to_s + ' ' + front_chief.entity.paternal_surname.to_s + ' ' + front_chief.entity.maternal_surname.to_s
                 .col-md-3
                   %label Ejecutor
                   %label.select
                     %select.select2.config-class#exe{:name => 'selected_ejecutor', :multiple=>true}
                       - @executors.each do |ex|
                         %option{:value => "#{ex.id}"}
-                          = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s                
-                .col-md-3
-                  %label Capataz
-                  %label.select
-                    %select.select2.config-class#cap{:name => 'selected_capataz', :multiple=>true}
-                      - @master_builders.each do |master_builder|
-                        %option{:value => "#{master_builder.id}"}
-                          = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s          
-            .col-md-12  
-              .col-md-12
+                          = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s
+              .col-md-3
+                %label Capataz
+                %label.select
+                  %select.select2.config-class#cap{:name => 'selected_capataz', :multiple=>true}
+                    - @master_builders.each do |master_builder|
+                      %option{:value => "#{master_builder.id}"}
+                        = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s
+              .col-md-12{ :style => 'padding: 0;' } 
                 .col-md-3
                   %label Grupo
                   %label.select
@@ -349,39 +317,62 @@
     
     loadScript("#{ asset_path 'toolbox.min.js', type: :javascript }");
     $(document).ready(function(){
-      $('.config-class').select2({ width: '200px' });
+      size = $('.config-class').parent().parent().outerHeight();
+      $('.config-class').select2({ width: '130px' });
     });
     $('#search-cost-config').click(function(){
-      var first = $('#first').val();
-      var second = $('#second').val();
-      var third = $('#third').val();
-      var fourth = $('#fourth').val();
-      var phase = $('#phase').val();
-      var subphase = $('#subphase').val();
-      var sector = $('#sector').val();
-      var subsector = $('#subsector').val();
-      var wg = $('#wg').val();
-      var jf = $('#jf').val();
-      var exe = $('#exe').val();
-      var cap = $('#cap').val();
-      var artgru = $('#artgru').val();
-      var artsubgru = $('#artsubgru').val();
-      var artspec = $('#artspec').val();
-      var art = $('#art').val();
-      var month = $('#selected-month').val();
+      var first = ''; var second = ''; var third = ''; var fourth = '';
+      $('#finalsort').find('option').each(function(i,dom){
+        
+        switch(i){
+          case 0:
+            first = $(dom).val();
+            break;
 
+          case 1:
+            second = $(dom).val();
+            break;
 
-      if(first != "defecto"  && second != "defecto"  && third != "defecto"  && fourth != "defecto"){
-        if(first != second && first != third && first != fourth && second != third && second != fourth && third != fourth){
-          params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-          load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');      
+          case 2:
+            third = $(dom).val();
+            break;
+
+          case 3:
+            fourth = $(dom).val();
+            break;
+
+          default:
+            break;
         }
+      });
+      
+      if((first != '') && (second != '') && (third != '') && (fourth != '')){
+        var phase = $('#phase').val();
+        var subphase = $('#subphase').val();
+        var sector = $('#sector').val();
+        var subsector = $('#subsector').val();
+        var wg = $('#wg').val();
+        var jf = $('#jf').val();
+        var exe = $('#exe').val();
+        var cap = $('#cap').val();
+        var artgru = $('#artgru').val();
+        var artsubgru = $('#artsubgru').val();
+        var artspec = $('#artspec').val();
+        var art = $('#art').val();
+        var month = $('#selected-month').val();
+
+        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+        load_url_ajax("#{consult_with_config_2_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
+      } else {
+        $.smallBox({
+          title : "Aviso",
+          content : "No se ha definido un orden por el cual se hará la consulta.", 
+          color: "#c46a69",
+          timeout: 8000,
+          icon : "fa fa-bell"
+        });
       }
 
-      if(first == "defecto"  && second == "defecto"  && third == "defecto"  && fourth == "defecto"){
-        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
-        load_url_ajax("#{consult_with_config_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
-      }
     });
 
     $('#search-cost').click(function(){
