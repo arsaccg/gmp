@@ -181,10 +181,9 @@ class Administration::ProvisionsController < ApplicationController
                   pending = purchase_detail.amount
                 end
                 currency = purchase_detail.purchase_order.money.symbol
-
                 data_pod = PurchaseOrderDetail.calculate_amounts(purchase_detail.id, pending, purchase_detail.unit_price, @igv)
                 order_code = "OC - " + purchase_detail.purchase_order.code
-                if pending > 0
+                if pending.to_f > 0.0
                   @data_orders << [ 
                     detail_order.article.code, 
                     detail_order.article.name, 
