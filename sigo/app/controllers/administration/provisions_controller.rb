@@ -332,7 +332,7 @@ class Administration::ProvisionsController < ApplicationController
         end
       end
       if @igv > 0.00
-        quantity_igv = (con_igv-discounts_before)*@igv
+        quantity_igv = (con_igv.to_f-discounts_before.to_f)*@igv.to_f
       else
         quantity_igv = 0
       end
@@ -344,10 +344,10 @@ class Administration::ProvisionsController < ApplicationController
         pending, 
         @order.unit_price,
         discounts_before,
-        (con_igv-discounts_before).round(4).round(2),
+        (con_igv.to_f-discounts_before.to_f).round(4).round(2),
         @igv,
         quantity_igv.round(4).round(2),
-        ((con_igv-discounts_before)*(1+@igv)).round(4).round(2),
+        ((con_igv.to_f-discounts_before.to_f)*(1+@igv)).round(4).round(2),
         @money,
         @article_id,
         @code,
