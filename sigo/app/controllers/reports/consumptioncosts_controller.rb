@@ -3232,7 +3232,7 @@ class Reports::ConsumptioncostsController < ApplicationController
     cost_center_id = get_company_cost_center('cost_center')
     table_name = "actual_values_" + cost_center_id.to_s + '_' + month
 
-    @treeOrders = ConsumptionCost.do_order([params[:first], params[:second], params[:third], params[:fourth]], table_name)
+    @treeOrders = ConsumptionCost.do_order([params[:first], params[:second], params[:third], params[:fourth]], table_name) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end

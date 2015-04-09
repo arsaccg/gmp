@@ -428,31 +428,39 @@ class ConsumptionCost < ActiveRecord::Base
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
     @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
     @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
+    array_extras_columns = Array.new
+    array_columns_delivered = Array.new
 
     # => Make Tree-Order
     fase_index = array_order.index('fase')
     if !fase_index.nil?
       array_order.insert(fase_index+1, 'fase_cod_hijo')
       array_order[fase_index] = 'fase_cod_padre'
+      array_extras_columns << 'fase_cod_padre_nombre'
+      array_extras_columns << 'fase_cod_hijo_nombre'
     end
     sector_index = array_order.index('sector')
     if !sector_index.nil?
       array_order.insert(sector_index+1, 'sector_cod_hijo')
       array_order[sector_index] = 'sector_cod_padre'
+      array_extras_columns << 'sector_cod_padre_nombre'
+      array_extras_columns << 'sector_cod_hijo_nombre'
     end
     article_index = array_order.index('article')
     if !article_index.nil?
       array_order[article_index] = "article_code"
+      array_extras_columns << "article_name"
+      array_extras_columns << 'article_unit'
     end
     
-    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD')
-    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG')
-    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG')
+    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered)
+    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered)
+    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered)
     
     return @treeOrderCD, @treeOrderGG, @treeOrderSG
   end
 
-  def self.make_tree obj_tree, array_order, table_name, type
+  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered
     index = 0
     count_element = array_order.count
 
