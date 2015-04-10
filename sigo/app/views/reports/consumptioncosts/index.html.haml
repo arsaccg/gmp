@@ -163,47 +163,47 @@
               %h5 Vertical
               .col-md-4
                 %select{ :name => 'sort_config_advance_select', :multiple => true, :id => 'sortconfigadvance' }
-                  %option{ :value => 'phase_subphase' } FASE/SUBFASE
-                  %option{ :value => 'sector_subsector' } SECTOR/SUBSECTOR
-                  %option{ :value => 'working_group' } GRUPO DE TRABAJO
-                  %option{ :value => 'articles' } ARTICULOS
+                  %option{ :value => 'fase_cod' } FASE/SUBFASE
+                  %option{ :value => 'sector_cod' } SECTOR/SUBSECTOR
+                  %option{ :value => 'working_group_id' } GRUPO DE TRABAJO
+                  %option{ :value => 'article' } ARTICULOS
               .col-md-8
                 .row
                   .col-md-2
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} FASE
-                      = check_box_tag 'chbx_phase', 1, true
+                      = check_box_tag 'chbx_phase', 'fase_cod_padre', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SUBFASE
-                      = check_box_tag 'chbx_subphase', 1, true
+                      = check_box_tag 'chbx_subphase', 'fase_cod_hijo', true
                 .row
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SECTOR
-                      = check_box_tag 'chbx_sector', 1, true
+                      = check_box_tag 'chbx_sector', 'sector_cod_padre', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SUBSECTOR
-                      = check_box_tag 'chbx_subsector', 1, true
+                      = check_box_tag 'chbx_subsector', 'sector_cod_hijo', true
                 .row
                   .col-md-4
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} GRUPO DE TRABAJO
-                      = check_box_tag 'chbx_working_group', 1, true
+                      = check_box_tag 'chbx_working_group', 'working_group_id', true
                 .row
                   .col-md-2
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} GRUPO
-                      = check_box_tag 'chbx_group', 1, true
+                      = check_box_tag 'chbx_group', 'article_group', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SUBGRUPO
-                      = check_box_tag 'chbx_subgroup', 1, true
+                      = check_box_tag 'chbx_subgroup', 'article_subgroup', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} ESPECIFICO
-                      = check_box_tag 'chbx_specific', 1, true
+                      = check_box_tag 'chbx_specific', 'article_specific', true
 
             .col-md-12
               %h5 Horizontal
@@ -216,23 +216,23 @@
 
                   %label.checkbox
                     Programado
-                    = check_box_tag 'chbx_prev_programado'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'programado'
 
                   %label.checkbox
                     Valorizado
-                    = check_box_tag 'chbx_prev_valorizado'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'valorizado'
 
                   %label.checkbox
                     Valor Ganado
-                    = check_box_tag 'chbx_prev_valor_ganado'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'valor_ganado'
 
                   %label.checkbox
                     Real
-                    = check_box_tag 'chbx_prev_real'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'real'
 
                   %label.checkbox
                     Meta
-                    = check_box_tag 'chbx_prev_meta'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'meta'
 
                 .col-md-12{:style => "border-top: 1px solid #7D7D7D; border-bottom: 1px solid #7D7D7D;"}
                   %label.checkbox
@@ -241,23 +241,23 @@
 
                   %label.checkbox
                     Programado
-                    = check_box_tag 'chbx_actual_accumulate_programado'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'programado'
 
                   %label.checkbox
                     Valorizado
-                    = check_box_tag 'chbx_actual_accumulate_valorizado'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'valorizado'
 
                   %label.checkbox
                     Valor ganado
-                    = check_box_tag 'chbx_actual_accumulate_valor_ganado'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'valor_ganado'
 
                   %label.checkbox
                     Real
-                    = check_box_tag 'chbx_actual_accumulate_real'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'real'
 
                   %label.checkbox
                     Meta
-                    = check_box_tag 'chbx_actual_accumulate_meta'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'meta'
 
                 .col-md-12
 
@@ -267,34 +267,34 @@
 
                   %label.checkbox
                     Programado
-                    = check_box_tag 'chbx_actual_programado'
+                    = check_box_tag 'chbx_all_actual_values', 'programado'
 
                   %label.checkbox
                     Valorizado
-                    = check_box_tag 'chbx_actual_valorizado'
+                    = check_box_tag 'chbx_all_actual_values', 'valorizado'
 
                   %label.checkbox
                     Valor ganado
-                    = check_box_tag 'chbx_actual_valor_ganado'
+                    = check_box_tag 'chbx_all_actual_values', 'valor_ganado'
 
                   %label.checkbox
                     Real
-                    = check_box_tag 'chbx_actual_real'
+                    = check_box_tag 'chbx_all_actual_values', 'real'
 
                   %label.checkbox
                     Meta
-                    = check_box_tag 'chbx_actual_meta'
+                    = check_box_tag 'chbx_all_actual_values', 'meta'
 
               // MOSTRANDO CANTIDAD O PARCIALES
               .col-md-4
                 %h5 Montos
                 %label.checkbox
                   Cantidad
-                  = check_box_tag 'chbx_showme_amounts'
+                  = check_box_tag 'type_amount', 'measured'
 
                 %label.checkbox
                   Parcial
-                  = check_box_tag 'chbx_showme_partials'
+                  = check_box_tag 'type_amount', 'specific_lvl_1'
 
               // MOSTRANDO PROYECCIONES ACTUALES O ANTERIORES
               .col-md-4
@@ -321,7 +321,7 @@
       $('.config-class').select2({ width: '130px' });
     });
     
-    $('#search-cost-config').click(function(){
+    $('#search_with_config').click(function(){
       var first = ''; var second = ''; var third = ''; var fourth = '';
       $('#finalsort').find('option').each(function(i,dom){
         

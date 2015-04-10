@@ -56,51 +56,55 @@
         %td{:style => 'text-align:center;'}
           %strong META
       - @treeOrders.each do |tree_order|
+        %td
+          %strong= tree_order.name.upcase
         - tree_order.children.each do |first_node|
           %tr
-            %td= first_node.name
+            %td
+              %span{:style => 'visibility:hidden'}
+                = '-'*2
+              = first_node.content
           - if first_node.children.count > 0
             - first_node.children.each do |second_node|
               %tr
                 %td
                   %span{:style => 'visibility:hidden'}
-                    = '-'*2
-                  = second_node.name
+                    = '-'*5
+                  = second_node.content
               - if second_node.children.count > 0
                 - second_node.children.each do |third_node|
                   %tr
                     %td
                       %span{:style => 'visibility:hidden'}
-                        = '-'*4
-                      = third_node.name
+                        = '-'*7
+                      = third_node.content
                   - if third_node.children.count > 0
                     - third_node.children.each do |fourth_node|
                       %tr
                         %td
                           %span{:style => 'visibility:hidden'}
-                            = '-'*6
-                          = third_node.name
+                            = '-'*9
+                          = fourth_node.content
                       - if fourth_node.children.count > 0
                         - fourth_node.children.each do |five_node|
                           %tr
                             %td
                               %span{:style => 'visibility:hidden'}
-                                = '-'*8
-                              = five_node.name
+                                = '-'*11
+                              = five_node.content
                           - if five_node.children.count > 0
                             - five_node.children.each do |six_node|
                               %tr
                                 %td
                                   %span{:style => 'visibility:hidden'}
-                                    = '-'*10
-                                  = six_node.name
+                                    = '-'*13
+                                  = six_node.content
 - else
-  %br
-  %br
+
   .col-xs-12.col-sm-12.col-md-12.col-lg-12
-    .alert.alert-warning.fade.in
+    .alert.alert-danger.fade.in
       %button.close{"data-dismiss" => "alert"}
         ×
       %i.fa-fw.fa.fa-check
       %strong Oops! Aviso!
-      No estan completos los datos para hacer la consulta
+      No estan completos los datos para hacer la consulta o el resultado es vacio en la fecha seleccionada.

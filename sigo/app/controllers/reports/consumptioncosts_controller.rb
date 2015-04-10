@@ -72,7 +72,7 @@ class Reports::ConsumptioncostsController < ApplicationController
       @costo_total_accumulado_costo_real = @accumulated_result_dc['sum_costo_real'].to_f + @accumulated_result_ge['sum_costo_real'].to_f + @accumulated_result_gen_serv['sum_costo_real'].to_f
       @costo_total_accumulado_meta = @accumulated_result_dc['sum_meta'].to_f + @accumulated_result_ge['sum_meta'].to_f + @accumulated_result_gen_serv['sum_meta'].to_f
     else
-      @mssg_error = "No estan completos los datos para hacer la consulta."
+      @mssg_error = "No estan completos los datos para hacer la consulta en la fecha seleccionada."
     end
 
     render(partial: 'table', :layout => false)
