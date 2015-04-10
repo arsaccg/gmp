@@ -151,11 +151,11 @@ class Reports::ConsumptioncostsController < ApplicationController
     if !params[:type_amount][0].nil?
       if params[:type_amount][0].include?('specific')
         array_columns_delivered = params[:all_actual_values].map{|s| s + '_' + params[:type_amount][0] }
-        array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
+        # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
         array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| s + '_' + params[:type_amount][0] }
       elsif params[:type_amount][0].include?('measured')
         array_columns_delivered = params[:all_actual_values].map{|s| params[:type_amount][0] + '_' + s }
-        array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
+        # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
         array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| params[:type_amount][0] + '_' + s }
       end
     end
