@@ -176,9 +176,9 @@ class Administration::ProvisionsController < ApplicationController
                   provision.each do |prov|
                     current_amount += prov.amount
                   end
-                  pending = purchase_detail.amount - current_amount
+                  pending = purchase_detail.amount.to_f - current_amount.to_f
                 else
-                  pending = purchase_detail.amount
+                  pending = purchase_detail.amount.to_f
                 end
                 currency = purchase_detail.purchase_order.money.symbol
                 data_pod = PurchaseOrderDetail.calculate_amounts(purchase_detail.id, pending, purchase_detail.unit_price, @igv)
