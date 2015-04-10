@@ -78,7 +78,14 @@ class Administration::ProvisionArticlesController < ApplicationController
 
   def destroy
     provision = Provision.find(params[:id])
-    provision.provision_direct_purchase_details.destroy_all
+    provision.provision_direct_purchase_details.each do |pdpd|
+      if pdpd.type_order == "purchase_order"
+        PurchaseOrderDetail.find(pdpd.order_detail_id).update_attributes(:received_provision => nil)
+      elsif pdpd.type_order == "service_order"
+        OrderOfServiceDetail.find(pdpd.order_detail_id).update_attributes(:received_provision => nil)
+      end
+      pdpd.destroy
+    end
     provision_destroyed = Provision.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => provision

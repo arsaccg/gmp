@@ -15,7 +15,7 @@
       = data_order_detail[3]
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
     %td
-      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'required' => true, 'title'=>'(*)'}
     %td.sector
       = Sector.find(data_order_detail[14]).code.to_s + ' - '+ Sector.find(data_order_detail[14]).name.to_s
       %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][sector_id]', 'style' => 'display:none;', 'value'=>data_order_detail[14]}

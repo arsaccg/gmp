@@ -41,14 +41,14 @@ class Administration::ProvisionsController < ApplicationController
             if pdpd.amount.to_f == pod.amount.to_f
               pod.update_attributes(:received_provision => 1)
             else
-              pod.update_attributes(:received_provision => 0)
+              pod.update_attributes(:received_provision => nil)
             end
           elsif pdpd.type_order == "service_order"
             ood = OrderOfServiceDetail.find(pdpd.order_detail_id)
             if pdpd.amount.to_f == ood.amount.to_f
               ood.update_attributes(:received_provision => 1)
             else
-              ood.update_attributes(:received_provision => 0)
+              ood.update_attributes(:received_provision => nil)
             end
           end
         end
@@ -92,9 +92,9 @@ class Administration::ProvisionsController < ApplicationController
     ver_ids.each do |vid|
       if provision.provision_direct_purchase_details.where("order_detail_id = " + vid.to_s).empty?
         if ver_type[ver_ids.index(vid)] == "purchase_order"
-          PurchaseOrderDetail.find(vid).update_attributes(:received_provision => 0)
+          PurchaseOrderDetail.find(vid).update_attributes(:received_provision => nil)
         elsif ver_type[ver_ids.index(vid)] == "service_order"
-          OrderOfServiceDetail.find(vid).update_attributes(:received_provision => 0)
+          OrderOfServiceDetail.find(vid).update_attributes(:received_provision => nil)
         end
       end
     end
@@ -104,14 +104,14 @@ class Administration::ProvisionsController < ApplicationController
         if order.amount == det.amount
           order.update_attributes(:received_provision => 1)
         else
-          order.update_attributes(:received_provision => 0)
+          order.update_attributes(:received_provision => nil)
         end
       elsif det.type_order == "service_order"
         order = OrderOfServiceDetail.find(det.order_detail_id)
         if order.amount == det.amount
           order.update_attributes(:received_provision => 1)
         else
-          order.update_attributes(:received_provision => 0)
+          order.update_attributes(:received_provision => nil)
         end          
       end
     end
@@ -176,9 +176,9 @@ class Administration::ProvisionsController < ApplicationController
                   provision.each do |prov|
                     current_amount += prov.amount
                   end
-                  pending = purchase_detail.amount - current_amount
+                  pending = purchase_detail.amount.to_f - current_amount.to_f
                 else
-                  pending = purchase_detail.amount
+                  pending = purchase_detail.amount.to_f
                 end
                 currency = purchase_detail.purchase_order.money.symbol
                 data_pod = PurchaseOrderDetail.calculate_amounts(purchase_detail.id, pending, purchase_detail.unit_price, @igv)
@@ -312,7 +312,7 @@ class Administration::ProvisionsController < ApplicationController
       else
         pending = @order.amount
       end
-      con_igv = pending*@order.unit_price.to_f
+      con_igv = pending.to_f*@order.unit_price.to_f
       discounts_before = 0
       @order_ec.each do |extra_calculation|
         if extra_calculation.type == 'percent'
@@ -347,7 +347,7 @@ class Administration::ProvisionsController < ApplicationController
         (con_igv.to_f-discounts_before.to_f).round(4).round(2),
         @igv,
         quantity_igv.round(4).round(2),
-        ((con_igv.to_f-discounts_before.to_f)*(1+@igv)).round(4).round(2),
+        ((con_igv.to_f-discounts_before.to_f)*(1+@igv.to_f)).round(4).round(2),
         @money,
         @article_id,
         @code,
@@ -361,6 +361,15 @@ class Administration::ProvisionsController < ApplicationController
 
     render(:partial => 'row_detail_provision', :layout => false)
   end
+
+  def get_tc_with_date
+    tc = ExchangeOfRate.where("day = ?",params[:date])
+    @tc = Array.new
+    tc.each do |tc|
+      @tc << {'value'=>tc.value, 'flag'=>true}
+    end
+    render json: {:tc => @tc}      
+  end  
 
   def get_suppliers_by_type_order
     str_options = ''
@@ -394,6 +403,7 @@ class Administration::ProvisionsController < ApplicationController
       :number_document_provision, 
       :accounting_date, 
       :series, 
+      :rendicion,
       :description,
       :number_of_guide,
       :money_id,

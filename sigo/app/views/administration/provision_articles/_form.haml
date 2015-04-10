@@ -4,6 +4,7 @@
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
       %strong Provision
+    %label#tc{:style=>"color: darkslateblue;font-weight: bold;font-size: 19px;position: relative;margin-right: 15px;float: right;"}
   %div
     .jarviswidget-editbox
     .widget-body 
@@ -11,7 +12,9 @@
         %br
         .col-sm-12
           %fieldset{ :style => 'margin-top: 20px;' }
-            = hidden_field_tag 'provision[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
+            = hidden_field_tag 'provision[cost_center_id]', @cost_center, id: 'cost-center-selected'
+            = hidden_field_tag 'provision[exchange_of_rate]', @provision.exchange_of_rate, id: 'exchange_of_rate'
+            = hidden_field_tag 'provision[rendicion]', @provision.rendicion, id: 'rendicion'
             .col-md-6
               .form-group
                 %label.col-md-2.control-label Proveedores
@@ -63,7 +66,7 @@
                 %label.col-md-4.control-label N° Doc.
                 .col-md-8
                   .input-group
-                    = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
+                    = f.input :number_document_provision, placeholder: "Doc", :input_html => {:class => 'form-control'}, label: false
                     %span.input-group-addon
                       %i.fa.fa-calendar
           %fieldset
@@ -79,12 +82,11 @@
                           = money.name
             .col-md-4
               .form-group
-                %label.col-md-4.control-label Tipo de cambio
+                %label.col-md-4.control-label Rendicion
                 .col-md-8
                   .input-group
-                    = text_field(:provision, :exchange_of_rate, :value => @provision.exchange_of_rate, class: "form-control")
-                    %span.input-group-addon
-                      %i.fa.fa-warning
+                    = f.input :rendicion, placeholder: "Rendicion", :input_html => {:class => 'form-control'}, label: false                        
+
             .col-md-4
               .form-group
                 %label.col-md-2.control-label Glosa
@@ -154,7 +156,7 @@
                         %td= Article.find(pod.article_id).name.to_s
                         %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
                         %td.account-accountant
-                          %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.account_accountant_id}
+                          %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.account_accountant_id, 'required'=>true,'title'=>'(*)'}
                         %td.sector
                           -if pod.flag.to_i == 1
                             %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
@@ -338,12 +340,12 @@
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
           .row
-            %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
+            %button.btn.btn-primary#save{type: "submit", :onclick => "part_block();", :style => "display:none"}
               %i.fa.fa-save
                 Guardar
 
 #modalOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
-  .modal-dialog{ :style => 'width: 60%;' }
+  .modal-dialog{ :style => 'width: 80%;' }
     .modal-content
       .modal-body#modalOrderItemsContent
 
@@ -852,3 +854,44 @@
     $('#stp_total_igv').html('S/. ' + parseFloat(igv).toFixed(2));
     $('#stp_total_w_igv').html('S/. ' + parseFloat(price_with_igv).toFixed(2));
   }
+
+  $('#provision_accounting_date').change(function(){
+    complete_tc("#{get_tc_with_date_administration_provisions_path}", $(this).val(), "#{form_authenticity_token}, 0");
+  });
+
+  function complete_tc(url, fecha, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { date: fecha, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        console.log(Object.keys(data).length)
+        console.log(data)
+        var flag = true;
+        $.each(data.tc, function(key, value){
+          item = {};
+          item['value'] = value.value;
+          newOptions.push(item);
+        });
+        $.each(newOptions, function(key,value){
+          $('#tc').text("T.C.: S/. "+value.value);
+          $('#exchange_of_rate').val(value.value);
+          $('#save').attr("style","display:block");
+          flag = false;
+        });
+        if(flag){
+          $('#save').attr("style","display:none");
+          $('#exchange_of_rate').val(" ");
+          $('#tc').text(" ");
+          $.smallBox({
+            title: "Antes de continuar debes de tener un tipo de cambio para esa fecha.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });          
+        }
+      });
+  }  
