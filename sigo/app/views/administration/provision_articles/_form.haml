@@ -156,7 +156,7 @@
                         %td= Article.find(pod.article_id).name.to_s
                         %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
                         %td.account-accountant
-                          %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.account_accountant_id}
+                          %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.account_accountant_id, 'required'=>true,'title'=>'(*)'}
                         %td.sector
                           -if pod.flag.to_i == 1
                             %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
