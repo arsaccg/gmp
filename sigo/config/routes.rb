@@ -626,6 +626,7 @@ ArsacLogistica::Application.routes.draw do
     resources :provisions do
       collection do
         post 'display_orders'
+        post 'get_tc_with_date'
         post 'display_details_orders'
         post 'puts_details_in_provision'
         post 'get_suppliers_by_type_order'
