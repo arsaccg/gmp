@@ -120,98 +120,6 @@ class ConsumptionCost < ActiveRecord::Base
     return array_dc
   end
 
-  # => Methods for Micro Report
-  def self.get_phases_sector_wg  cc_id, date, insertion_date, select, table, condition_id, condition, order, cat
-    #AND acc.insertion_date = '" + insertion_date.to_s+ "'
-    array_dc = connection.select_all("
-      SELECT DISTINCT  " + select.to_s + "
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc " + table.to_s + " 
-      WHERE acc." + condition_id.to_s + "
-      AND acc.type = '" + cat.to_s + "'
-      " + condition.to_s + " 
-      ORDER BY " + order.to_s)
-    return array_dc
-  end
-
-  def self.get_articles  cc_id, date, insertion_date, select, table, condition_id, condition, order, cat
-    #AND acc.insertion_date = '" + insertion_date.to_s+ "'
-    array_dc = connection.select_all("
-      SELECT DISTINCT  " + select.to_s + "
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc " + table.to_s + " 
-      WHERE acc." + condition_id.to_s + "
-      AND acc.type = '" + cat.to_s + "'
-      " + condition.to_s + " 
-      ORDER BY " + order.to_s)
-    return array_dc
-  end  
-
-  def self.get_phases cc_id, date
-    array_dc = connection.select_all("
-      SELECT DISTINCT  `ph`.`id` 
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `phases` ph
-      WHERE acc.phase_id = ph.id
-      ORDER BY ph.code")
-    return array_dc
-  end
-
-  def self.get_sector_from_phases cc_id, date, ph_id
-    array_dc = connection.select_all("
-      SELECT DISTINCT  `acc`.`sector_id` 
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `sectors` se
-      WHERE acc.phase_id = #{ph_id}
-      AND acc.sector_id = se.id
-      ORDER BY se.code")
-    return array_dc
-  end     
-  
-  def self.get_wg_from_sector_from_phases cc_id, date, ph_id, se_id
-    array_dc = connection.select_all("
-      SELECT DISTINCT  `acc`.`working_group_id` 
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc,  `working_groups` wg
-      WHERE acc.working_group_id = wg.id
-      AND acc.phase_id = #{ph_id}
-      AND acc.sector_id = #{se_id}
-      ORDER BY wg.name")
-    return array_dc
-  end    
-
-  def self.get_articles_from_cwgsf cc_id, date, ph_id, se_id, wg_id
-    array_dc = connection.select_all("
-      SELECT DISTINCT  Concat(`acc`.`article_code`,' - ',`acc`.`article_name` ,' - ', `acc`.`article_unit`) AS article, SUM(`acc`.`programado_specific_lvl1`) AS programado_specific_lvl1, SUM(`acc`.`meta_specific_lvl_1`) AS meta_specific_lvl_1, SUM(`acc`.`real_specific_lvl_1`) AS real_specific_lvl_1, SUM(`acc`.`valorizado_specific_lvl_1`) AS valorizado_specific_lvl_1, SUM(`acc`.`valor_ganado_specific_lvl_1`) AS valor_ganado_specific_lvl_1
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
-      WHERE acc.working_group_id = #{wg_id}
-      AND acc.fase_cod_hijo = #{ph_id}
-      AND acc.sector_cod_hijo = #{se_id}
-      AND acc.working_group_id = #{wg_id}
-      GROUP BY acc.article_code
-      ORDER BY acc.article_name")
-    return array_dc
-  end
-
-  def self.get_articles_from_swgsf cc_id, date, ph_id, se_id
-    array_dc = connection.select_all("
-      SELECT DISTINCT  Concat(`acc`.`article_code`,' - ',`acc`.`article_name` ,' - ', `acc`.`article_unit`) AS article, SUM(`acc`.`programado_specific_lvl1`) AS programado_specific_lvl1, SUM(`acc`.`meta_specific_lvl_1`) AS meta_specific_lvl_1, SUM(`acc`.`real_specific_lvl_1`) AS real_specific_lvl_1, SUM(`acc`.`valorizado_specific_lvl_1`) AS valorizado_specific_lvl_1, SUM(`acc`.`valor_ganado_specific_lvl_1`) AS valor_ganado_specific_lvl_1
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
-      WHERE acc.fase_cod_hijo = #{ph_id}
-      AND acc.sector_cod_hijo = #{se_id}
-      AND acc.working_group_id = 0
-      GROUP BY acc.article_code
-      ORDER BY acc.article_name")
-    return array_dc
-  end
-
-  def self.get_articles_from_phases cc_id, date, ph_id
-    array_dc = connection.select_all("
-      SELECT DISTINCT  Concat(`acc`.`article_code`,' - ',`acc`.`article_name` ,' - ', `acc`.`article_unit`) AS article, SUM(`acc`.`programado_specific_lvl1`) AS programado_specific_lvl1, SUM(`acc`.`meta_specific_lvl_1`) AS meta_specific_lvl_1, SUM(`acc`.`real_specific_lvl_1`) AS real_specific_lvl_1, SUM(`acc`.`valorizado_specific_lvl_1`) AS valorizado_specific_lvl_1, SUM(`acc`.`valor_ganado_specific_lvl_1`) AS valor_ganado_specific_lvl_1
-      FROM  `actual_values_"+ cc_id.to_s + "_"+ date.to_s + "` acc
-      WHERE acc.fase_cod_hijo = #{ph_id}
-      AND acc.sector_cod_hijo = 0
-      AND acc.working_group_id = 0
-      GROUP BY acc.article_code
-      ORDER BY acc.article_name")
-    return array_dc
-  end 
-
   def self.create_tables_new_costcenter(cost_center_id,start_date,end_date)
     start_date = "2015-01-01".to_date
     end_date = "2020-03-31".to_date
@@ -424,12 +332,15 @@ class ConsumptionCost < ActiveRecord::Base
     end
   end
 
-  def self.do_order array_order, table_name
+  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
     @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
     @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
     array_extras_columns = Array.new
-    array_columns_delivered = Array.new
+
+    # => Make columns for select
+    array_columns_delivered = array_columns_delivered.join(',')
+    array_columns_prev_delivered = array_columns_prev_delivered.join(',')
 
     # => Make Tree-Order
     fase_index = array_order.index('fase')
@@ -466,31 +377,31 @@ class ConsumptionCost < ActiveRecord::Base
 
     if !array_order[index].nil? && !array_order[index+1].nil?
       sql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index])}]
-      sql = "SELECT DISTINCT " + array_order[index].to_s + ',' + sql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " != 'NULL' AND " + array_order[index].to_s + " != '';"
+      sql = "SELECT DISTINCT " + array_order[index].to_s + ',' + sql_data.to_s + ',' + array_columns_delivered + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " != 'NULL' AND " + array_order[index].to_s + " != '';"
       connection.select_all(sql).each do |row|
         obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s, row[sql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
         msql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+1])}]
-        msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+        msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + ',' + array_columns_delivered + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
         connection.select_all(msql).each do |mrow|
           obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
           if !array_order[index+2].nil?
             mssql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+2])}]
-            mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+            mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + ',' + array_columns_delivered + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
             connection.select_all(mssql).each do |mmrow|
               obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, mmrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
               if !array_order[index+3].nil?
                 rsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+3])}]
-                rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + ',' + array_columns_delivered + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
                 connection.select_all(rsql).each do |rrow|
                   obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, rrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
                   if !array_order[index+4].nil?
                     mrsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+4])}]
-                    mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                    mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + ',' + array_columns_delivered + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
                     connection.select_all(mrsql).each do |mrrow|
                       obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, mrrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
                       if !array_order[index+5].nil?
                         rrpsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+5])}]
-                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '';"
+                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + ',' + array_columns_delivered + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '';"
                         connection.select_all(rrpsql).each do |rprow|
                           obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]][mrrow[array_order[index+4].to_s].to_s] << Tree::TreeNode.new(rprow[array_order[index+5].to_s].to_s, rprow[rrpsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
                         end

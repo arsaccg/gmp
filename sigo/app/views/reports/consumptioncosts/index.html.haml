@@ -323,6 +323,7 @@
     
     $('#search_with_config').click(function(){
       var first = ''; var second = ''; var third = ''; var fourth = '';
+      var prev_accumulates = new Array(); var actual_accumulates = new Array(); var actual_values = new Array(); var type_amount = new Array();
       $('#finalsort').find('option').each(function(i,dom){
         
         switch(i){
@@ -362,7 +363,15 @@
         var art = $('#art').val();
         var month = $('#selected-month').val();
 
-        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art}
+        $('input[name="chbx_all_previous_accumulates"]:checked').each(function(i,dom){prev_accumulates.push($(dom).val())});
+
+        $('input[name="chbx_all_actual_accumulate_values"]:checked').each(function(i,dom){actual_accumulates.push($(dom).val())});
+
+        $('input[name="chbx_all_actual_values"]:checked').each(function(i,dom){actual_values.push($(dom).val())});
+
+        $('input[name="type_amount"]:checked').each(function(i,dom){type_amount.push($(dom).val())});
+
+        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art, all_previous_accumulates: prev_accumulates, all_actual_accumulate_values: actual_accumulates, all_actual_values: actual_values, type_amount: type_amount}
         load_url_ajax("#{consult_with_config_2_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
       } else {
         $.smallBox({
