@@ -174,7 +174,7 @@
                       %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td
-                        = purchasedetail.amount.round(4).to_f
+                        = purchasedetail.amount.to_f.round(4)
                       %td
                         - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
                           = purchasedetail.delivery_order_detail.unit_of_measurement.name
