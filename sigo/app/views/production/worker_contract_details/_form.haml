@@ -1,0 +1,126 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Conceptos por Trabajador
+  .widget-body
+    = simple_form_for([:production, @worker_concept], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      .row
+        %table#concepts-worker.table.table-striped.table-bordered.table-hover{:style=>" width: 90%; margin-left: 30px; "}
+          %thead
+            %tr
+              %th{:colspan => 2, :style => "text-align:center;"} Conceptos
+            %tr
+              %th Nombre
+              %th Monto
+          %tbody
+            - regs_ar = Array.new
+            -worker = Worker.find(@worker_id)
+            -if @action == "new"
+              -if worker.typeofworker == "empleado"
+                -@concepts_empleado.each do |cem|
+                  %tr
+                    %td= cem.name
+                    %td
+                      -top=100000000000
+                      -if !cem.top.nil?
+                        -top=cem.top
+                      = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][worker_id]',@worker_id
+                      = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][concept_id]',cem.id
+                      = text_field_tag 'worker_contract_detail['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")" , class: "form-control"
+                      -regs_ar << @reg_n
+                  -@reg_n += 1                   
+              -else worker.typeofworker == "obrero"
+                -@concepts_obrero.each do |cob|
+                  %tr
+                    %td= cob.name
+                    %td
+                      -top=100000000000
+                      -if !cob.top.nil?
+                        -top=cob.top
+                      = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][worker_id]',@worker_id
+                      = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][concept_id]',cob.id
+                      = text_field_tag 'worker_contract_detail['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")", class: "form-control"
+                      -regs_ar << @reg_n
+                  -@reg_n += 1
+            -else
+              -@worker_concept_d.each do |wc|
+                %tr
+                  -cob = Concept.find(wc.concept_id)
+                  %td= cob.name
+                  %td
+                    -top=100000000000
+                    -if !cob.top.nil?
+                      -top=cob.top
+                    = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][id]', wc.id
+                    = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][worker_id]', wc.worker_id
+                    = hidden_field_tag 'worker_contract_detail['+@reg_n.to_s+'][concept_id]', wc.concept_id
+                    = text_field_tag 'worker_contract_detail['+@reg_n.to_s+'][amount]',wc.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")", class: "form-control"
+                    -regs_ar << @reg_n
+                -@reg_n += 1
+
+        = hidden_field_tag 'regs_arr', regs_ar.join(',')
+      %footer
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_worker_contract_detail'));
+    }
+  });
+
+  function submit_validate(form){
+    loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
+    $('#bank-select').select2();
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+          },
+
+          // Messages for form validation
+          messages : {
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
+    });
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }  

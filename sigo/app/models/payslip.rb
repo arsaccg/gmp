@@ -533,8 +533,8 @@ class Payslip < ActiveRecord::Base
     holidays = Holiday.where("date_holiday BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'").count    
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
-      FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
+      SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , count(1), af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
+      FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af
       WHERE pp.cost_center_id = " + company.to_s + "
       AND ppd.part_worker_id = pp.id
       AND ppd.assistance =  'si'
@@ -543,16 +543,15 @@ class Payslip < ActiveRecord::Base
       AND w.entity_id = e.id
       AND wa.worker_id = w.id
       AND af.id = wa.afp_id
-      AND wc.worker_id = w.id
-      AND wc.article_id = ar.id
-      AND wc.status = 1
+      AND w.end_date >= #{week_end}
       AND pp.blockpayslip = 1
       AND w.type_of_worker_id = "+twoid.to_s+"
       GROUP BY w.id
       ORDER BY e.paternal_surname
     ").each do |row|
-
-      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6]+holidays, row[8], row[9]]
+      # ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35]
+      cargo_worker = Worker.find(row[0]).worker_contracts.where("article_id IS NOT NULL").last
+      @result << [ row[0], row[1], row[2], cargo_worker.article.name, @comp_name, row[4], row[5], row[6]+holidays, total_days - (row[6]+holidays), row[8], row[9]]
       calculator = Dentaku::Calculator.new
       amount = 0
       flag_extra = false
@@ -563,7 +562,7 @@ class Payslip < ActiveRecord::Base
       rem_basic = 0
       total = 0
       por_hora = 0
-      from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first
+      from_contract = Worker.find(row[0]).worker_contracts.where("end_date >= #{week_end}").first
       if !from_contract.nil?
         rem_basic = ((from_contract.salary.to_f + from_contract.destaque.to_f)/total_days)*row[6]
         por_hora = ((from_contract.salary.to_f + from_contract.destaque.to_f)/total_days)/8
@@ -699,7 +698,9 @@ class Payslip < ActiveRecord::Base
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
-
+          p "--------------------------------------------------------------------------------------------------------------------------------------------------------"
+          p con.name.to_s
+          p "--------------------------------------------------------------------------------------------------------------------------------------------------------"
           if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
@@ -725,8 +726,16 @@ class Payslip < ActiveRecord::Base
           if !con.nil?
             if afp_d.type_of_afp == "SNP"
               if con.name == 'ORG. NAC. DE PENSIONES'
+                p "-------------------------------------------------------------------------------------------------------------------------------------"
+                p total
+                p amount
                 total = total - amount.to_f
                 amount = rem_basic * afp.contribution_fp.to_f/100
+                p "-------------------------------------------------------------------------------------------------------------------------------------"
+                p total
+                p amount
+                p afp.top
+                p "-------------------------------------------------------------------------------------------------------------------------------------"
                 if amount > afp.top
                   amount = afp.top
                 end
@@ -889,7 +898,6 @@ class Payslip < ActiveRecord::Base
         total = 0
 
       end
-
 
       if !apo.nil?
         apo.each do |ap|

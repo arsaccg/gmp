@@ -343,6 +343,11 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :production do
+    resources :worker_contract_details do
+      member do
+        get 'concept_workers'
+      end
+    end
     resources :position_workers
     resources :workers do
       collection do

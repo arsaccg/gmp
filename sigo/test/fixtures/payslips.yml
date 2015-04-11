@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  worker_id: 1
+  cost_center_id: 1
+  initial_day: 2014-07-24
+  final_day: 2014-07-24
+  worked_day: 1
+  worked_hour: 
+  subsidized_day: 1
+  subsidized_hour: 1.5
+  fail_day: 1
+  fail_hour: 1.5
+  net_payment: 1.5
+  total_income: 1.5
+  total_discount: 1.5
+  total_contributions: 1.5
+  status: 1
+
+two:
+  worker_id: 1
+  cost_center_id: 1
+  initial_day: 2014-07-24
+  final_day: 2014-07-24
+  worked_day: 1
+  worked_hour: 
+  subsidized_day: 1
+  subsidized_hour: 1.5
+  fail_day: 1
+  fail_hour: 1.5
+  net_payment: 1.5
+  total_income: 1.5
+  total_discount: 1.5
+  total_contributions: 1.5
+  status: 1

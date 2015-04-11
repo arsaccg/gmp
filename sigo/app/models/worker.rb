@@ -19,6 +19,7 @@ class Worker < ActiveRecord::Base
   belongs_to :type_of_worker
   has_and_belongs_to_many :type_workdays
   has_many :extra_information_for_payslips
+  has_many :worker_contract_details
 
   state_machine :state, :initial => :working do
 
@@ -85,7 +86,7 @@ class Worker < ActiveRecord::Base
     result = Array.new
     if keyword != '' && pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position, wo.typeofworker
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -98,7 +99,7 @@ class Worker < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position, wo.typeofworker
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -110,7 +111,7 @@ class Worker < ActiveRecord::Base
       )
     else
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position, wo.typeofworker
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -128,7 +129,11 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          if part_person[6]!="externo"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contract_details/"+part_person[0].to_s+"/concept_workers','content',null,null,'GET')>Conceptos</a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          else
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          end
         ]
       elsif part_person[4]=="registered"
         result << [
@@ -137,7 +142,11 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          if part_person[6]!="externo"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "  + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contract_details/"+part_person[0].to_s+"/concept_workers','content',null,null,'GET')>Conceptos</a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          else
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          end
         ]
       elsif part_person[4]=="active"
         result << [
@@ -146,7 +155,11 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          if part_person[6] != "externo"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "   + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contract_details/"+part_person[0].to_s+"/concept_workers','content',null,null,'GET')>Conceptos</a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          else
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          end
         ]
       elsif part_person[4]=="ceased"
         result << [
@@ -155,7 +168,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>",
         ]
       else
         result << [
@@ -176,7 +189,7 @@ class Worker < ActiveRecord::Base
     result = Array.new
     if keyword != '' && pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position, wo.typeofworker
         FROM workers wo, entities ent, position_workers pow
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -189,7 +202,7 @@ class Worker < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position, wo.typeofworker
         FROM workers wo, entities ent, position_workers pow
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -201,7 +214,7 @@ class Worker < ActiveRecord::Base
       )
     else
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position, wo.typeofworker
         FROM workers wo, entities ent, position_workers pow
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -219,8 +232,12 @@ class Worker < ActiveRecord::Base
           " - ",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
-          #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          #part_person[2],
+          if part_person[6]!="externo"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contract_details/"+part_person[0].to_s+"/concept_workers','content',null,null,'GET')>Conceptos</a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          else
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          end
         ]
       elsif part_person[4]=="registered"
         result << [
@@ -229,7 +246,11 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          if part_person[6]!="externo"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "  + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contract_details/"+part_person[0].to_s+"/concept_workers','content',null,null,'GET')>Conceptos</a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          else
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          end
         ]
       elsif part_person[4]=="active"
         result << [
@@ -238,7 +259,11 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          if part_person[6] != "externo"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contract_details/"+part_person[0].to_s+"/concept_workers','content',null,null,'GET')>Conceptos</a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"  
+          else
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          end
         ]
       elsif part_person[4]=="ceased"
         result << [
@@ -247,7 +272,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" ,
         ]
       else
         result << [

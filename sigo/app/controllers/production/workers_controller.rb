@@ -314,6 +314,7 @@ class Production::WorkersController < ApplicationController
     workercontract.status = 1
     workercontract.save
     worker = Worker.find(params[:worker_id])
+    worker.update_attributes(:start_date => params[:start_date])
     worker.approve
     if params[:redireccionamiento].to_s == 'inbox'
       redirect_to :root
@@ -325,6 +326,7 @@ class Production::WorkersController < ApplicationController
   def cancel
     worker = Worker.find(params[:id])
     workercontract = WorkerContract.find_by_status(1)
+    worker.update_attributes(:end_date=>params[:end_date_2])
     WorkerContract.where( id: workercontract.id ).update_all( end_date_2: params[:end_date_2] , reason_for_termination: params[:reason_for_termination], status: 0, comment: params[:comment] )
     # Save file
     WorkerContract.find(workercontract.id).update_attributes(worker_contract_file_param)

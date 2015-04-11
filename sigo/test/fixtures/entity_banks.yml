@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_id: 1
+  bank_id: 1
+  money_id: 1
+  account_type: MyString
+  account_number: MyString
+  account_detraction: MyString
+  cci: MyString
+
+two:
+  entity_id: 1
+  bank_id: 1
+  money_id: 1
+  account_type: MyString
+  account_number: MyString
+  account_detraction: MyString
+  cci: MyString

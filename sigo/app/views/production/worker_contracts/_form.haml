@@ -77,156 +77,62 @@
                   %option{:value => 'ESPECIAL'} ESPECIAL
 
         -if Worker.find(@worker_id).typeofworker!="externo"
-          -concepts=Array.new
-          -if Worker.find(@worker_id).typeofworker=="empleado"
-            -concepts = @concepts_empleado
-          -if Worker.find(@worker_id).typeofworker=="obrero"
-            -concepts=@concepts_obrero
-          -if @action=='edit'
-            -i=1
-            -arr=Array.new
-            %table#concepts-worker.table.table-striped.table-bordered.table-hover
-              %thead
-                %tr
-                  %th{:colspan => 2, :style => "text-align:center;"} Conceptos
-                  %th{:colspan => 2, :style => "text-align:center;"} Datos Contractuales
-                %tr
-                  %th Nombre
-                  %th Monto
-                  %th Nombre
-                  %th Monto
-              %tbody
-                -if @workercontract.worker_contract_details.count>0
-                  -@workercontract.worker_contract_details.each do |wor|
-                    %tr
-                      %td= Concept.find(wor.concept_id).name 
-                      %td
-                        -top=100000000000
-                        -if !Concept.find(wor.concept_id).top.nil?
-                          -top=Concept.find(wor.concept_id).top
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_id]',wor.worker_id
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_contract_id]',wor.worker_contract_id
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][concept_id]',wor.concept_id
-                        = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][id]',wor.id
-                        -arr << wor.concept_id
-                      -if i == 1
-                        %td Sueldo Contractual
-                        %td= @workercontract.salary
-                      -elsif i == 2
-                        %td Destaque Contractual
-                        %td= @workercontract.destaque.to_f
-                      -elsif i == 3
-                        %td Viatico Contractual
-                        %td= @workercontract.viatical.to_f
-                      -else
-                        %td
-                        %td
-                    -i+=1
-                  -concepts.each do |con|
-                    -cont=0
-                    -arr.each do |arr|
-                      -if con.id == arr
-                        -cont=1
-                    -if cont == 0
-                      %tr
-                        %td= con.name
-                        %td
-                          -top=10000000000000
-                          -if !con.top.nil?
-                            -top=con.top
-                          = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
-                          = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
-                          = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-                          = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-
-                        %td
-                        %td
-                  -@reg_n+=1
+          %table#concepts-worker.table.table-striped.table-bordered.table-hover{:style=>" width: 50%; "}
+            %thead
+              %tr
+                %th{:colspan => 2, :style => "text-align:center;"} Datos Contractuales
+              %tr
+                %th Nombre
+                %th Monto
+            %tbody
+              %tr
+                %td Sueldo Contractual
+                -if @action=="edit"
+                  %td= @workercontract.salary
                 -else
-                  -j=0
-                  -concepts.each do |con|
-                    %tr
-                      %td=con.name
-                      %td
-                        -top=10000000000000
-                        -if !con.top.nil?
-                          -top=con.top
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
-                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-                        = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-                      -if j == 1-1
-                        %td Sueldo Contractual
-                        %td= @workercontract.salary
-                      -elsif j == 2-1
-                        %td Destaque Contractual
-                        %td= @workercontract.destaque.to_f
-                      -elsif j == 3-1
-                        %td Viatico Contractual
-                        %td= @workercontract.viatical.to_f
-                      -else
-                        %td
-                        %td
-                      -j+=1                    
-                    -@reg_n+=1
-          -else
-            %table#concepts-worker.table.table-striped.table-bordered.table-hover
-              %thead
-                %tr
-                  %th{:colspan => 2, :style => "text-align:center;"} Conceptos
-                  %th{:colspan => 2, :style => "text-align:center;"} Datos Contractuales
-                %tr
-                  %th Nombre
-                  %th Monto
-                  %th Nombre
-                  %th Monto
-              %tbody
-                -i=1
-                -concepts.each do |con|
-                  %tr        
-                    %td= con.name
+                  -if @typeofcontract=="Adenda"
                     %td
-                      -top=100000000000
-                      -if !con.top.nil?
-                        -top=con.top
-                      = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
-                      = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
-                      = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-
-                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-                    -if i == 1
-                      %td Sueldo Contractual
-                      %td= @workercontract.salary
-                    -elsif i == 2
-                      %td Destaque Contractual
-                      %td= @workercontract.destaque.to_f
-                    -elsif i == 3
-                      %td Viatico Contractual
-                      %td= @workercontract.viatical.to_f
-                    -else
-                      %td
-                      %td
-                  -i+=1                      
-                  -@reg_n+=1
+                      =text_field_tag 'worker_contract[salary]', @workercontract.salary, class: "form-control"
+                  -else
+                    %td= @workercontract.salary
+              %tr
+                %td Destaque Contractual
+                -if @action=="edit"
+                  %td= @workercontract.destaque
+                -else
+                  -if @typeofcontract=="Adenda"
+                    %td
+                      =text_field_tag 'worker_contract[destaque]', @workercontract.destaque, class: "form-control"
+                  -else
+                    %td= @workercontract.destaque                
+              %tr  
+                %td Viatico Contractual
+                -if @action=="edit"
+                  %td= @workercontract.viatical
+                -else
+                  -if @typeofcontract=="Adenda"
+                    %td
+                      =text_field_tag 'worker_contract[viatical]', @workercontract.viatical, class: "form-control"
+                  -else
+                    %td= @workercontract.viatical                
         %br                  
         .row
           %section.col.col-2
             %label.label Dia de Inicio
           %section.col.col-3
-            %label.input{for: "start_date"}
+            %label.input
               = f.input :start_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
           %section.col.col-2
             %label.label Dia de Fin
           %section.col.col-3
-            %label.input{for: "end_date"}
+            %label.input
               = f.input :end_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false,  :onchange =>'calculatedays();'
         .row
           %section.col.col-md-12
             .col-md-2
               %label.label Duración
             .col-md-8
-              %label.input{for: "days"}
+              %label.input
                 = f.input :days, input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}

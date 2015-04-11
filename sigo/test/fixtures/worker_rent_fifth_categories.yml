@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  worker_id: 1
+  previous_salary: 1.5
+  rent: 1.5
+  date_last_rent: 2014-12-20
+
+two:
+  worker_id: 1
+  previous_salary: 1.5
+  rent: 1.5
+  date_last_rent: 2014-12-20

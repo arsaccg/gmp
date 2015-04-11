@@ -22,21 +22,26 @@
         %strong Error!
         = flash[:error]
   .row
-    - if Worker.find(@worker_id).typeofworker!="externo"
-      - if Worker.find(@worker_id).typeofworker=="obrero"
+    -worker = Worker.find(@worker_id)
+    - if worker.typeofworker!="externo"
+      - if worker.typeofworker=="obrero"
         -if @workercontracts.count == 0
-          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Contrato'}, null, 'GET')"}
-            Cambio de Categoría
+          -if worker.state != "ceased"
+            %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Contrato'}, null, 'GET')"}
+              Cambio de Categoría
         -else
-          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Adenda'}, null, 'GET')"}
-            Cambio de Categoría
+          -if worker.state != "ceased"
+            %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Adenda'}, null, 'GET')"}
+              Cambio de Categoría
       -else
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Adenda'}, null, 'GET')"}
-          Agregar Adenda
+        -if worker.state != "ceased"
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Adenda'}, null, 'GET')"}
+            Agregar Adenda
       .col-md-1
-      -if Worker.find(@worker_id).typeofworker=="empleado"
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Renovacion'}, null, 'GET')"}
-          Agregar Renovacion
+      -if worker.typeofworker=="empleado"
+        -if worker.state != "ceased"
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Renovacion'}, null, 'GET')"}
+            Agregar Renovacion
   %br
   .row
   #widget-grid

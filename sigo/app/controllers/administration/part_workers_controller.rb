@@ -118,14 +118,13 @@ class Administration::PartWorkersController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     @workers = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT w.id
-      FROM workers w, entities e, worker_contracts wc
+      FROM workers w, entities e
       WHERE w.typeofworker LIKE  'empleado'
       AND w.state LIKE  'active'
       AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
       AND e.id = w.entity_id
-      AND w.id = wc.worker_id
-      AND wc.start_date <=  '#{@date}'
-      AND wc.end_date >=  '#{@date}'
+      AND w.start_date <=  '#{@date}'
+      AND (w.end_date >=  '#{@date}' OR w.end_date IS NULL)
       ORDER BY CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ' ', e.name,  ' ', e.second_name ) 
       ")
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)

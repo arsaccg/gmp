@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cost_center_id: 1
+  issuer_entity_id: 1
+  receptor_entity_id: 1
+  type_of_letter: 1
+  status: 1
+
+two:
+  cost_center_id: 1
+  issuer_entity_id: 1
+  receptor_entity_id: 1
+  type_of_letter: 1
+  status: 1
