@@ -147,7 +147,7 @@ class Administration::ProvisionsController < ApplicationController
   def display_orders
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
-    @orders_po = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod WHERE po.state = 'approved' AND po.id = pod.purchase_order_id AND pod.delivery_order_detail_id = dod.id AND dod.requested = 1 AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)
+    @orders_po = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod WHERE po.state = 'approved' AND po.id = pod.purchase_order_id AND pod.delivery_order_detail_id = dod.id AND dod.requested = 1 AND pod.received_provision IS NULL AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)
     @orders_oos = OrderOfService.where('entity_id = ? AND state = ? AND cost_center_id = ?', supplier, 'approved', get_company_cost_center('cost_center'))
 
     render(:partial => 'table_list_orders', :layout => false)

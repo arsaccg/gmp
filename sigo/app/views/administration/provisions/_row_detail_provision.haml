@@ -80,7 +80,7 @@
       var p = #{@reg_n} + "p";
 
       $('#'+a).select2({
-        placeholder: "Buscar cuenta contable...",
+        placeholder: "Cuenta contable...",
         minimumInputLength: 3,
         ajax: {
           url: "#{account3l_administration_provision_articles_path}",
@@ -110,5 +110,6 @@
       });
 
       $('#provision_exchange_of_rate').val(#{data_order_detail[18]})
+      $('#money-select').attr("disabled",true);
     });     
   - @reg_n += 1

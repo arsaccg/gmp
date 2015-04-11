@@ -196,6 +196,23 @@ class Article < ActiveRecord::Base
     return article_data
   end
 
+  def self.find_idarticle_global_by_specific_idarticle_provision(specific_article_id, cost_center_id)
+    article_data = Array.new
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.name, af.article_id, u.name, af.code, af.unit_of_measurement_id
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + specific_article_id.to_s + " 
+      LIMIT 1
+    ")
+
+    mysql_result.each do |data|
+      article_data = [data[0], data[1], data[2], data[3], data[4]]
+    end
+
+    return article_data
+  end  
+
   def self.get_article_per_type(type_article, cost_center)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.article_id, af.unit_of_measurement_id, u.name

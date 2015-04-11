@@ -11,7 +11,7 @@
             %label.label Fecha
             %label.input{for: "day"}
               %i
-              = f.input :day, as: :string, input_html: { class: 'form-control', value: @today, type: 'text' }, label: false, readonly: true
+              = f.input :day, as: :string, input_html: { class: 'form-control', value: @today.to_date, type: 'date' }, label: false
         .row
           %section.col.col-sm-5
             %label.label
@@ -19,7 +19,7 @@
             %label.input{for: "money_id"}
               %select.form-control#money_id{:name =>"exchange_of_rate[money_id]"}
                 - @moneys.each do |money|
-                  %option{:value => "#{money.id}", :rel => "#{money.id}", :selected => @ExchangeOfRates.money_id == money.id}
+                  %option{:value => "#{money.id}", :rel => "#{money.id}", :selected => "Dolares Americanos" == money.name}
                     = money.name
         .row
           %section.col.col-sm-5

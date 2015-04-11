@@ -11,7 +11,7 @@
       = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
         %br
         .col-sm-12
-          %fieldset{ :style => 'margin-top: 20px;' }
+          %fieldset
             = hidden_field_tag 'provision[cost_center_id]', @cost_center, id: 'cost-center-selected'
             = hidden_field_tag 'provision[exchange_of_rate]', @provision.exchange_of_rate, id: 'exchange_of_rate'
             = hidden_field_tag 'provision[rendicion]', @provision.rendicion, id: 'rendicion'
@@ -78,11 +78,11 @@
                     %select#money-select{:name =>"provision[money_id]"}
                       %option{:value => nil, :disabled => true, :selected => true} Seleccione un tipo 
                       - @money.each do |money|
-                        %option{:value => "#{money.id}", :selected => money.id==@provision.money_id}
+                        %option{:value => "#{money.id}", :selected => money.id==@provision.money_id, :rel => money.name}
                           = money.name
             .col-md-4
               .form-group
-                %label.col-md-4.control-label Rendicion
+                %label.col-md-4.control-label N° Rendición
                 .col-md-8
                   .input-group
                     = f.input :rendicion, placeholder: "Rendicion", :input_html => {:class => 'form-control'}, label: false                        
@@ -326,23 +326,31 @@
 
           .row
             %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
-              %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary_totals_provisions{ :style => 'width:15%; float:right;' }
+              %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary_totals_provisions{ :style => 'width:30%; float:right;' }
                 %tbody
                   %tr
                     %td{ :style => 'font-weight: bold;' } Total sin IGV
                     %td{ :style => 'font-weight: bold;', :id => 'stp_total_wt_igv' } S/. 0.00
+                    %td{ :style => 'font-weight: bold;', :id => 'dolares_total_wt_igv' } $/. 0.00
                   %tr
                     %td{ :style => 'font-weight: bold;' } IGV
                     %td{ :style => 'font-weight: bold;', :id => 'stp_total_igv' } S/. 0.00
+                    %td{ :style => 'font-weight: bold;', :id => 'dolares_total_igv' } $/. 0.00
                   %tr
                     %td{ :style => 'font-weight: bold;' } Total con IGV
                     %td{ :style => 'font-weight: bold;', :id => 'stp_total_w_igv' } S/. 0.00
+                    %td{ :style => 'font-weight: bold;', :id => 'dolares_total_w_igv' } $/. 0.00
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
           .row
-            %button.btn.btn-primary#save{type: "submit", :onclick => "part_block();", :style => "display:none"}
-              %i.fa.fa-save
-                Guardar
+            -if @action == "edit"
+              %button.btn.btn-primary#save{type: "submit", :onclick => "part_block();"}
+                %i.fa.fa-save
+                  Guardar
+            -else
+              %button.btn.btn-primary#save{type: "submit", :onclick => "part_block();", :style => "display:none"}
+                %i.fa.fa-save
+                  Guardar
 
 #modalOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
   .modal-dialog{ :style => 'width: 80%;' }
@@ -422,6 +430,7 @@
 
     $('#new_provision').ajaxForm({
       beforeSubmit: function() {
+        $('#money-select').attr("disabled",true);
         $('#new_provision').validate({
           // Rules for form validation
           ignore: "",
@@ -497,6 +506,7 @@
 
     $('form[id^="edit_"]').ajaxForm({
       beforeSubmit: function() {
+        $('#money-select').attr("disabled",true);
         $('form[id^="edit_"]').validate({
           // Rules for form validation
           ignore: '',          
@@ -828,7 +838,9 @@
     var price_without_igv = 0;
     var igv = 0;
     var price_with_igv = 0;
-
+    var moneda = $('option:selected', $('#money-select')).attr('rel');
+    var exchange = $('#exchange_of_rate').val();
+    console.log(moneda)
     $('#provisions_direct_items_table tr td.price-without-igv input').each(function(i, v){
       if( $(v).val() == '' )
         price_without_igv = 0 + parseFloat(price_without_igv);
@@ -849,10 +861,26 @@
       else
         price_with_igv = parseFloat($(v).val()) + parseFloat(price_with_igv);
     });
-
-    $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).toFixed(2));
-    $('#stp_total_igv').html('S/. ' + parseFloat(igv).toFixed(2));
-    $('#stp_total_w_igv').html('S/. ' + parseFloat(price_with_igv).toFixed(2));
+    if(moneda=="Nuevos Soles"){
+      $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).toFixed(2));
+      $('#stp_total_igv').html('S/. ' + parseFloat(igv).toFixed(2));
+      $('#stp_total_w_igv').html('S/. ' + parseFloat(price_with_igv).toFixed(2));
+      if(exchange!=""){
+        $('#dolares_total_wt_igv').html('$/. ' + (parseFloat(price_without_igv)/parseFloat(exchanges)).toFixed(2));
+        $('#dolares_total_igv').html('$/. ' + (parseFloat(igv)/parseFloat(exchanges)).toFixed(2));
+        $('#dolares_total_w_igv').html('$/. ' + (parseFloat(price_with_igv)/parseFloat(exchanges)).toFixed(2));      
+      }
+    }
+    if(moneda=="Dolares Americanos"){
+      $('#dolares_total_wt_igv').html('$/. ' + (parseFloat(price_without_igv)).toFixed(2));
+      $('#dolares_total_igv').html('$/. ' + (parseFloat(igv)).toFixed(2));
+      $('#dolares_total_w_igv').html('$/. ' + (parseFloat(price_with_igv)).toFixed(2));      
+      if(exchange!=""){
+        $('#stp_total_wt_igv').html('S/. ' + (parseFloat(price_without_igv)*parseFloat(exchange)).toFixed(2));
+        $('#stp_total_igv').html('S/. ' + (parseFloat(igv)*parseFloat(exchange)).toFixed(2));
+        $('#stp_total_w_igv').html('S/. ' + (parseFloat(price_with_igv)*parseFloat(exchange)).toFixed(2));
+      }
+    }    
   }
 
   $('#provision_accounting_date').change(function(){
