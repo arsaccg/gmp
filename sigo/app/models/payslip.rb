@@ -698,9 +698,6 @@ class Payslip < ActiveRecord::Base
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
-          p "--------------------------------------------------------------------------------------------------------------------------------------------------------"
-          p con.name.to_s
-          p "--------------------------------------------------------------------------------------------------------------------------------------------------------"
           if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
@@ -726,16 +723,8 @@ class Payslip < ActiveRecord::Base
           if !con.nil?
             if afp_d.type_of_afp == "SNP"
               if con.name == 'ORG. NAC. DE PENSIONES'
-                p "-------------------------------------------------------------------------------------------------------------------------------------"
-                p total
-                p amount
                 total = total - amount.to_f
                 amount = rem_basic * afp.contribution_fp.to_f/100
-                p "-------------------------------------------------------------------------------------------------------------------------------------"
-                p total
-                p amount
-                p afp.top
-                p "-------------------------------------------------------------------------------------------------------------------------------------"
                 if amount > afp.top
                   amount = afp.top
                 end
