@@ -351,6 +351,7 @@ ArsacLogistica::Application.routes.draw do
     resources :position_workers
     resources :workers do
       collection do
+        post 'check_contracts'
         post 'add_worker_item_field'
         post 'add_afp_item_field'
         post 'add_health_center_item_field'

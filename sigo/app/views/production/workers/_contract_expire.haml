@@ -1,0 +1,20 @@
+.modal-dialog{ style: "width: 720px;" }
+  .modal-content
+    .modal-header
+      %h4.modal-title Contratos vencidos y por vencer
+    .modal-body
+      -if @quidias.count > 0
+        %h3.modal-title Trabajadores cuyo contrato finalizará en 15 días
+        -@quidias.each do |di|
+          %label.label= "- " + di[0]
+      -else
+        %h2 No hay trabajadores cuyo contrato finalizará en 15 días
+      -if @vencido.count > 0
+        %h3.modal-title Trabajadores cuyo contrato esta vencido
+        -@vencido.each do |di|
+          %label.label= "- " + di[0]
+      -else
+        %h2 No hay trabajadores cuyo contrato haya vencido
+      %footer{ style: "margin-top: 20px;" }
+        %button.btn.btn-danger{"data-dismiss" => "modal", type: "button"}
+          Salir

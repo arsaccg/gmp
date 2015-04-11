@@ -534,6 +534,29 @@ class Production::WorkersController < ApplicationController
     render json: {:sub_cat => tp}
   end
 
+  def check_contracts
+    @quidias = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT CONCAT(e.paternal_surname, ' ', e.maternal_surname, ', ', e.name, ' ', IFNULL(e.second_name,''))
+      FROM worker_contracts wc, workers w, entities e
+      WHERE wc.end_date_2 IS NULL 
+      AND wc.end_date IS NOT NULL
+      AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
+      AND DATE_SUB( wc.end_date , INTERVAL 15 DAY) = CURDATE()
+      AND wc.worker_id = w.id
+      AND w.entity_id = e.id
+      ")
+    @vencido = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT CONCAT(e.paternal_surname, ' ', e.maternal_surname, ', ', e.name, ' ', IFNULL(e.second_name,''))
+      FROM worker_contracts wc, workers w, entities e
+      WHERE wc.end_date_2 IS NULL 
+      AND wc.end_date < CURDATE()
+      AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
+      AND wc.worker_id = w.id
+      AND w.entity_id = e.id
+      ")    
+    render(partial: 'contract_expire', :layout => false)
+  end
+
   private
   def worker_parameters
     params.require(:worker).permit( 
