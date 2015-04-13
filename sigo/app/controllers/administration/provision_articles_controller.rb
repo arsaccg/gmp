@@ -62,7 +62,7 @@ class Administration::ProvisionArticlesController < ApplicationController
     @provision = Provision.find(params[:id])
     @documentProvisions = DocumentProvision.all
     @suppliers = TypeEntity.find_by_preffix('P').entities
-    @sectors = Sector.where("code LIKE '__' ")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       @igv= val.value.to_f+1
@@ -121,7 +121,7 @@ class Administration::ProvisionArticlesController < ApplicationController
     @amount = params[:amount]
     @reg_n = ((Time.now.to_f)*100).to_i
     @account_accountants = AccountAccountant.where("code LIKE  '_______'")
-    @sectors = Sector.where("code LIKE '__' ")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     data_article = Article.find_idarticle_global_by_specific_idarticle_provision(params_article[0], get_company_cost_center("cost_center"))
     @cc = get_company_cost_center('cost_center')

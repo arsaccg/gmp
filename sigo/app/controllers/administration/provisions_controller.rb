@@ -256,7 +256,7 @@ class Administration::ProvisionsController < ApplicationController
     # = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][type_of_order]', @type_of_order_name
     @reg_n = ((Time.now.to_f)*100).to_i
     @account_accountants = AccountAccountant.where("code LIKE  '_______'")
-    @sectors = Sector.where("code LIKE '__' ")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
 
     order_detail_ids.each do |order_detail_id|

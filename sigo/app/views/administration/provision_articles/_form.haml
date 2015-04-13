@@ -226,8 +226,14 @@
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
 
                         %td.order_origin{:style => "text-align:center;"}
-                          = '-'
-
+                          -if pod.type_order=="purchase_order"
+                            -detail= PurchaseOrderDetail.find(pod.order_detail_id).purchase_order
+                            = "OC - " + detail.code
+                          -elsif pod.type_order=="service_order"
+                            -detail= OrderOfServiceDetail.find(pod.order_detail_id).order_of_service
+                            = "OS - " + detail.code
+                          -else
+                            = "-"
                         %td.description
                           = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
 
@@ -241,7 +247,7 @@
                           var a = #{@reg_n} + "a";
                           var p = #{@reg_n} + "p";
                           $('#'+a).select2({
-                            placeholder: "Buscar cuenta contable...",
+                            placeholder: "Cuenta contable...",
                             minimumInputLength: 3,
                             ajax: {
                               url: "#{account3l_administration_provision_articles_path}",
@@ -280,7 +286,7 @@
                           });
 
                           $('#'+p).select2({
-                            placeholder: "Buscar cuenta contable...",
+                            placeholder: "Buscar fase...",
                             minimumInputLength: 3,
                             ajax: {
                               url: "#{phases3l_administration_provision_articles_path}",
@@ -430,7 +436,7 @@
 
     $('#new_provision').ajaxForm({
       beforeSubmit: function() {
-        $('#money-select').attr("disabled",true);
+        $('#money-select').attr("disabled",false);
         $('#new_provision').validate({
           // Rules for form validation
           ignore: "",
@@ -506,7 +512,7 @@
 
     $('form[id^="edit_"]').ajaxForm({
       beforeSubmit: function() {
-        $('#money-select').attr("disabled",true);
+        $('#money-select').attr("disabled",false);
         $('form[id^="edit_"]').validate({
           // Rules for form validation
           ignore: '',          
@@ -840,7 +846,6 @@
     var price_with_igv = 0;
     var moneda = $('option:selected', $('#money-select')).attr('rel');
     var exchange = $('#exchange_of_rate').val();
-    console.log(moneda)
     $('#provisions_direct_items_table tr td.price-without-igv input').each(function(i, v){
       if( $(v).val() == '' )
         price_without_igv = 0 + parseFloat(price_without_igv);
@@ -862,25 +867,34 @@
         price_with_igv = parseFloat($(v).val()) + parseFloat(price_with_igv);
     });
     if(moneda=="Nuevos Soles"){
-      $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).toFixed(2));
-      $('#stp_total_igv').html('S/. ' + parseFloat(igv).toFixed(2));
-      $('#stp_total_w_igv').html('S/. ' + parseFloat(price_with_igv).toFixed(2));
+      $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).formatMoney(2, '.', ','));
+      $('#stp_total_igv').html('S/. ' + parseFloat(igv).formatMoney(2, '.', ','));
+      $('#stp_total_w_igv').html('S/. ' + parseFloat(price_with_igv).formatMoney(2, '.', ','));
       if(exchange!=""){
-        $('#dolares_total_wt_igv').html('$/. ' + (parseFloat(price_without_igv)/parseFloat(exchanges)).toFixed(2));
-        $('#dolares_total_igv').html('$/. ' + (parseFloat(igv)/parseFloat(exchanges)).toFixed(2));
-        $('#dolares_total_w_igv').html('$/. ' + (parseFloat(price_with_igv)/parseFloat(exchanges)).toFixed(2));      
+        $('#dolares_total_wt_igv').html('$/. ' + (parseFloat(price_without_igv)/parseFloat(exchange)).formatMoney(2, '.', ','));
+        $('#dolares_total_igv').html('$/. ' + (parseFloat(igv)/parseFloat(exchange)).formatMoney(2, '.', ','));
+        $('#dolares_total_w_igv').html('$/. ' + (parseFloat(price_with_igv)/parseFloat(exchange)).formatMoney(2, '.', ','));      
       }
     }
     if(moneda=="Dolares Americanos"){
-      $('#dolares_total_wt_igv').html('$/. ' + (parseFloat(price_without_igv)).toFixed(2));
-      $('#dolares_total_igv').html('$/. ' + (parseFloat(igv)).toFixed(2));
-      $('#dolares_total_w_igv').html('$/. ' + (parseFloat(price_with_igv)).toFixed(2));      
+      $('#dolares_total_wt_igv').html('$/. ' + (parseFloat(price_without_igv)).formatMoney(2, '.', ','));
+      $('#dolares_total_igv').html('$/. ' + (parseFloat(igv)).formatMoney(2, '.', ','));
+      $('#dolares_total_w_igv').html('$/. ' + (parseFloat(price_with_igv)).formatMoney(2, '.', ','));      
       if(exchange!=""){
-        $('#stp_total_wt_igv').html('S/. ' + (parseFloat(price_without_igv)*parseFloat(exchange)).toFixed(2));
-        $('#stp_total_igv').html('S/. ' + (parseFloat(igv)*parseFloat(exchange)).toFixed(2));
-        $('#stp_total_w_igv').html('S/. ' + (parseFloat(price_with_igv)*parseFloat(exchange)).toFixed(2));
+        $('#stp_total_wt_igv').html('S/. ' + (parseFloat(price_without_igv)*parseFloat(exchange)).formatMoney(2, '.', ','));
+        $('#stp_total_igv').html('S/. ' + (parseFloat(igv)*parseFloat(exchange)).formatMoney(2, '.', ','));
+        $('#stp_total_w_igv').html('S/. ' + (parseFloat(price_with_igv)*parseFloat(exchange)).formatMoney(2, '.', ','));
       }
-    }    
+    }
+    if(moneda==null){
+      $.smallBox({
+        title: "Seleccione una moneda.",
+        content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+        color: "#c46a69",
+        iconSmall: "fa fa-times bounce animated",
+        timeout: 4000
+      });
+    }
   }
 
   $('#provision_accounting_date').change(function(){
@@ -923,3 +937,14 @@
         }
       });
   }  
+
+  Number.prototype.formatMoney = function(c, d, t){
+    var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+  };

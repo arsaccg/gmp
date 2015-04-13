@@ -1,5 +1,6 @@
 class Money < ActiveRecord::Base
 	has_many :purchase_order
+	has_many :provision
 	has_many :works
 	has_many :exchange_of_rate
 	has_many :entity_banks
