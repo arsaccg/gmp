@@ -510,7 +510,6 @@ class Payslip < ActiveRecord::Base
     elsif topay.type_converted_operation == "aport_and_amounts"
       apply_to =  "aportaciones"
     end
-
     array_worker = array_worker.split(',').uniq
     month = week_end.to_date.strftime('%m').to_i
     rangos = FinancialVariable.where("name LIKE 'RANGO %'")
@@ -518,6 +517,11 @@ class Payslip < ActiveRecord::Base
     @result = Array.new
     headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA', 'HE 25%','HE 35%']
     total_days = week_end.to_date.strftime('%d').to_i
+    start_date = week_start.to_date
+    end_date = week_end.to_date
+    my_days = [1,2,3,4,5,6] # day of the week in 0-6. Sunday is day-of-week 0; Saturday is day-of-week 6.
+    sundays = (start_date..end_date).to_a.select {|k| my_days.include?(k.wday)}
+    sundays = total_days - sundays.count
     @i = 1
     @comp_name = CostCenter.find(company).company.short_name
     uit = FinancialVariable.find_by_name("UIT").value
@@ -551,7 +555,7 @@ class Payslip < ActiveRecord::Base
     ").each do |row|
       # ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35]
       cargo_worker = Worker.find(row[0]).worker_contracts.where("article_id IS NOT NULL").last
-      @result << [ row[0], row[1], row[2], cargo_worker.article.name, @comp_name, row[4], row[5], row[6]+holidays, total_days - (row[6]+holidays), row[8], row[9]]
+      @result << [ row[0], row[1], row[2], cargo_worker.article.name, @comp_name, row[4], row[5], row[6]+holidays+sundays, total_days - (row[6]+holidays+sundays), row[8], row[9]]
       calculator = Dentaku::Calculator.new
       amount = 0
       flag_extra = false
