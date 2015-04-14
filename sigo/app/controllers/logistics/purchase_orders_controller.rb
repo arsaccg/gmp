@@ -286,7 +286,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     if @pagenumber != 'NaN' && keyword != ''
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -298,7 +298,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -313,7 +313,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     elsif @pagenumber == 'NaN'
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -323,7 +323,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -336,7 +336,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     elsif keyword != ''
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -345,7 +345,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -357,7 +357,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     else
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -368,7 +368,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
+          SELECT po.id, po.state, IF( LEFT( po.description, LOCATE(  '\n', po.description ) ) =  '', po.description, LEFT( po.description, LOCATE(  '\n', po.description ) ) ), CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
