@@ -509,7 +509,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
         sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
 
-        if sql_purchase_order_partial_amount.first == sql_delivery_order_total_amount.first
+        if sql_purchase_order_partial_amount.first.to_f == sql_delivery_order_total_amount.first.to_f
           @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
           @deliveryOrderDetail.update_attributes(:requested => 1)
         end
