@@ -120,7 +120,7 @@ class Administration::PartWorkersController < ApplicationController
       SELECT DISTINCT w.id
       FROM workers w, entities e
       WHERE w.typeofworker LIKE  'empleado'
-      AND w.state LIKE  'active'
+      AND (w.state LIKE 'active' OR w.state LIKE 'ceased')
       AND w.cost_center_id = " + get_company_cost_center('cost_center').to_s + "
       AND e.id = w.entity_id
       AND w.start_date <=  '#{@date}'
