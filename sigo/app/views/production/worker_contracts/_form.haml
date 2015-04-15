@@ -9,6 +9,8 @@
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'worker_contract[worker_id]', 'value' => "#{@worker_id}", 'readonly' => true, 'style' => 'display:none' }
+          -if @action=="edit"
+            =hidden_field_tag 'worker_contract[id]', @workercontract.id
         .row
           %section.col.col-md-12
             .col-md-3
