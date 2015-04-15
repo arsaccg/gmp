@@ -71,8 +71,8 @@ index=1
         start_new_page
         total = "#{pdf.page_count}"
         index2 += 1
-        bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
-          text "Página #{index2}", :size => 7
+        bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
+          text "Página #{index2}", :size => 9
         end
         move_down 152
       end
@@ -85,8 +85,8 @@ index=1
     start_new_page
     total = "#{pdf.page_count}"
     index2 += 1
-    bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
-      text "Página #{index2}", :size => 7
+    bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
+      text "Página #{index2}", :size => 9
     end
     move_down 152
   end
@@ -104,8 +104,8 @@ if(@percepcion_neto!=0)
       start_new_page
       total = "#{pdf.page_count}"
       index2 += 1
-      bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
-        text "Página #{index2}", :size => 7
+      bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
+        text "Página #{index2}", :size => 9
       end
       move_down 152
     end
@@ -153,8 +153,8 @@ else
       start_new_page
       total = "#{pdf.page_count}"
       index2 += 1
-      bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
-        text "Página #{index2}", :size => 7
+      bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
+        text "Página #{index2}", :size => 9
       end
       move_down 152
     end
