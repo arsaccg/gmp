@@ -341,7 +341,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all
     @extra_calculations = ExtraCalculation.all
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @cost_center_id = @orderOfService.cost_center_id
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
