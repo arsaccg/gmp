@@ -1,3 +1,4 @@
+load 'classes/consumptioncost.rb'
 class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
@@ -332,7 +333,7 @@ class ConsumptionCost < ActiveRecord::Base
     end
   end
 
-  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered
+  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
     @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
     @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
@@ -360,18 +361,20 @@ class ConsumptionCost < ActiveRecord::Base
     article_index = array_order.index('article')
     if !article_index.nil?
       array_order[article_index] = "article_code"
-      array_extras_columns << "CONCAT('(',article_code,') ',article_name,' - ', article_unit) AS str_article , " + array_columns_delivered
+      array_extras_columns << "CONCAT('(',article_code,') ',article_name,' - ', article_unit) AS str_article"
     end
-    array_extras_columns << "working_group_id AS working_group"
-    
-    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered)
-    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered)
-    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered)
+    if !array_order.index('working_group_id').nil?
+      array_extras_columns << "working_group_id AS working_group"
+    end
+
+    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount)
+    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount)
+    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount)
 
     return @treeOrderCD, @treeOrderGG, @treeOrderSG
   end
 
-  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered
+  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered, type_amount
     index = 0
     count_element = array_order.count
 
@@ -381,29 +384,66 @@ class ConsumptionCost < ActiveRecord::Base
       connection.select_all(sql).each do |row|
         obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s, row[sql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
         msql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+1])}]
-        msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+        if array_order.last == array_order[index+1] # => Check if I stay in the Last element
+          msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+        else
+          msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+        end
         connection.select_all(msql).each do |mrow|
-          obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+          if array_order.last == array_order[index+1] # => Check if I stay in the Last element
+            obj = ConsumptionCostObj.new(mrow, type_amount)
+            obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, obj)
+          else
+            obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+          end
           if !array_order[index+2].nil?
             mssql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+2])}]
-            mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+            if array_order.last == array_order[index+2] # => Check if I stay in the Last element
+              mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+            else
+              mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+            end
             connection.select_all(mssql).each do |mmrow|
-              obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, mmrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+              if array_order.last == array_order[index+2] # => Check if I stay in the Last element
+                obj = ConsumptionCostObj.new(mmrow, type_amount)
+                obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, obj)
+              else
+                obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, mmrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+              end
               if !array_order[index+3].nil?
                 rsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+3])}]
-                rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                if array_order.last == array_order[index+3] # => Check if I stay in the Last element
+                  rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                else
+                  rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                end
                 connection.select_all(rsql).each do |rrow|
-                  obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, rrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+                  if array_order.last == array_order[index+3] # => Check if I stay in the Last element
+                    obj = ConsumptionCostObj.new(rrow, type_amount)
+                    obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, obj)
+                  else
+                    obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, rrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+                  end
                   if !array_order[index+4].nil?
                     mrsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+4])}]
-                    mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                    if array_order.last == array_order[index+4] # => Check if I stay in the Last element
+                      mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                    else
+                      mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                    end
                     connection.select_all(mrsql).each do |mrrow|
-                      obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, mrrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
-                      if !array_order[index+5].nil?
+                      if array_order.last == array_order[index+4] # => Check if I stay in the Last element
+                        obj = ConsumptionCostObj.new(mrrow, type_amount)
+                        obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, obj)
+                      else
+                        obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, mrrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+                      end
+                      if !array_order[index+5].nil? # => Always the Last
                         rrpsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+5])}]
-                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '';"
+                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '';"
                         connection.select_all(rrpsql).each do |rprow|
-                          obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]][mrrow[array_order[index+4].to_s].to_s] << Tree::TreeNode.new(rprow[array_order[index+5].to_s].to_s, rprow[rrpsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+                          obj = ConsumptionCostObj.new(rprow, type_amount)
+                          obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]][mrrow[array_order[index+4].to_s].to_s] << Tree::TreeNode.new(rprow[array_order[index+5].to_s].to_s, obj)
                         end
                       end
                     end

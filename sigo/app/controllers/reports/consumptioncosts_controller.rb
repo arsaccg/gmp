@@ -143,24 +143,39 @@ class Reports::ConsumptioncostsController < ApplicationController
     prev_month = (Date.parse(params[:date] + '-01') - 1.month).strftime('%m%Y')
     cost_center_id = get_company_cost_center('cost_center')
     table_name = "actual_values_" + cost_center_id.to_s + '_' + month
+    
+    array_order = [params[:first], params[:second], params[:third], params[:fourth]].reject(&:empty?)
 
-    array_order = [params[:first], params[:second], params[:third], params[:fourth]]
-    array_columns_delivered = nil
-    array_columns_prev_delivered = nil
+    if array_order.count < 1
+      array_order = ['fase', 'sector', 'working_group_id', 'article']
+    end
+    array_columns_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
+    array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
+    type_amount = 'specific_lvl_1'
 
-    if !params[:type_amount][0].nil?
+    if !params[:type_amount].nil?
       if params[:type_amount][0].include?('specific')
-        array_columns_delivered = params[:all_actual_values].map{|s| s + '_' + params[:type_amount][0] }
-        # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
-        array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| s + '_' + params[:type_amount][0] }
+        type_amount = 'specific_lvl_1'
+        if !params[:all_actual_values].nil?
+          array_columns_delivered = params[:all_actual_values].map{|s| s + '_' + params[:type_amount][0] }
+        end
+        if !params[:all_previous_accumulates].nil?
+          # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
+          array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| s + '_' + params[:type_amount][0] }
+        end
       elsif params[:type_amount][0].include?('measured')
-        array_columns_delivered = params[:all_actual_values].map{|s| params[:type_amount][0] + '_' + s }
-        # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
-        array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| params[:type_amount][0] + '_' + s }
+        type_amount = 'measured'
+        if !params[:all_actual_values].nil?
+          array_columns_delivered = params[:all_actual_values].map{|s| params[:type_amount][0] + '_' + s }
+        end
+        if !params[:all_previous_accumulates].nil?
+          # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
+          array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| params[:type_amount][0] + '_' + s }
+        end
       end
     end
 
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end

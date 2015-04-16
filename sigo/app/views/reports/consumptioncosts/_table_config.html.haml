@@ -63,42 +63,122 @@
             %td
               %span{:style => 'visibility:hidden'}
                 = '-'*2
-              = first_node.content
+              - if first_node.content.is_a? String
+                = first_node.content
+              - else
+                = first_node.content.name.to_s
+            - if !first_node.content.is_a?(String)
+              %td
+                = first_node.content.programado.to_f.round(2)
+              %td
+                = first_node.content.valorizado.to_f.round(2)
+              %td
+                = first_node.content.valorGanado.to_f.round(2)
+              %td
+                = first_node.content.real.to_f.round(2)
+              %td
+                = first_node.content.meta.to_f.round(2)
           - if first_node.children.count > 0
             - first_node.children.each do |second_node|
               %tr
                 %td
                   %span{:style => 'visibility:hidden'}
                     = '-'*5
-                  = second_node.content
+                  - if second_node.content.is_a? String
+                    = second_node.content
+                  - else
+                    = second_node.content.name.to_s
+                - if !second_node.content.is_a?(String)
+                  %td
+                    = second_node.content.programado.to_f.round(2)
+                  %td
+                    = second_node.content.valorizado.to_f.round(2)
+                  %td
+                    = second_node.content.valorGanado.to_f.round(2)
+                  %td
+                    = second_node.content.real.to_f.round(2)
+                  %td
+                    = second_node.content.meta.to_f.round(2)
               - if second_node.children.count > 0
                 - second_node.children.each do |third_node|
                   %tr
                     %td
                       %span{:style => 'visibility:hidden'}
                         = '-'*7
-                      = third_node.content
+                      - if third_node.content.is_a? String
+                        = third_node.content
+                      - else
+                        = third_node.content.name.to_s
+                    - if !third_node.content.is_a?(String)
+                      %td
+                        = third_node.content.programado.to_f.round(2)
+                      %td
+                        = third_node.content.valorizado.to_f.round(2)
+                      %td
+                        = third_node.content.valorGanado.to_f.round(2)
+                      %td
+                        = third_node.content.real.to_f.round(2)
+                      %td
+                        = third_node.content.meta.to_f.round(2)
                   - if third_node.children.count > 0
                     - third_node.children.each do |fourth_node|
                       %tr
                         %td
                           %span{:style => 'visibility:hidden'}
                             = '-'*9
-                          = fourth_node.content
+                          - if fourth_node.content.is_a?(String)
+                            = fourth_node.content
+                          - else
+                            = fourth_node.content.name.to_s
+                        - if !fourth_node.content.is_a?(String)
+                          %td
+                            = fourth_node.content.programado.to_f.round(2)
+                          %td
+                            = fourth_node.content.valorizado.to_f.round(2)
+                          %td
+                            = fourth_node.content.valorGanado.to_f.round(2)
+                          %td
+                            = fourth_node.content.real.to_f.round(2)
+                          %td
+                            = fourth_node.content.meta.to_f.round(2)
                       - if fourth_node.children.count > 0
                         - fourth_node.children.each do |five_node|
                           %tr
                             %td
                               %span{:style => 'visibility:hidden'}
                                 = '-'*11
-                              = five_node.content
+                              - if five_node.content.is_a? String
+                                = five_node.content
+                              - else
+                                = five_node.content.name.to_s
+                            - if !five_node.content.is_a?(String)
+                              %td
+                                = five_node.content.programado.to_f.round(2)
+                              %td
+                                = five_node.content.valorizado.to_f.round(2)
+                              %td
+                                = five_node.content.valorGanado.to_f.round(2)
+                              %td
+                                = five_node.content.real.to_f.round(2)
+                              %td
+                                = five_node.content.meta.to_f.round(2)
                           - if five_node.children.count > 0
                             - five_node.children.each do |six_node|
                               %tr
                                 %td
                                   %span{:style => 'visibility:hidden'}
                                     = '-'*13
-                                  = six_node.content
+                                  = six_node.content.name.to_s
+                                %td
+                                  = six_node.content.programado.to_f.round(2)
+                                %td
+                                  = six_node.content.valorizado.to_f.round(2)
+                                %td
+                                  = six_node.content.valorGanado.to_f.round(2)
+                                %td
+                                  = six_node.content.real.to_f.round(2)
+                                %td
+                                  = six_node.content.meta.to_f.round(2)
 - else
 
   .col-xs-12.col-sm-12.col-md-12.col-lg-12

@@ -322,33 +322,38 @@
     });
     
     $('#search_with_config').click(function(){
-      var first = ''; var second = ''; var third = ''; var fourth = '';
+      var check_values = []
+      var first = null; var second = null; var third = null; var fourth = null;
       var prev_accumulates = new Array(); var actual_accumulates = new Array(); var actual_values = new Array(); var type_amount = new Array();
       $('#finalsort').find('option').each(function(i,dom){
         
         switch(i){
           case 0:
             first = $(dom).val();
+            if(first != null){ check_values.push(first); }
             break;
 
           case 1:
             second = $(dom).val();
+            if(second != null){ check_values.push(second); }
             break;
 
           case 2:
             third = $(dom).val();
+            if(third != null){ check_values.push(third); }
             break;
 
           case 3:
             fourth = $(dom).val();
+            if(fourth != null){ check_values.push(fourth); }
             break;
 
           default:
             break;
         }
       });
-      
-      if((first != '') && (second != '') && (third != '') && (fourth != '')){
+
+      if(check_values.length > 0){
         var phase = $('#phase').val();
         var subphase = $('#subphase').val();
         var sector = $('#sector').val();
