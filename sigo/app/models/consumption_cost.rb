@@ -333,7 +333,7 @@ class ConsumptionCost < ActiveRecord::Base
     end
   end
 
-  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount
+  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
     @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
     @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
@@ -367,14 +367,14 @@ class ConsumptionCost < ActiveRecord::Base
       array_extras_columns << "working_group_id AS working_group"
     end
 
-    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount)
-    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount)
-    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount)
+    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
+    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
+    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
 
     return @treeOrderCD, @treeOrderGG, @treeOrderSG
   end
 
-  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered, type_amount
+  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered, type_amount, array_order_filters
     index = 0
     count_element = array_order.count
 

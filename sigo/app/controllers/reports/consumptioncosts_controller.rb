@@ -143,110 +143,30 @@ class Reports::ConsumptioncostsController < ApplicationController
     prev_month = (Date.parse(params[:date] + '-01') - 1.month).strftime('%m%Y')
     cost_center_id = get_company_cost_center('cost_center')
     table_name = "actual_values_" + cost_center_id.to_s + '_' + month
+    array_order_filters = Array.new
 
-    first = ""
-    second =""
-    third = ""
-    fourth = ""
-    phase_final = ""
-    sector_final = ""
-    wg_final = ""
-    article_final = ""
     if params[:subphase]!=""
-      phase_final = Array.new
-      params[:subphase].each do |sp|
-        phase_final << Phase.find(sp).code rescue ''
-      end
-      phase_final = " where fase_cod_hijo IN (" + phase_final.join(',').to_s + ")"
+      array_order_filters << " fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
     elsif params[:phase]!=""
-      phase_final = Array.new
-      params[:phase].each do |sp|
-        phase_final << Phase.find(sp.to_i).code rescue ''
-      end
-      phase_final = " where fase_cod_padre IN (" + phase_final.join(',').to_s + ")"
+      array_order_filters << " fase_cod_padre IN (" + Phase.where( :id => params[:phase] ).map(&:code).join(',') + ")"
     end
     if params[:subsector]!=""
-      sector_final = Array.new
-      params[:subsector].each do |sp|
-        sector_final << Sector.find(sp.to_i).code rescue ''
-      end
-      sector_final = " where sector_cod_hijo IN (" + sector_final.join(',').to_s + ")"
+      array_order_filters << " sector_cod_hijo IN (" + Sector.where( :id => params[:subsector] ).map(&:code).join(',').to_s + ")"
     elsif params[:sector]!=""
-      sector_final = Array.new
-      params[:sector].each do |sp|
-        sector_final << Sector.find(sp.to_i).code rescue ''
-      end
-      sector_final = " where sector_cod_padre IN (" + sector_final.join(',').to_s + ")"
+      array_order_filters << " sector_cod_padre IN (" + Sector.where( :id => params[:sector] ).map(&:code).join(',').to_s + ")"
     end
 
     if params[:art]!=""
-      article_final = Array.new
-      params[:art].each do |art|
-        article_final << Article.find(art.to_i).code 
-      end
-      article_final = " where article_code IN (" + article_final.join(',').to_s + ")"
+      array_order_filters << " article_code IN (" + Article.where( :id => params[:art] ).map(&:code).join(',').to_s + ")"
     elsif params[:artspec]!=""
-      article_final = Array.new
-      params[:art].each do |cat|
-        article_final << Category.find(cat).code rescue ''
-      end
-      article_final = " where LEFT(RIGHT(article_code,8),6) IN (" + article_final.join(',').to_s + ")"
+      array_order_filters << " LEFT(RIGHT(article_code,8),6) IN (" + Category.where( :id => params[:artspec] ).map(&:code).join(',').to_s + ")"
     elsif params[:artsubgru]!=""
-      article_final = Array.new
-      params[:art].each do |cat|
-        article_final << Category.find(cat).code rescue ''
-      end
-      article_final = " where LEFT(RIGHT(article_code,8),4) IN (" + article_final.join(',').to_s + ")"
+      array_order_filters << " LEFT(RIGHT(article_code,8),4) IN (" + Category.where( :id => params[:artsubgru] ).map(&:code).join(',').to_s + ")"
     elsif params[:artgru]!=""
-      article_final = Array.new
-      params[:art].each do |cat|
-        article_final << Category.find(cat).code rescue ''
-      end
-      article_final = " where LEFT(RIGHT(article_code,8),2) IN (" + article_final.join(',').to_s + ")"
-    end
-
-    case params[:first]
-    when "fase"
-      first = [params[:first], phase_final]
-    when "sector"
-      first = [params[:first],sector_final]
-    when "working_group_id"
-      first = [params[:first],wg_final]
-    when "article"
-      first = [params[:first], article_final]
-    end
-    case params[:second]
-    when "fase"
-      second = [params[:second], phase_final]
-    when "sector"
-      second = [params[:second],sector_final]
-    when "working_group_id"
-      second = [params[:second],wg_final]
-    when "article"
-      second = [params[:second], article_final]
-    end
-    case params[:third]
-    when "fase"
-      third = [params[:third], phase_final]
-    when "sector"
-      third = [params[:third],sector_final]
-    when "working_group_id"
-      third = [params[:third],wg_final]
-    when "article"
-      third = [params[:third], article_final]
-    end
-    case params[:fourth]
-    when "fase"
-      fourth = [params[:fourth], phase_final]
-    when "sector"
-      fourth = [params[:fourth],sector_final]
-    when "working_group_id"
-      fourth = [params[:fourth],wg_final]
-    when "article"
-      fourth = [params[:fourth], article_final]
+      array_order_filters << " LEFT(RIGHT(article_code,8),2) IN (" + Category.where( :id => params[:artgru] ).map(&:code).join(',').to_s + ")"
     end
     
-    array_order = [first, second, third, fourth].reject{ |x| x[0]=="" || x==""}
+    array_order = [params[:first], params[:second], params[:third], params[:fourth]].reject(&:empty?)
     if array_order.count < 1
       array_order = [['fase',phase_final], ['sector',sector_final], ['working_group_id',wg_final], ['article',article_final]]
     end
@@ -275,7 +195,7 @@ class Reports::ConsumptioncostsController < ApplicationController
         end
       end
     end
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end
