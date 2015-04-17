@@ -168,7 +168,7 @@ class Reports::ConsumptioncostsController < ApplicationController
     
     array_order = [params[:first], params[:second], params[:third], params[:fourth]].reject(&:empty?)
     if array_order.count < 1
-      array_order = [['fase',phase_final], ['sector',sector_final], ['working_group_id',wg_final], ['article',article_final]]
+      array_order = ['fase', 'sector', 'working_group_id', 'article']
     end
     array_columns_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
     array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
