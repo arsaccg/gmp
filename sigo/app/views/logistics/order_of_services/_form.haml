@@ -156,34 +156,25 @@
                             = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][amount]', oos.amount, class: "form-control amount-item", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
                           %td.sector.col-md-1
                             %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][sector_id]"}
-                              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
+                              %option{:value => nil, :selected => true, :disabled => true } Seleccionar Sector
                               - @sectors.each do |sector|
-                                - if sector.id == oos.sector_id
-                                  %option{:value => "#{sector.id}", :selected => true}
-                                    = sector.name
-                                - else
-                                  %option{:value => "#{sector.id}"}
-                                    = sector.name
+                                %optgroup{:label => "#{sector.name}"}
+                                  - Sector.getSubSectors(sector.code, @cc).each do |subsector|
+                                    %option{:value => "#{subsector.id}", :selected => subsector.id.to_i==oos.sector_id.to_i}
+                                      = subsector.name
                           %td.phase
                             %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][phase_id]"}
-                              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+                              %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
                               - @phases.each do |phase|
-                                - if phase.id == oos.phase_id
-                                  %option{:value => "#{phase.id}", :selected => true}
-                                    = phase.name
-                                - else
-                                  %option{:value => "#{phase.id}"}
-                                    = phase.name
+                                %option{:value => "#{phase.id}", :selected => oos.phase_id.to_i==phase.id.to_i}
+                                  = phase.code.to_s + " " + phase.name.to_s
                           %td.working_group
                             %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][working_group_id]"}
-                              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+                              %option{:value => nil, :selected => true, :disabled => true} Seleccionar Grupo de Trabajo
                               - @working_groups.each do |working_group|
-                                - if working_group.id == oos.working_group_id
-                                  %option{:value => "#{working_group.id}", :selected => true}
-                                    = working_group.name
-                                - else
-                                  %option{:value => "#{working_group.id}"}
-                                    = working_group.name
+                                %option{:value => "#{working_group.id}", :selected => working_group.id.to_i==oos.working_group_id.to_i}
+                                  = working_group.name
+
                           %td.unit-price
                             = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_price]', oos.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
                           %td.discount-before

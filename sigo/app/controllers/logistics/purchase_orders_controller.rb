@@ -266,7 +266,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         if pod.amount == nil
           sum += 0
         else
-          sum += pod.amount
+          sum += pod.amount.to_f
         end
       end
       @delivery_order_detail.amount = total - sum
@@ -508,10 +508,12 @@ class Logistics::PurchaseOrdersController < ApplicationController
         dod_id = pod.delivery_order_detail_id
         sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
         sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
+        @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
 
-        if sql_purchase_order_partial_amount.first.to_f == sql_delivery_order_total_amount.first.to_f
-          @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
+        if sql_purchase_order_partial_amount.first.first.to_f == sql_delivery_order_total_amount.first.first.to_f
           @deliveryOrderDetail.update_attributes(:requested => 1)
+        else
+          @deliveryOrderDetail.update_attributes(:requested => nil)
         end
       end
 
@@ -537,6 +539,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
     end
     purchaseOrder.update_attributes(purchase_order_parameters)
     purchaseOrder.purchase_order_details.each do |po|
+      dod_id = po.delivery_order_detail_id
+      sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
+      sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
+      @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
+
+      if sql_purchase_order_partial_amount.first.first.to_f == sql_delivery_order_total_amount.first.first.to_f
+        @deliveryOrderDetail.update_attributes(:requested => 1)
+      else
+        @deliveryOrderDetail.update_attributes(:requested => nil)
+      end      
       if po.quantity_igv.to_f == 0.0
         po.update(:igv=>nil)
       end
@@ -591,8 +603,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
     puts " ------------------------------------- empieza verificacion -----------------------------------------------------------------------------------"
     verificacion_id.each do |ver|
       val = PurchaseOrderDetail.find(ver) rescue nil
-      p val.inspect
-      p verificacion_id.index(ver)
       if val.nil?
         DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)]).update_attributes(:requested => nil)
       else

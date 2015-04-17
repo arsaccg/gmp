@@ -5,7 +5,7 @@ bounding_box [bounds.right - 100, bounds.bottom + 720], :width  => 200 do
 end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 720], :width  => 200 do
-    image @company.avatar.path, :fit => [100, 38]
+    image @company.avatar.path, :fit => [100, 38] rescue nil
     text @company.name, :size => 9
     text @company.address, :size => 9
     text @company.ruc, :size => 9
@@ -39,7 +39,7 @@ index=1
   stroke_horizontal_rule
   end
   pad(1) {
-    table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{data.center_of_attention.abbreviation}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{data.amount}"] ], :width => 540, :cell_style => {:border_color=> "ffffff"}, :column_widths => [33,60,222,40,40,40,35,70]) do
+    table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{data.center_of_attention.abbreviation}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{number_to_currency(data.amount.to_f, unit: ' ', precision: 2)}"] ], :width => 540, :cell_style => {:border_color=> "ffffff"}, :column_widths => [33,60,222,40,40,40,35,70]) do
         columns(0).font_style = :bold
         style(columns(0..1), :align => :center)
         style(columns(3..7), :align => :center)

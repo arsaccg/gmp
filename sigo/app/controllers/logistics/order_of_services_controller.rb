@@ -335,13 +335,14 @@ class Logistics::OrderOfServicesController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     # Set default value
     @igv = 0.18+1
+    @cc = get_company_cost_center('cost_center')
     @orderOfService = OrderOfService.find(params[:id])
-    @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @sectors = Sector.where("code LIKE '__'AND cost_center_id = " + @cc.to_s )
+    @phases = Phase.getSpecificPhases(@cc)
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all
     @extra_calculations = ExtraCalculation.all
-    @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
+    @working_groups = WorkingGroup.where("cost_center_id = " + @cc.to_s)
     @cost_center_id = @orderOfService.cost_center_id
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
