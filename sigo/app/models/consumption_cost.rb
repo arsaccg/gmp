@@ -377,17 +377,16 @@ class ConsumptionCost < ActiveRecord::Base
   def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered, type_amount, array_order_filters
     index = 0
     count_element = array_order.count
-
     if !array_order[index].nil? && !array_order[index+1].nil?
       sql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index])}]
-      sql = "SELECT DISTINCT " + array_order[index].to_s + ',' + sql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " != 'NULL' AND " + array_order[index].to_s + " != '';"
+      sql = "SELECT DISTINCT " + array_order[index].to_s + ',' + sql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " != 'NULL' AND " + array_order[index].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index])}.to_i].to_s + ";"
       connection.select_all(sql).each do |row|
         obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s, row[sql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
         msql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+1])}]
         if array_order.last == array_order[index+1] # => Check if I stay in the Last element
-          msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+          msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+1])}.to_i].to_s + ";"
         else
-          msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '';"
+          msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+1])}.to_i].to_s + ";"
         end
         connection.select_all(msql).each do |mrow|
           if array_order.last == array_order[index+1] # => Check if I stay in the Last element
@@ -399,9 +398,9 @@ class ConsumptionCost < ActiveRecord::Base
           if !array_order[index+2].nil?
             mssql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+2])}]
             if array_order.last == array_order[index+2] # => Check if I stay in the Last element
-              mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+              mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+2])}.to_i].to_s + ";"
             else
-              mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '';"
+              mssql = "SELECT DISTINCT " + array_order[index+2].to_s + ',' + mssql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+1].to_s + " = " + mrow[array_order[index+1].to_s].to_s + " AND " + array_order[index+2].to_s + " != 'NULL' AND " + array_order[index+2].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+2])}.to_i].to_s + ";"
             end
             connection.select_all(mssql).each do |mmrow|
               if array_order.last == array_order[index+2] # => Check if I stay in the Last element
@@ -413,9 +412,9 @@ class ConsumptionCost < ActiveRecord::Base
               if !array_order[index+3].nil?
                 rsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+3])}]
                 if array_order.last == array_order[index+3] # => Check if I stay in the Last element
-                  rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                  rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+3])}.to_i].to_s + ";"
                 else
-                  rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '';"
+                  rsql = "SELECT DISTINCT " + array_order[index+3].to_s + ',' + rsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+2].to_s + " = " + mmrow[array_order[index+2].to_s].to_s + " AND " + array_order[index+3].to_s + " != 'NULL' AND " + array_order[index+3].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+3])}.to_i].to_s + ";"
                 end
                 connection.select_all(rsql).each do |rrow|
                   if array_order.last == array_order[index+3] # => Check if I stay in the Last element
@@ -427,9 +426,9 @@ class ConsumptionCost < ActiveRecord::Base
                   if !array_order[index+4].nil?
                     mrsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+4])}]
                     if array_order.last == array_order[index+4] # => Check if I stay in the Last element
-                      mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                      mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+4])}.to_i].to_s + ";"
                     else
-                      mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '';"
+                      mrsql = "SELECT DISTINCT " + array_order[index+4].to_s + ',' + mrsql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+3].to_s + " = " + rrow[array_order[index+3].to_s].to_s + " AND " + array_order[index+4].to_s + " != 'NULL' AND " + array_order[index+4].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+4])}.to_i].to_s + ";"
                     end
                     connection.select_all(mrsql).each do |mrrow|
                       if array_order.last == array_order[index+4] # => Check if I stay in the Last element
@@ -440,7 +439,7 @@ class ConsumptionCost < ActiveRecord::Base
                       end
                       if !array_order[index+5].nil? # => Always the Last
                         rrpsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+5])}]
-                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '';"
+                        rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+5])}.to_i].to_s + ";"
                         connection.select_all(rrpsql).each do |rprow|
                           obj = ConsumptionCostObj.new(rprow, type_amount)
                           obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]][mrrow[array_order[index+4].to_s].to_s] << Tree::TreeNode.new(rprow[array_order[index+5].to_s].to_s, obj)
@@ -456,7 +455,7 @@ class ConsumptionCost < ActiveRecord::Base
       end
     elsif !array_order[index].nil?
       sql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index])}]
-      sql = "SELECT " + array_order[index].to_s + ',' + sql_data.to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index] + " != 'NULL' AND " + array_order[index] + " != '';"
+      sql = "SELECT " + array_order[index].to_s + ',' + sql_data.to_s + " FROM " + table_name.to_s + " WHERE " + array_order[index] + " != 'NULL' AND " + array_order[index] + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index])}.to_i].to_s + ";"
       ActiveRecord::Base.connection.execute(sql).each do |row|
         obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s, row[sql_data.to_s].to_s)
       end

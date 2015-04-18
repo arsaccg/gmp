@@ -146,26 +146,29 @@ class Reports::ConsumptioncostsController < ApplicationController
     array_order_filters = Array.new
 
     if params[:subphase]!=""
-      array_order_filters << " fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
     elsif params[:phase]!=""
-      array_order_filters << " fase_cod_padre IN (" + Phase.where( :id => params[:phase] ).map(&:code).join(',') + ")"
+      array_order_filters << " AND fase_cod_padre IN (" + Phase.where( :id => params[:phase] ).map(&:code).join(',') + ")"
     end
     if params[:subsector]!=""
-      array_order_filters << " sector_cod_hijo IN (" + Sector.where( :id => params[:subsector] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND sector_cod_hijo IN (" + Sector.where( :id => params[:subsector] ).map(&:code).join(',').to_s + ")"
     elsif params[:sector]!=""
-      array_order_filters << " sector_cod_padre IN (" + Sector.where( :id => params[:sector] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND sector_cod_padre IN (" + Sector.where( :id => params[:sector] ).map(&:code).join(',').to_s + ")"
     end
 
     if params[:art]!=""
-      array_order_filters << " article_code IN (" + Article.where( :id => params[:art] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND article_code IN (" + Article.where( :id => params[:art] ).map(&:code).join(',').to_s + ")"
     elsif params[:artspec]!=""
-      array_order_filters << " LEFT(RIGHT(article_code,8),6) IN (" + Category.where( :id => params[:artspec] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND LEFT(RIGHT(article_code,8),6) IN (" + Category.where( :id => params[:artspec] ).map(&:code).join(',').to_s + ")"
     elsif params[:artsubgru]!=""
-      array_order_filters << " LEFT(RIGHT(article_code,8),4) IN (" + Category.where( :id => params[:artsubgru] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND LEFT(RIGHT(article_code,8),4) IN (" + Category.where( :id => params[:artsubgru] ).map(&:code).join(',').to_s + ")"
     elsif params[:artgru]!=""
-      array_order_filters << " LEFT(RIGHT(article_code,8),2) IN (" + Category.where( :id => params[:artgru] ).map(&:code).join(',').to_s + ")"
+      array_order_filters << " AND LEFT(RIGHT(article_code,8),2) IN (" + Category.where( :id => params[:artgru] ).map(&:code).join(',').to_s + ")"
     end
-    
+
+    if params[:wg]!=""
+      array_order_filters << " AND working_group_id IN (" + params[:wg].join(',').to_s + ")"
+    end
     array_order = [params[:first], params[:second], params[:third], params[:fourth]].reject(&:empty?)
     if array_order.count < 1
       array_order = ['fase', 'sector', 'working_group_id', 'article']
@@ -173,12 +176,11 @@ class Reports::ConsumptioncostsController < ApplicationController
     array_columns_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
     array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
     type_amount = 'specific_lvl_1'
-
     if !params[:type_amount].nil?
       if params[:type_amount][0].include?('specific_lvl_1')
         type_amount = 'specific_lvl_1'
         if !params[:all_actual_values].nil?
-          array_columns_delivered = params[:all_actual_values].map{|s| s + '_' + params[:type_amount][0] }
+          array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| s + "_"+ params[:type_amount][0] }
         end
         if !params[:all_previous_accumulates].nil?
           # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
@@ -195,6 +197,7 @@ class Reports::ConsumptioncostsController < ApplicationController
         end
       end
     end
+
     @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
