@@ -172,38 +172,38 @@
                   .col-md-2
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} FASE
-                      = check_box_tag 'chbx_phase', 'fase_cod_padre', true
+                      = check_box_tag 'chbx_viewed', 'fase_cod_padre', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SUBFASE
-                      = check_box_tag 'chbx_subphase', 'fase_cod_hijo', true
+                      = check_box_tag 'chbx_viewed', 'fase_cod_hijo', true
                 .row
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SECTOR
-                      = check_box_tag 'chbx_sector', 'sector_cod_padre', true
+                      = check_box_tag 'chbx_viewed', 'sector_cod_padre', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SUBSECTOR
-                      = check_box_tag 'chbx_subsector', 'sector_cod_hijo', true
+                      = check_box_tag 'chbx_viewed', 'sector_cod_hijo', true
                 .row
                   .col-md-4
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} GRUPO DE TRABAJO
-                      = check_box_tag 'chbx_working_group', 'working_group_id', true
+                      = check_box_tag 'chbx_viewed', 'working_group_id', true
                 .row
                   .col-md-2
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} GRUPO
-                      = check_box_tag 'chbx_group', 'article_group', true
+                      = check_box_tag 'chbx_viewed', 'article_group', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} SUBGRUPO
-                      = check_box_tag 'chbx_subgroup', 'article_subgroup', true
+                      = check_box_tag 'chbx_viewed', 'article_subgroup', true
                   .col-md-3
                     %label.checkbox{ :style => 'margin: 0;' }
                       %span{:style => "position: relative;top: 0.3em;"} ESPECIFICO
-                      = check_box_tag 'chbx_specific', 'article_specific', true
+                      = check_box_tag 'chbx_viewed', 'article_code', true
 
             .col-md-12
               %h5 Horizontal
@@ -324,7 +324,7 @@
     $('#search_with_config').click(function(){
       var check_values = []
       var first = null; var second = null; var third = null; var fourth = null;
-      var prev_accumulates = new Array(); var actual_accumulates = new Array(); var actual_values = new Array(); var type_amount = new Array();
+      var prev_accumulates = new Array(); var actual_accumulates = new Array(); var actual_values = new Array(); var type_amount = new Array(); var values_viewed = new Array();
       $('#finalsort').find('option').each(function(i,dom){
         
         switch(i){
@@ -368,6 +368,8 @@
         var art = $('#art').val();
         var month = $('#selected-month').val();
 
+        $('input[name="chbx_viewed"]:checked').each(function(i,dom){values_viewed.push($(dom).val())});
+
         $('input[name="chbx_all_previous_accumulates"]:checked').each(function(i,dom){prev_accumulates.push($(dom).val())});
 
         $('input[name="chbx_all_actual_accumulate_values"]:checked').each(function(i,dom){actual_accumulates.push($(dom).val())});
@@ -376,7 +378,7 @@
 
         $('input[name="type_amount"]:checked').each(function(i,dom){type_amount.push($(dom).val())});
 
-        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art, all_previous_accumulates: prev_accumulates, all_actual_accumulate_values: actual_accumulates, all_actual_values: actual_values, type_amount: type_amount}
+        params = { date: month, authenticity_token: "#{form_authenticity_token}", first: first, second : second, third : third, fourth : fourth, phase: phase, subphase: subphase, sector: sector, subsector: subsector, wg: wg, jf: jf, exe: exe, cap: cap, artgru: artgru, artsubgru: artsubgru, artspec: artspec, art: art, all_previous_accumulates: prev_accumulates, all_actual_accumulate_values: actual_accumulates, values_viewed: values_viewed, all_actual_values: actual_values, type_amount: type_amount}
         load_url_ajax("#{consult_with_config_2_reports_consumptioncosts_path}", 'table-cost-config', params, 'avoid-opacity', 'POST');
       } else {
         $.smallBox({

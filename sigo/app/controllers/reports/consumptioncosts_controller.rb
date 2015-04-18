@@ -144,6 +144,8 @@ class Reports::ConsumptioncostsController < ApplicationController
     cost_center_id = get_company_cost_center('cost_center')
     table_name = "actual_values_" + cost_center_id.to_s + '_' + month
     array_order_filters = Array.new
+    array_values_viewed = Array.new
+    array_values_viewed = params[:values_viewed]
 
     if params[:subphase]!=""
       array_order_filters << " AND fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
@@ -198,7 +200,7 @@ class Reports::ConsumptioncostsController < ApplicationController
       end
     end
 
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters, array_values_viewed) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end
