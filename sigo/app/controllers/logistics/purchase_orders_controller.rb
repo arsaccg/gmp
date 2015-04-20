@@ -606,12 +606,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
       if val.nil?
         DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)]).update_attributes(:requested => nil)
       else
-        del = DeliveryOrderDetail.find(verificacion_order_id[verificacion_id.index(ver)])
-        if del.amount == val.amount
-          del.update_attributes(:requested => 1)
+        dod_id = val.delivery_order_detail_id
+        sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
+        sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
+        @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
+
+        if sql_purchase_order_partial_amount.first.first.to_f == sql_delivery_order_total_amount.first.first.to_f
+          @deliveryOrderDetail.update_attributes(:requested => 1)
         else
-          del.update_attributes(:requested => nil)
-        end
+          @deliveryOrderDetail.update_attributes(:requested => nil)
+        end   
       end
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
