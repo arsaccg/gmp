@@ -138,14 +138,13 @@ class Reports::ConsumptioncostsController < ApplicationController
   end 
 
   def consult_with_config_2
+    @for_acumulated_end_date = Date.parse(params[:date] + '-01')
     @month = Date.parse(params[:date] + '-01').strftime('%m-%Y')
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
     prev_month = (Date.parse(params[:date] + '-01') - 1.month).strftime('%m%Y')
-    cost_center_id = get_company_cost_center('cost_center')
-    table_name = "actual_values_" + cost_center_id.to_s + '_' + month
+    @cost_center_id = get_company_cost_center('cost_center')
+    table_name = "actual_values_" + @cost_center_id.to_s + '_' + month
     array_order_filters = Array.new
-    array_values_viewed = Array.new
-    array_values_viewed = params[:values_viewed]
 
     if params[:subphase]!=""
       array_order_filters << " AND fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
@@ -177,10 +176,10 @@ class Reports::ConsumptioncostsController < ApplicationController
     end
     array_columns_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
     array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
-    type_amount = 'specific_lvl_1'
+    @type_amount = 'specific_lvl_1'
     if !params[:type_amount].nil?
       if params[:type_amount][0].include?('specific_lvl_1')
-        type_amount = 'specific_lvl_1'
+        @type_amount = 'specific_lvl_1'
         if !params[:all_actual_values].nil?
           array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| s + "_"+ params[:type_amount][0] }
         end
@@ -189,9 +188,9 @@ class Reports::ConsumptioncostsController < ApplicationController
           array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| s + '_' + params[:type_amount][0] }
         end
       elsif params[:type_amount][0].include?('measured')
-        type_amount = 'measured'
+        @type_amount = 'measured'
         if !params[:all_actual_values].nil?
-          array_columns_delivered = params[:all_actual_values].map{|s| params[:type_amount][0] + '_' + s }
+          array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| params[:type_amount][0] + '_' + s }
         end
         if !params[:all_previous_accumulates].nil?
           # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
@@ -200,7 +199,7 @@ class Reports::ConsumptioncostsController < ApplicationController
       end
     end
 
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters, array_values_viewed) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, @type_amount, array_order_filters) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end

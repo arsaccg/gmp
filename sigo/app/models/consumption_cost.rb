@@ -333,7 +333,49 @@ class ConsumptionCost < ActiveRecord::Base
     end
   end
 
-  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters, array_values_viewed
+  def self.get_the_acumulated(articleid,end_date,cc,type)
+    cc = CostCenter.find(cc)
+    end_date = Time.now
+    tables = Array.new
+    if end_date.to_date - 4.years >= cc.start_date.to_date
+      start_date = end_date.to_date - 4.years
+    else
+      start_date = cc.start_date
+    end
+    start_date2 = start_date.to_date
+    while start_date2 < end_date do
+      tables << "actual_values_" + cc.id.to_s + "_" + start_date2.to_date.strftime("%m%Y").to_s
+      start_date2 += 1.months
+    end
+    now = "actual_values_" + cc.id.to_s + "_" + Time.now.to_date.strftime("%m%Y").to_s
+    if tables[tables.count-1]==now
+      tables.delete(now)
+    end
+
+    if type == "specific_lvl_1"
+      rows = "SUM(IFNULL(programado_specific_lvl_1,0)), SUM(IFNULL(meta_specific_lvl_1,0)), SUM(IFNULL(real_specific_lvl_1,0)), SUM(IFNULL(valorizado_specific_lvl_1,0)), SUM(IFNULL(valor_ganado_specific_lvl_1,0))"
+    else
+      rows = "SUM(IFNULL(measured_programado,0)), SUM(IFNULL(measured_meta,0)), SUM(IFNULL(measured_real,0)), SUM(IFNULL(measured_valorizado,0)), SUM(IFNULL(measured_valor_ganado,0))"
+    end
+    rest = Array.new
+    tables.each do |ta|
+      sum = (connection.execute(
+              "SELECT " + rows.to_s + " 
+               FROM " + ta.to_s + "
+               WHERE article_code = #{articleid}
+               GROUP BY #{articleid}
+              ") rescue []).first.to_a
+      if sum.count > 0
+        rest << sum
+      else
+        rest << [0,0,0,0,0]
+      end
+    end
+    rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
+    return rest
+  end
+
+  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
     @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
     @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
@@ -366,9 +408,6 @@ class ConsumptionCost < ActiveRecord::Base
     if !array_order.index('working_group_id').nil?
       array_extras_columns << "working_group_id AS working_group"
     end
-    
-    if (array_values_viewed.count < 1) then array_values_viewed = array_order end
-    array_order.delete_if{|r| !array_values_viewed.index(r) } # => Removiendo del orden establecido, aquellas columnas que no quiero ver.
 
     @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
     @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
