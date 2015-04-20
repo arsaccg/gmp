@@ -51,12 +51,8 @@
             %label.input{for: "article_id"}
               %select.form-control{:name =>"worker_contract[article_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @articles.each do |article|
-                  - if @workercontract.article_id == article.id
-                    %option{:value => "#{article.id}", :selected => true}
-                      = article.code + ' ' + article.name
-                  - else
-                    %option{:value => "#{article.id}"}
-                      = article.code + ' ' + article.name
+                  %option{:value => "#{article.id}", :selected => @workercontract.article_id}
+                    = article.code + ' - ' + article.name + ' - ' + article.unit_of_measurement.symbol
         .row
           %section.col.col-6
             %label.label Regimen
