@@ -1,4 +1,5 @@
 load 'classes/consumptioncost.rb'
+load 'classes/consumptioncosttotal.rb'
 class ConsumptionCost < ActiveRecord::Base
   establish_connection :external
 
@@ -375,7 +376,7 @@ class ConsumptionCost < ActiveRecord::Base
     return rest
   end
 
-  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters
+  def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters, array_columns_delivered_sum
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
     @treeOrderGG = Tree::TreeNode.new('Gastos Generales')
     @treeOrderSG = Tree::TreeNode.new('Servicios Generales')
@@ -409,14 +410,14 @@ class ConsumptionCost < ActiveRecord::Base
       array_extras_columns << "working_group_id AS working_group"
     end
 
-    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
-    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
-    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters)
+    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
+    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
+    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
 
     return @treeOrderCD, @treeOrderGG, @treeOrderSG
   end
 
-  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered, type_amount, array_order_filters
+  def self.make_tree obj_tree, array_order, table_name, type, array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum
     index = 0
     count_element = array_order.count
     if !array_order[index].nil? && !array_order[index+1].nil?
@@ -435,7 +436,9 @@ class ConsumptionCost < ActiveRecord::Base
             obj = ConsumptionCostObj.new(mrow, type_amount)
             obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, obj)
           else
-            obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+            sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + msql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + msql_data.split("AS")[0].to_s + "=  '" + mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
+            obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)
+            obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, obj)
           end
           if !array_order[index+2].nil?
             mssql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+2])}]
@@ -449,7 +452,9 @@ class ConsumptionCost < ActiveRecord::Base
                 obj = ConsumptionCostObj.new(mmrow, type_amount)
                 obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, obj)
               else
-                obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, mmrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+                sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + mssql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + mssql_data.split("AS")[0].to_s + "=  '" + mrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
+                obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)                
+                obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s,obj)
               end
               if !array_order[index+3].nil?
                 rsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+3])}]
@@ -463,7 +468,9 @@ class ConsumptionCost < ActiveRecord::Base
                     obj = ConsumptionCostObj.new(rrow, type_amount)
                     obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, obj)
                   else
-                    obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, rrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+                    sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + rsql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + rsql_data.split("AS")[0].to_s + "=  '" + mrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
+                    obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)
+                    obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, obj)
                   end
                   if !array_order[index+4].nil?
                     mrsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+4])}]
@@ -477,6 +484,8 @@ class ConsumptionCost < ActiveRecord::Base
                         obj = ConsumptionCostObj.new(mrrow, type_amount)
                         obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, obj)
                       else
+                        sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + mrsql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + mrsql_data.split("AS")[0].to_s + "=  '" + mrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
+                        obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)                        
                         obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, mrrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
                       end
                       if !array_order[index+5].nil? # => Always the Last

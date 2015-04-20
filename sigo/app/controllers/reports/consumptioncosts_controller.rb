@@ -175,6 +175,7 @@ class Reports::ConsumptioncostsController < ApplicationController
       array_order = ['fase', 'sector', 'working_group_id', 'article']
     end
     array_columns_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
+    array_columns_delivered_sum = ['SUM(IFNULL(programado_specific_lvl_1,0)) AS programado_specific_lvl_1', 'SUM(IFNULL(valorizado_specific_lvl_1,0)) AS valorizado_specific_lvl_1', 'SUM(IFNULL(valor_ganado_specific_lvl_1,0)) AS valor_ganado_specific_lvl_1', 'SUM(IFNULL(real_specific_lvl_1,0)) AS real_specific_lvl_1', 'SUM(IFNULL(meta_specific_lvl_1,0)) AS meta_specific_lvl_1']
     array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
     @type_amount = 'specific_lvl_1'
     if !params[:type_amount].nil?
@@ -182,6 +183,7 @@ class Reports::ConsumptioncostsController < ApplicationController
         @type_amount = 'specific_lvl_1'
         if !params[:all_actual_values].nil?
           array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| s + "_"+ params[:type_amount][0] }
+          array_columns_delivered_sum = params[:all_actual_values].reject{|x| x=='1'}.map{|s| "SUM(IFNULL(" + s + "_"+ params[:type_amount][0] + ",0)) AS " + s + "_"+ params[:type_amount][0] }
         end
         if !params[:all_previous_accumulates].nil?
           # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
@@ -191,6 +193,7 @@ class Reports::ConsumptioncostsController < ApplicationController
         @type_amount = 'measured'
         if !params[:all_actual_values].nil?
           array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| params[:type_amount][0] + '_' + s }
+          array_columns_delivered_sum = params[:all_actual_values].reject{|x| x=='1'}.map{|s| "SUM(IFNULL(" + params[:type_amount][0] + '_' + s + ",0)) AS " + params[:type_amount][0] + '_' + s}
         end
         if !params[:all_previous_accumulates].nil?
           # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
@@ -199,7 +202,7 @@ class Reports::ConsumptioncostsController < ApplicationController
       end
     end
 
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, @type_amount, array_order_filters) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, @type_amount, array_order_filters, array_columns_delivered_sum) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end

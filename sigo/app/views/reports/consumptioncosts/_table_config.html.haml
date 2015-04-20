@@ -91,9 +91,7 @@
                 %td
                   = accum[4].to_f.round(4).round(2) + first_node.content.meta.to_f.round(2)
                 %td
-                  = accum[0].to_f.round(4).round(2) + first_node.content.programado.to_f.round(2) + accum[1].to_f.round(4).round(2) + first_node.content.valorizado.to_f.round(2) + accum[2].to_f.round(4).round(2) + first_node.content.valorGanado.to_f.round(2) + accum[3].to_f.round(4).round(2) + first_node.content.real.to_f.round(2) + accum[4].to_f.round(4).round(2) + first_node.content.meta.to_f.round(2)
                 %td
-                  = accum[0].to_f.round(4).round(2) + accum[1].to_f.round(4).round(2) + accum[2].to_f.round(4).round(2) + accum[3].to_f.round(4).round(2) + accum[4].to_f.round(4).round(2)                
             - if first_node.children.count > 0
               - first_node.children.each do |second_node|
                 %tr
@@ -127,9 +125,7 @@
                     %td
                       = accum[4].to_f.round(4).round(2) + second_node.content.meta.to_f.round(2)
                     %td
-                      = accum[0].to_f.round(4).round(2) + second_node.content.programado.to_f.round(2) + accum[1].to_f.round(4).round(2) + second_node.content.valorizado.to_f.round(2) + accum[2].to_f.round(4).round(2) + second_node.content.valorGanado.to_f.round(2) + accum[3].to_f.round(4).round(2) + second_node.content.real.to_f.round(2) + accum[4].to_f.round(4).round(2) + second_node.content.meta.to_f.round(2)
                     %td
-                      = accum[0].to_f.round(4).round(2) + accum[1].to_f.round(4).round(2) + accum[2].to_f.round(4).round(2) + accum[3].to_f.round(4).round(2) + accum[4].to_f.round(4).round(2)                    
                 - if second_node.children.count > 0
                   - second_node.children.each do |third_node|
                     %tr
@@ -163,9 +159,7 @@
                         %td
                           = accum[4].to_f.round(4).round(2)  + third_node.content.meta.to_f.round(2)
                         %td
-                          = accum[0].to_f.round(4).round(2) + third_node.content.programado.to_f.round(2) + accum[1].to_f.round(4).round(2) + third_node.content.valorizado.to_f.round(2) + accum[2].to_f.round(4).round(2) + third_node.content.valorGanado.to_f.round(2) + accum[3].to_f.round(4).round(2) + third_node.content.real.to_f.round(2) + accum[4].to_f.round(4).round(2) + third_node.content.meta.to_f.round(2)
                         %td
-                          = accum[0].to_f.round(4).round(2) + accum[1].to_f.round(4).round(2) + accum[2].to_f.round(4).round(2) + accum[3].to_f.round(4).round(2) + accum[4].to_f.round(4).round(2)                        
                     - if third_node.children.count > 0
                       - third_node.children.each do |fourth_node|
                         %tr
@@ -199,9 +193,7 @@
                             %td
                               = accum[4].to_f.round(4).round(2) + fourth_node.content.meta.to_f.round(2)
                             %td
-                              = accum[0].to_f.round(4).round(2) + fourth_node.content.programado.to_f.round(2) + accum[1].to_f.round(4).round(2) + fourth_node.content.valorizado.to_f.round(2) + accum[2].to_f.round(4).round(2) + fourth_node.content.valorGanado.to_f.round(2) + accum[3].to_f.round(4).round(2) + fourth_node.content.real.to_f.round(2) + accum[4].to_f.round(4).round(2) + fourth_node.content.meta.to_f.round(2)
                             %td
-                              = accum[0].to_f.round(4).round(2) + accum[1].to_f.round(4).round(2) + accum[2].to_f.round(4).round(2) + accum[3].to_f.round(4).round(2) + accum[4].to_f.round(4).round(2)                            
                         - if fourth_node.children.count > 0
                           - fourth_node.children.each do |five_node|
                             %tr
@@ -235,9 +227,7 @@
                                 %td
                                   = accum[4].to_f.round(4).round(2) + five_node.content.meta.to_f.round(2)
                                 %td
-                                  = accum[0].to_f.round(4).round(2) + five_node.content.programado.to_f.round(2) + accum[1].to_f.round(4).round(2) + five_node.content.valorizado.to_f.round(2) + accum[2].to_f.round(4).round(2) + five_node.content.valorGanado.to_f.round(2) + accum[3].to_f.round(4).round(2) + five_node.content.real.to_f.round(2) + accum[4].to_f.round(4).round(2) + five_node.content.meta.to_f.round(2)
                                 %td
-                                  = accum[0].to_f.round(4).round(2) + accum[1].to_f.round(4).round(2) + accum[2].to_f.round(4).round(2) + accum[3].to_f.round(4).round(2) + accum[4].to_f.round(4).round(2)                                
                             - if five_node.children.count > 0
                               - five_node.children.each do |six_node|
                                 %tr
@@ -267,12 +257,7 @@
                                   %td
                                     = accum[4].to_f.round(4).round(2)   + six_node.content.meta.to_f.round(2)
                                   %td
-                                    = accum[0].to_f.round(4).round(2) + six_node.content.programado.to_f.round(2) + accum[1].to_f.round(4).round(2) + six_node.content.valorizado.to_f.round(2) + accum[2].to_f.round(4).round(2) + six_node.content.valorGanado.to_f.round(2) + accum[3].to_f.round(4).round(2) + six_node.content.real.to_f.round(2) + accum[4].to_f.round(4).round(2) + six_node.content.meta.to_f.round(2)
                                   %td
-                                    = accum[0].to_f.round(4).round(2) + accum[1].to_f.round(4).round(2) + accum[2].to_f.round(4).round(2) + accum[3].to_f.round(4).round(2) + accum[4].to_f.round(4).round(2)
-                                - p "---------------------------------------------------------------------------------------------------------------------------------------"
-                                - p six_node.content.inspect
-                                - p "---------------------------------------------------------------------------------------------------------------------------------------"                                    
 
 - else
 
