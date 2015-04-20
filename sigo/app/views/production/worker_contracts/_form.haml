@@ -89,34 +89,18 @@
             %tbody
               %tr
                 %td Sueldo Contractual
-                -if @action=="edit"
-                  %td= @workercontract.salary
-                -else
-                  -if @typeofcontract=="Adenda"
-                    %td
-                      =text_field_tag 'worker_contract[salary]', @workercontract.salary, class: "form-control"
-                  -else
-                    %td= @workercontract.salary
+                %td
+                  =text_field_tag 'worker_contract[salary]', @workercontract.salary, class: "form-control"
               %tr
                 %td Destaque Contractual
-                -if @action=="edit"
-                  %td= @workercontract.destaque
-                -else
-                  -if @typeofcontract=="Adenda"
-                    %td
-                      =text_field_tag 'worker_contract[destaque]', @workercontract.destaque, class: "form-control"
-                  -else
-                    %td= @workercontract.destaque                
+                %td
+                  =text_field_tag 'worker_contract[destaque]', @workercontract.destaque, class: "form-control"
+             
               %tr  
                 %td Viatico Contractual
-                -if @action=="edit"
-                  %td= @workercontract.viatical
-                -else
-                  -if @typeofcontract=="Adenda"
-                    %td
-                      =text_field_tag 'worker_contract[viatical]', @workercontract.viatical, class: "form-control"
-                  -else
-                    %td= @workercontract.viatical                
+                %td
+                  =text_field_tag 'worker_contract[viatical]', @workercontract.viatical, class: "form-control"
+             
         %br                  
         .row
           %section.col.col-2
