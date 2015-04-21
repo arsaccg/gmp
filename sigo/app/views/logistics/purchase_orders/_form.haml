@@ -146,8 +146,11 @@
                         %td.discount-igv{ :style => "display:none"}
                           = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][quantity_igv]', pod.quantity_igv, class: "form-control discount-igv"                        
                         %td.amount
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount rescue 0})"
-                          %code= "Por atender: #{pod.delivery_order_detail.amount rescue 0}"
+                          -amount_pod = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(pod.delivery_order_detail_id)
+                          -amount_dod = PurchaseOrder.get_total_amount_per_delivery_order(pod.delivery_order_detail_id)
+                          - pending = amount_dod.first.first.to_f - amount_pod.first.first + pod.amount.to_f
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pending rescue 0})"
+                          %code= "Por atender: #{pending rescue 0}"
                         %td.unit-price
                           = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price.to_f, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);", :required => true, title:'*'
                         %td.discount-before{:style => 'text-align: center'}
