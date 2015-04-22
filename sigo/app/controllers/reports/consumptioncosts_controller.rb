@@ -138,71 +138,73 @@ class Reports::ConsumptioncostsController < ApplicationController
   end 
 
   def consult_with_config_2
+    @array_order_accum_before = params[:all_previous_accumulates].to_a
+    @array_order_accum  = params[:all_actual_accumulate_values].to_a
     @for_acumulated_end_date = Date.parse(params[:date] + '-01')
     @month = Date.parse(params[:date] + '-01').strftime('%m-%Y')
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
     prev_month = (Date.parse(params[:date] + '-01') - 1.month).strftime('%m%Y')
     @cost_center_id = get_company_cost_center('cost_center')
     table_name = "actual_values_" + @cost_center_id.to_s + '_' + month
-    array_order_filters = Array.new
+    @array_order_filters = Array.new
 
     if params[:subphase]!=""
-      array_order_filters << " AND fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
     elsif params[:phase]!=""
-      array_order_filters << " AND fase_cod_padre IN (" + Phase.where( :id => params[:phase] ).map(&:code).join(',') + ")"
+      @array_order_filters << " AND fase_cod_padre IN (" + Phase.where( :id => params[:phase] ).map(&:code).join(',') + ")"
     end
     if params[:subsector]!=""
-      array_order_filters << " AND sector_cod_hijo IN (" + Sector.where( :id => params[:subsector] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND sector_cod_hijo IN (" + Sector.where( :id => params[:subsector] ).map(&:code).join(',').to_s + ")"
     elsif params[:sector]!=""
-      array_order_filters << " AND sector_cod_padre IN (" + Sector.where( :id => params[:sector] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND sector_cod_padre IN (" + Sector.where( :id => params[:sector] ).map(&:code).join(',').to_s + ")"
     end
 
     if params[:art]!=""
-      array_order_filters << " AND article_code IN (" + Article.where( :id => params[:art] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND article_code IN (" + Article.where( :id => params[:art] ).map(&:code).join(',').to_s + ")"
     elsif params[:artspec]!=""
-      array_order_filters << " AND LEFT(RIGHT(article_code,8),6) IN (" + Category.where( :id => params[:artspec] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND LEFT(RIGHT(article_code,8),6) IN (" + Category.where( :id => params[:artspec] ).map(&:code).join(',').to_s + ")"
     elsif params[:artsubgru]!=""
-      array_order_filters << " AND LEFT(RIGHT(article_code,8),4) IN (" + Category.where( :id => params[:artsubgru] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND LEFT(RIGHT(article_code,8),4) IN (" + Category.where( :id => params[:artsubgru] ).map(&:code).join(',').to_s + ")"
     elsif params[:artgru]!=""
-      array_order_filters << " AND LEFT(RIGHT(article_code,8),2) IN (" + Category.where( :id => params[:artgru] ).map(&:code).join(',').to_s + ")"
+      @array_order_filters << " AND LEFT(RIGHT(article_code,8),2) IN (" + Category.where( :id => params[:artgru] ).map(&:code).join(',').to_s + ")"
     end
 
     if params[:wg]!=""
-      array_order_filters << " AND working_group_id IN (" + params[:wg].join(',').to_s + ")"
+      @array_order_filters << " AND working_group_id IN (" + params[:wg].join(',').to_s + ")"
     end
     array_order = [params[:first], params[:second], params[:third], params[:fourth]].reject(&:empty?)
     if array_order.count < 1
       array_order = ['fase', 'sector', 'working_group_id', 'article']
     end
     array_columns_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
-    array_columns_delivered_sum = ['SUM(IFNULL(programado_specific_lvl_1,0)) AS programado_specific_lvl_1', 'SUM(IFNULL(valorizado_specific_lvl_1,0)) AS valorizado_specific_lvl_1', 'SUM(IFNULL(valor_ganado_specific_lvl_1,0)) AS valor_ganado_specific_lvl_1', 'SUM(IFNULL(real_specific_lvl_1,0)) AS real_specific_lvl_1', 'SUM(IFNULL(meta_specific_lvl_1,0)) AS meta_specific_lvl_1']
-    array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
+    @array_columns_delivered_sum = ['SUM(IFNULL(programado_specific_lvl_1,0)) AS programado_specific_lvl_1', 'SUM(IFNULL(valorizado_specific_lvl_1,0)) AS valorizado_specific_lvl_1', 'SUM(IFNULL(valor_ganado_specific_lvl_1,0)) AS valor_ganado_specific_lvl_1', 'SUM(IFNULL(real_specific_lvl_1,0)) AS real_specific_lvl_1', 'SUM(IFNULL(meta_specific_lvl_1,0)) AS meta_specific_lvl_1']
+    @array_columns_prev_delivered = ['programado_specific_lvl_1', 'valorizado_specific_lvl_1', 'valor_ganado_specific_lvl_1', 'real_specific_lvl_1', 'meta_specific_lvl_1']
     @type_amount = 'specific_lvl_1'
     if !params[:type_amount].nil?
       if params[:type_amount][0].include?('specific_lvl_1')
         @type_amount = 'specific_lvl_1'
         if !params[:all_actual_values].nil?
           array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| s + "_"+ params[:type_amount][0] }
-          array_columns_delivered_sum = params[:all_actual_values].reject{|x| x=='1'}.map{|s| "SUM(IFNULL(" + s + "_"+ params[:type_amount][0] + ",0)) AS " + s + "_"+ params[:type_amount][0] }
+          @array_columns_delivered_sum = params[:all_actual_values].reject{|x| x=='1'}.map{|s| "SUM(IFNULL(" + s + "_"+ params[:type_amount][0] + ",0)) AS " + s + "_"+ params[:type_amount][0] }
         end
         if !params[:all_previous_accumulates].nil?
           # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| s + '_' + params[:type_amount][0] }
-          array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| s + '_' + params[:type_amount][0] }
+          @array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| s + '_' + params[:type_amount][0] }
         end
       elsif params[:type_amount][0].include?('measured')
         @type_amount = 'measured'
         if !params[:all_actual_values].nil?
           array_columns_delivered = params[:all_actual_values].reject{|x| x=='1'}.map{|s| params[:type_amount][0] + '_' + s }
-          array_columns_delivered_sum = params[:all_actual_values].reject{|x| x=='1'}.map{|s| "SUM(IFNULL(" + params[:type_amount][0] + '_' + s + ",0)) AS " + params[:type_amount][0] + '_' + s}
+          @array_columns_delivered_sum = params[:all_actual_values].reject{|x| x=='1'}.map{|s| "SUM(IFNULL(" + params[:type_amount][0] + '_' + s + ",0)) AS " + params[:type_amount][0] + '_' + s}
         end
         if !params[:all_previous_accumulates].nil?
           # array_columns_delivered = array_columns_delivered + params[:all_actual_accumulate_values].map{|s| params[:type_amount][0] + '_' + s }
-          array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| params[:type_amount][0] + '_' + s }
+          @array_columns_prev_delivered = params[:all_previous_accumulates].map{|s| params[:type_amount][0] + '_' + s }
         end
       end
     end
 
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, array_columns_prev_delivered, @type_amount, array_order_filters, array_columns_delivered_sum) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, array_columns_delivered, @array_columns_prev_delivered, @type_amount, @array_order_filters, @array_columns_delivered_sum) rescue nil
 
     render(partial: 'table_config.html', :layout => false)
   end

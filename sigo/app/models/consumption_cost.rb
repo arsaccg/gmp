@@ -334,7 +334,7 @@ class ConsumptionCost < ActiveRecord::Base
     end
   end
 
-  def self.get_the_acumulated(articleid,end_date,cc,type)
+  def self.get_the_acumulated(articleid,end_date,cc,type,filters)
     cc = CostCenter.find(cc)
     end_date = Time.now
     tables = Array.new
@@ -354,7 +354,7 @@ class ConsumptionCost < ActiveRecord::Base
     end
 
     if type == "specific_lvl_1"
-      rows = "SUM(IFNULL(programado_specific_lvl_1,0)), SUM(IFNULL(meta_specific_lvl_1,0)), SUM(IFNULL(real_specific_lvl_1,0)), SUM(IFNULL(valorizado_specific_lvl_1,0)), SUM(IFNULL(valor_ganado_specific_lvl_1,0))"
+      rows = "SUM(IFNULL(programado_specific_lvl_1,0)), SUM(IFNULL(valorizado_specific_lvl_1,0)), SUM(IFNULL(valor_ganado_specific_lvl_1,0)), SUM(IFNULL(real_specific_lvl_1,0)), SUM(IFNULL(meta_specific_lvl_1,0))"
     else
       rows = "SUM(IFNULL(measured_programado,0)), SUM(IFNULL(measured_meta,0)), SUM(IFNULL(measured_real,0)), SUM(IFNULL(measured_valorizado,0)), SUM(IFNULL(measured_valor_ganado,0))"
     end
@@ -364,6 +364,7 @@ class ConsumptionCost < ActiveRecord::Base
               "SELECT " + rows.to_s + " 
                FROM " + ta.to_s + "
                WHERE article_code = #{articleid}
+               " + filters.join(',').to_s + "
                GROUP BY #{articleid}
               ") rescue []).first.to_a
       if sum.count > 0
@@ -375,6 +376,92 @@ class ConsumptionCost < ActiveRecord::Base
     rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
     return rest
   end
+
+  def self.get_accumulated_father(name,end_date,cc,type,filters,sumatoria)
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+    p name
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+    p end_date
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+    p cc
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+    p type
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+    p filters
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+    p sumatoria
+    p "---------------------------------------------------------------------------------------------------------------------------------"
+
+    
+    cc = CostCenter.find(cc)
+    end_date = Time.now
+    tables = Array.new
+    if end_date.to_date - 4.years >= cc.start_date.to_date
+      start_date = end_date.to_date - 4.years
+    else
+      start_date = cc.start_date
+    end
+    start_date2 = start_date.to_date
+    while start_date2 < end_date do
+      tables << "actual_values_" + cc.id.to_s + "_" + start_date2.to_date.strftime("%m%Y").to_s
+      start_date2 += 1.months
+    end
+    now = "actual_values_" + cc.id.to_s + "_" + Time.now.to_date.strftime("%m%Y").to_s
+    if tables[tables.count-1]==now
+      tables.delete(now)
+    end
+    rest = Array.new
+    filters = filters.join(',').to_s
+
+    tables.each do |ta|
+      sum = (connection.execute(
+              "SELECT " + sumatoria.join(',').to_s + " 
+               FROM " + ta.to_s + "
+               WHERE (
+                CONCAT('(',fase_cod_padre,') ',fase_cod_padre_nombre) = '" + name.to_s + "' OR 
+                CONCAT('(',fase_cod_hijo,') ',fase_cod_hijo_nombre) = '" + name.to_s + "' OR 
+                CONCAT('(',sector_cod_padre,') ',sector_cod_padre_nombre) = '" + name.to_s + "' OR 
+                CONCAT('(',sector_cod_hijo,') ',sector_cod_hijo_nombre) = '" + name.to_s + "')
+               " + filters.to_s
+               ) rescue []).first.to_a
+      if sum.count > 0
+        rest << sum
+      else
+        rest << [0,0,0,0,0]
+      end
+    end
+    rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
+    return rest    
+  end
+
+  def self.get_total_father(end_date,cc,type,filters,sumatoria)
+    cc = CostCenter.find(cc)
+    now = "actual_values_" + cc.id.to_s + "_" + end_date.to_date.strftime("%m%Y").to_s
+    rest = Array.new
+    filters = filters.join(',')
+    sum = (connection.execute(
+            "SELECT " + sumatoria.join(',').to_s + " 
+             FROM " + now.to_s + "
+             WHERE type = '#{type}'
+             AND fase_cod_padre != 'NULL'
+             AND fase_cod_padre_nombre != ''
+             AND fase_cod_hijo != ''
+             AND fase_cod_hijo_nombre != ''
+             AND sector_cod_padre != ''
+             AND sector_cod_padre_nombre != ''
+             AND sector_cod_hijo != ''
+             AND sector_cod_hijo_nombre != 'NULL'
+             " + filters.to_s + "
+             GROUP BY type"
+             ) rescue []).first.to_a
+    if sum.count > 0
+      rest << sum
+    else
+      rest << [0,0,0,0,0]
+    end
+    rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
+    return rest    
+  end  
 
   def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters, array_columns_delivered_sum
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
@@ -424,7 +511,9 @@ class ConsumptionCost < ActiveRecord::Base
       sql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index])}]
       sql = "SELECT DISTINCT " + array_order[index].to_s + ',' + sql_data.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " != 'NULL' AND " + array_order[index].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index])}.to_i].to_s + ";"
       connection.select_all(sql).each do |row|
-        obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s, row[sql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
+        sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + sql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + sql_data.split("AS")[0].to_s + "=  '" + row[sql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "'  " + array_order_filters.join(',').to_s+ ";"
+        obj = ConsumptionCostTotalObj.new(row,connection.select_one(sum), type_amount, "nodo")        
+        obj_tree << Tree::TreeNode.new(row[array_order[index].to_s].to_s,obj)
         msql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+1])}]
         if array_order.last == array_order[index+1] # => Check if I stay in the Last element
           msql = "SELECT DISTINCT " + array_order[index+1].to_s + ',' + msql_data.to_s + ',' + array_columns_delivered.to_s  + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index].to_s + " = " + row[array_order[index].to_s].to_s + " AND " + array_order[index+1].to_s + " != 'NULL' AND " + array_order[index+1].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+1])}.to_i].to_s + ";"
@@ -433,11 +522,11 @@ class ConsumptionCost < ActiveRecord::Base
         end
         connection.select_all(msql).each do |mrow|
           if array_order.last == array_order[index+1] # => Check if I stay in the Last element
-            obj = ConsumptionCostObj.new(mrow, type_amount)
+            obj = ConsumptionCostObj.new(mrow, type_amount, "objeto")
             obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, obj)
           else
-            sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + msql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + msql_data.split("AS")[0].to_s + "=  '" + mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
-            obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)
+            sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + msql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + msql_data.split("AS")[0].to_s + "=  '" + mrow[msql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "' " + array_order_filters.join(',').to_s+ ";"
+            obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount, "nodo")
             obj_tree[row[array_order[index].to_s]] << Tree::TreeNode.new(mrow[array_order[index+1].to_s].to_s, obj)
           end
           if !array_order[index+2].nil?
@@ -449,11 +538,11 @@ class ConsumptionCost < ActiveRecord::Base
             end
             connection.select_all(mssql).each do |mmrow|
               if array_order.last == array_order[index+2] # => Check if I stay in the Last element
-                obj = ConsumptionCostObj.new(mmrow, type_amount)
+                obj = ConsumptionCostObj.new(mmrow, type_amount,"objeto")
                 obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s, obj)
               else
-                sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + mssql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + mssql_data.split("AS")[0].to_s + "=  '" + mrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
-                obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)                
+                sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + mssql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + mssql_data.split("AS")[0].to_s + "=  '" + mrow[mssql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "' " + array_order_filters.join(',').to_s+ ";"
+                obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount, "nodo")                
                 obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]] << Tree::TreeNode.new(mmrow[array_order[index+2].to_s].to_s,obj)
               end
               if !array_order[index+3].nil?
@@ -465,11 +554,11 @@ class ConsumptionCost < ActiveRecord::Base
                 end
                 connection.select_all(rsql).each do |rrow|
                   if array_order.last == array_order[index+3] # => Check if I stay in the Last element
-                    obj = ConsumptionCostObj.new(rrow, type_amount)
+                    obj = ConsumptionCostObj.new(rrow, type_amount,"objeto")
                     obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, obj)
                   else
-                    sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + rsql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + rsql_data.split("AS")[0].to_s + "=  '" + mrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
-                    obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)
+                    sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + rsql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + rsql_data.split("AS")[0].to_s + "=  '" + mrow[rsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "' " + array_order_filters.join(',').to_s+ ";"
+                    obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount, "nodo")
                     obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]] << Tree::TreeNode.new(rrow[array_order[index+3].to_s].to_s, obj)
                   end
                   if !array_order[index+4].nil?
@@ -481,18 +570,18 @@ class ConsumptionCost < ActiveRecord::Base
                     end
                     connection.select_all(mrsql).each do |mrrow|
                       if array_order.last == array_order[index+4] # => Check if I stay in the Last element
-                        obj = ConsumptionCostObj.new(mrrow, type_amount)
+                        obj = ConsumptionCostObj.new(mrrow, type_amount,"objeto")
                         obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, obj)
                       else
-                        sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + mrsql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + mrsql_data.split("AS")[0].to_s + "=  '" + mrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "';"
-                        obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount)                        
+                        sum = "SELECT " + array_columns_delivered_sum.join(',').to_s + " FROM " + table_name.to_s + " WHERE " + mrsql.split("WHERE")[1].split("AND")[0].to_s + " AND fase_cod_padre != 'NULL' AND fase_cod_padre_nombre != '' AND fase_cod_hijo != '' AND fase_cod_hijo_nombre != '' AND sector_cod_padre != '' AND sector_cod_padre_nombre != '' AND sector_cod_hijo != 'NULL' AND sector_cod_hijo_nombre != '' AND " + mrsql_data.split("AS")[0].to_s + "=  '" + mrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s + "' " + array_order_filters.join(',').to_s+ ";"
+                        obj = ConsumptionCostTotalObj.new(mrow,connection.select_one(sum), type_amount, "nodo")                        
                         obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]] << Tree::TreeNode.new(mrrow[array_order[index+4].to_s].to_s, mrrow[mrsql_data.split("AS").map{|s| s.delete(' ')}[1].to_s].to_s)
                       end
                       if !array_order[index+5].nil? # => Always the Last
                         rrpsql_data = array_extras_columns[array_extras_columns.index{|s| s.include?(array_order[index+5])}]
                         rrpsql = "SELECT DISTINCT " + array_order[index+5].to_s + ',' + rrpsql_data.to_s + ',' + array_columns_delivered.to_s + " FROM " + table_name.to_s + " WHERE type LIKE '" + type.to_s + "' AND " + array_order[index+4].to_s + " = " + mrrow[array_order[index+4].to_s].to_s + " AND " + array_order[index+5].to_s + " != 'NULL' AND " + array_order[index+5].to_s + " != '' " + array_order_filters[array_order_filters.index{|s| s.include?(array_order[index+5])}.to_i].to_s + ";"
                         connection.select_all(rrpsql).each do |rprow|
-                          obj = ConsumptionCostObj.new(rprow, type_amount)
+                          obj = ConsumptionCostObj.new(rprow, type_amount,"objeto")
                           obj_tree[row[array_order[index].to_s]][mrow[array_order[index+1].to_s]][mmrow[array_order[index+2].to_s]][rrow[array_order[index+3].to_s]][mrrow[array_order[index+4].to_s].to_s] << Tree::TreeNode.new(rprow[array_order[index+5].to_s].to_s, obj)
                         end
                       end

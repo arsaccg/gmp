@@ -18,8 +18,12 @@
         %th
         %th{:colspan => "5", :style => 'text-align:center;'} 
           %strong ACTUAL
-        %th{:colspan => "5", :style => 'text-align:center;'} 
-          %strong ACUM. ACTUAL
+        -if @array_order_accum_before.count > 0
+          %th{:colspan => "5", :style => 'text-align:center;'} 
+            %strong ACUM. ANTERIOR
+        -if @array_order_accum.count > 0
+          %th{:colspan => "5", :style => 'text-align:center;'} 
+            %strong ACUM. ACTUAL
         %th{:rowspan => "2", :style => 'text-align:center;'}
           %strong 
             COSTO AL
@@ -45,20 +49,46 @@
           %strong COSTO REAL
         %td{:style => 'text-align:center;'}
           %strong META
-        %td{:style => 'text-align:center;'}
-          %strong PROGRAMADO
-        %td{:style => 'text-align:center;'}
-          %strong VALORIZADO
-        %td{:style => 'text-align:center;'}
-          %strong VALOR GANADO
-        %td{:style => 'text-align:center;'}
-          %strong COSTO REAL
-        %td{:style => 'text-align:center;'}
-          %strong META
+        -if @array_order_accum_before.count > 0          
+          %td{:style => 'text-align:center;'}
+            %strong PROGRAMADO
+          %td{:style => 'text-align:center;'}
+            %strong VALORIZADO
+          %td{:style => 'text-align:center;'}
+            %strong VALOR GANADO
+          %td{:style => 'text-align:center;'}
+            %strong COSTO REAL
+          %td{:style => 'text-align:center;'}
+            %strong META
+        -if @array_order_accum.count > 0
+          %td{:style => 'text-align:center;'}
+            %strong PROGRAMADO
+          %td{:style => 'text-align:center;'}
+            %strong VALORIZADO
+          %td{:style => 'text-align:center;'}
+            %strong VALOR GANADO
+          %td{:style => 'text-align:center;'}
+            %strong COSTO REAL
+          %td{:style => 'text-align:center;'}
+            %strong META
+      - arr = ["CD","GG","GS"]
+      -i = 0
       - @treeOrders.each do |tree_order|
         %tr
           %td
             %strong= tree_order.name.upcase
+          - accum = ConsumptionCost.get_total_father(@for_acumulated_end_date,@cost_center_id,arr[i],@array_order_filters, @array_columns_delivered_sum)
+          -i+=1
+          %td
+            = accum[0].to_f.round(4).round(2)
+          %td
+            = accum[1].to_f.round(4).round(2)
+          %td
+            = accum[2].to_f.round(4).round(2)
+          %td
+            = accum[3].to_f.round(4).round(2)
+          %td
+            = accum[4].to_f.round(4).round(2)
           - tree_order.children.each do |first_node|
             %tr
               %td
@@ -79,17 +109,27 @@
                   = first_node.content.real.to_f.round(2)
                 %td
                   = first_node.content.meta.to_f.round(2)
-                - accum = ConsumptionCost.get_the_acumulated(first_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount)
-                %td
-                  = accum[0].to_f.round(4).round(2) + first_node.content.programado.to_f.round(2)
-                %td
-                  = accum[1].to_f.round(4).round(2) + first_node.content.valorizado.to_f.round(2)
-                %td
-                  = accum[2].to_f.round(4).round(2) + first_node.content.valorGanado.to_f.round(2)
-                %td
-                  = accum[3].to_f.round(4).round(2) + first_node.content.real.to_f.round(2)
-                %td
-                  = accum[4].to_f.round(4).round(2) + first_node.content.meta.to_f.round(2)
+                -if first_node.content.type == "objeto"
+                  - accum = ConsumptionCost.get_the_acumulated(first_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters)
+                - elsif first_node.content.type == "nodo"
+                  - accum = ConsumptionCost.get_accumulated_father(first_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_delivered_sum)
+                -if @array_order_accum_before.count > 0
+                  %td= accum[0].to_f.round(4).round(2) 
+                  %td= accum[1].to_f.round(4).round(2) 
+                  %td= accum[2].to_f.round(4).round(2) 
+                  %td= accum[3].to_f.round(4).round(2) 
+                  %td= accum[4].to_f.round(4).round(2) 
+                -if @array_order_accum.count > 0
+                  %td
+                    = accum[0].to_f.round(4).round(2) + first_node.content.programado.to_f.round(2)
+                  %td
+                    = accum[1].to_f.round(4).round(2) + first_node.content.valorizado.to_f.round(2)
+                  %td
+                    = accum[2].to_f.round(4).round(2) + first_node.content.valorGanado.to_f.round(2)
+                  %td
+                    = accum[3].to_f.round(4).round(2) + first_node.content.real.to_f.round(2)
+                  %td
+                    = accum[4].to_f.round(4).round(2) + first_node.content.meta.to_f.round(2)
                 %td
                 %td
             - if first_node.children.count > 0
@@ -113,17 +153,27 @@
                       = second_node.content.real.to_f.round(2)
                     %td
                       = second_node.content.meta.to_f.round(2)
-                    - accum = ConsumptionCost.get_the_acumulated(second_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount)
-                    %td
-                      = accum[0].to_f.round(4).round(2) + second_node.content.programado.to_f.round(2)
-                    %td
-                      = accum[1].to_f.round(4).round(2) + second_node.content.valorizado.to_f.round(2)
-                    %td
-                      = accum[2].to_f.round(4).round(2) + second_node.content.valorGanado.to_f.round(2)
-                    %td
-                      = accum[3].to_f.round(4).round(2) + second_node.content.real.to_f.round(2)
-                    %td
-                      = accum[4].to_f.round(4).round(2) + second_node.content.meta.to_f.round(2)
+                    -if second_node.content.type == "objeto"
+                      - accum = ConsumptionCost.get_the_acumulated(second_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters)
+                    - elsif second_node.content.type == "nodo"
+                      - accum = ConsumptionCost.get_accumulated_father(second_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_delivered_sum)
+                    -if @array_order_accum_before.count > 0
+                      %td= accum[0].to_f.round(4).round(2) 
+                      %td= accum[1].to_f.round(4).round(2) 
+                      %td= accum[2].to_f.round(4).round(2) 
+                      %td= accum[3].to_f.round(4).round(2) 
+                      %td= accum[4].to_f.round(4).round(2)
+                    -if @array_order_accum.count > 0
+                      %td
+                        = accum[0].to_f.round(4).round(2) + second_node.content.programado.to_f.round(2)
+                      %td
+                        = accum[1].to_f.round(4).round(2) + second_node.content.valorizado.to_f.round(2)
+                      %td
+                        = accum[2].to_f.round(4).round(2) + second_node.content.valorGanado.to_f.round(2)
+                      %td
+                        = accum[3].to_f.round(4).round(2) + second_node.content.real.to_f.round(2)
+                      %td
+                        = accum[4].to_f.round(4).round(2) + second_node.content.meta.to_f.round(2)
                     %td
                     %td
                 - if second_node.children.count > 0
@@ -147,17 +197,27 @@
                           = third_node.content.real.to_f.round(2)
                         %td
                           = third_node.content.meta.to_f.round(2)
-                        - accum = ConsumptionCost.get_the_acumulated(third_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount)
-                        %td
-                          = accum[0].to_f.round(4).round(2) + third_node.content.programado.to_f.round(2)
-                        %td
-                          = accum[1].to_f.round(4).round(2) + third_node.content.valorizado.to_f.round(2)
-                        %td
-                          = accum[2].to_f.round(4).round(2) + third_node.content.valorGanado.to_f.round(2)
-                        %td
-                          = accum[3].to_f.round(4).round(2) + third_node.content.real.to_f.round(2)
-                        %td
-                          = accum[4].to_f.round(4).round(2)  + third_node.content.meta.to_f.round(2)
+                        -if third_node.content.type == "objeto"
+                          - accum = ConsumptionCost.get_the_acumulated(third_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters)
+                        - elsif third_node.content.type == "nodo"
+                          - accum = ConsumptionCost.get_accumulated_father(third_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_delivered_sum)
+                        -if @array_order_accum_before.count > 0
+                          %td= accum[0].to_f.round(4).round(2)
+                          %td= accum[1].to_f.round(4).round(2)
+                          %td= accum[2].to_f.round(4).round(2)
+                          %td= accum[3].to_f.round(4).round(2)
+                          %td= accum[4].to_f.round(4).round(2)
+                        -if @array_order_accum.count > 0
+                          %td
+                            = accum[0].to_f.round(4).round(2) + third_node.content.programado.to_f.round(2)
+                          %td
+                            = accum[1].to_f.round(4).round(2) + third_node.content.valorizado.to_f.round(2)
+                          %td
+                            = accum[2].to_f.round(4).round(2) + third_node.content.valorGanado.to_f.round(2)
+                          %td
+                            = accum[3].to_f.round(4).round(2) + third_node.content.real.to_f.round(2)
+                          %td
+                            = accum[4].to_f.round(4).round(2)  + third_node.content.meta.to_f.round(2)
                         %td
                         %td
                     - if third_node.children.count > 0
@@ -181,17 +241,27 @@
                               = fourth_node.content.real.to_f.round(2)
                             %td
                               = fourth_node.content.meta.to_f.round(2)
-                            - accum = ConsumptionCost.get_the_acumulated(fourth_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount)
-                            %td
-                              = accum[0].to_f.round(4).round(2) + fourth_node.content.programado.to_f.round(2)
-                            %td
-                              = accum[1].to_f.round(4).round(2) + fourth_node.content.valorizado.to_f.round(2)
-                            %td
-                              = accum[2].to_f.round(4).round(2) + fourth_node.content.valorGanado.to_f.round(2)
-                            %td
-                              = accum[3].to_f.round(4).round(2) + fourth_node.content.real.to_f.round(2)
-                            %td
-                              = accum[4].to_f.round(4).round(2) + fourth_node.content.meta.to_f.round(2)
+                            -if fourth_node.content.type == "objeto"
+                              - accum = ConsumptionCost.get_the_acumulated(fourth_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters)
+                            - elsif fourth_node.content.type == "nodo"
+                              - accum = ConsumptionCost.get_accumulated_father(fourth_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_delivered_sum)
+                            -if @array_order_accum_before.count > 0
+                              %td= accum[0].to_f.round(4).round(2)
+                              %td= accum[1].to_f.round(4).round(2)
+                              %td= accum[2].to_f.round(4).round(2)
+                              %td= accum[3].to_f.round(4).round(2)
+                              %td= accum[4].to_f.round(4).round(2)
+                            -if @array_order_accum.count > 0
+                              %td
+                                = accum[0].to_f.round(4).round(2) + fourth_node.content.programado.to_f.round(2)
+                              %td
+                                = accum[1].to_f.round(4).round(2) + fourth_node.content.valorizado.to_f.round(2)
+                              %td
+                                = accum[2].to_f.round(4).round(2) + fourth_node.content.valorGanado.to_f.round(2)
+                              %td
+                                = accum[3].to_f.round(4).round(2) + fourth_node.content.real.to_f.round(2)
+                              %td
+                                = accum[4].to_f.round(4).round(2) + fourth_node.content.meta.to_f.round(2)
                             %td
                             %td
                         - if fourth_node.children.count > 0
@@ -215,17 +285,27 @@
                                   = five_node.content.real.to_f.round(2)
                                 %td
                                   = five_node.content.meta.to_f.round(2)
-                                - accum = ConsumptionCost.get_the_acumulated(five_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount)
-                                %td
-                                  = accum[0].to_f.round(4).round(2) + five_node.content.programado.to_f.round(2)
-                                %td
-                                  = accum[1].to_f.round(4).round(2) + five_node.content.valorizado.to_f.round(2)
-                                %td
-                                  = accum[2].to_f.round(4).round(2) + five_node.content.valorGanado.to_f.round(2)
-                                %td
-                                  = accum[3].to_f.round(4).round(2) + five_node.content.real.to_f.round(2)
-                                %td
-                                  = accum[4].to_f.round(4).round(2) + five_node.content.meta.to_f.round(2)
+                                -if five_node.content.type == "objeto"
+                                  - accum = ConsumptionCost.get_the_acumulated(five_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters)
+                                - elsif five_node.content.type == "nodo"
+                                  - accum = ConsumptionCost.get_accumulated_father(five_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_delivered_sum)
+                                -if @array_order_accum_before.count > 0
+                                  %td= accum[0].to_f.round(4).round(2)
+                                  %td= accum[1].to_f.round(4).round(2)
+                                  %td= accum[2].to_f.round(4).round(2)
+                                  %td= accum[3].to_f.round(4).round(2)
+                                  %td= accum[4].to_f.round(4).round(2)
+                                -if @array_order_accum.count > 0
+                                  %td
+                                    = accum[0].to_f.round(4).round(2) + five_node.content.programado.to_f.round(2)
+                                  %td
+                                    = accum[1].to_f.round(4).round(2) + five_node.content.valorizado.to_f.round(2)
+                                  %td
+                                    = accum[2].to_f.round(4).round(2) + five_node.content.valorGanado.to_f.round(2)
+                                  %td
+                                    = accum[3].to_f.round(4).round(2) + five_node.content.real.to_f.round(2)
+                                  %td
+                                    = accum[4].to_f.round(4).round(2) + five_node.content.meta.to_f.round(2)
                                 %td
                                 %td
                             - if five_node.children.count > 0
@@ -245,17 +325,27 @@
                                     = six_node.content.real.to_f.round(2)
                                   %td
                                     = six_node.content.meta.to_f.round(2)
-                                  - accum = ConsumptionCost.get_the_acumulated(six_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount)
-                                  %td
-                                    = accum[0].to_f.round(4).round(2) + six_node.content.programado.to_f.round(2)
-                                  %td
-                                    = accum[1].to_f.round(4).round(2) + six_node.content.valorizado.to_f.round(2)
-                                  %td
-                                    = accum[2].to_f.round(4).round(2) + six_node.content.valorGanado.to_f.round(2)
-                                  %td
-                                    = accum[3].to_f.round(4).round(2) + six_node.content.real.to_f.round(2)
-                                  %td
-                                    = accum[4].to_f.round(4).round(2)   + six_node.content.meta.to_f.round(2)
+                                  -if six_node.content.type == "objeto"
+                                    - accum = ConsumptionCost.get_the_acumulated(six_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters)
+                                  - elsif six_node.content.type == "nodo"
+                                    - accum = ConsumptionCost.get_accumulated_father(six_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_delivered_sum)
+                                  -if @array_order_accum_before.count > 0
+                                    %td= accum[0].to_f.round(4).round(2)
+                                    %td= accum[1].to_f.round(4).round(2)
+                                    %td= accum[2].to_f.round(4).round(2)
+                                    %td= accum[3].to_f.round(4).round(2)
+                                    %td= accum[4].to_f.round(4).round(2)
+                                  -if @array_order_accum.count > 0
+                                    %td                                  
+                                      = accum[0].to_f.round(4).round(2) + six_node.content.programado.to_f.round(2)
+                                    %td
+                                      = accum[1].to_f.round(4).round(2) + six_node.content.valorizado.to_f.round(2)
+                                    %td
+                                      = accum[2].to_f.round(4).round(2) + six_node.content.valorGanado.to_f.round(2)
+                                    %td
+                                      = accum[3].to_f.round(4).round(2) + six_node.content.real.to_f.round(2)
+                                    %td
+                                      = accum[4].to_f.round(4).round(2)   + six_node.content.meta.to_f.round(2)                          
                                   %td
                                   %td
 
