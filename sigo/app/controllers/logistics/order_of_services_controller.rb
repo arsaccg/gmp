@@ -455,6 +455,9 @@ class Logistics::OrderOfServicesController < ApplicationController
         @igv = 0.18
       end
     end
+    if @orderOfService.order_of_service_details.select(:igv).map(&:igv).first.nil?
+      @igv = 0.0
+    end
     @igv_neto = @total*@igv
     @total_neto = @total + @igv_neto
 

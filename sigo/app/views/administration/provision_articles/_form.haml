@@ -436,7 +436,7 @@
 
     $('#new_provision').ajaxForm({
       beforeSubmit: function() {
-        $('#money-select').attr("disabled",false);
+        $('#money-select').removeAttr("disabled");
         $('#new_provision').validate({
           // Rules for form validation
           ignore: "",
@@ -512,7 +512,7 @@
 
     $('form[id^="edit_"]').ajaxForm({
       beforeSubmit: function() {
-        $('#money-select').attr("disabled",false);
+        $('#money-select').removeAttr("disabled");
         $('form[id^="edit_"]').validate({
           // Rules for form validation
           ignore: '',          

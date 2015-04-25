@@ -46,12 +46,13 @@ class Administration::ProvisionsController < ApplicationController
           elsif pdpd.type_order == "service_order"
             ood = OrderOfServiceDetail.find(pdpd.order_detail_id)
             if pdpd.amount.to_f == ood.amount.to_f
-              ood.update_attributes(:received_provision => 1)
+              ood.update_attributes(:received => 1)
             else
-              ood.update_attributes(:received_provision => nil)
+              ood.update_attributes(:received => nil)
             end
           end
         end
+        provision.update_attributes(:money_id => money_id)
         flash[:notice] = "Se ha creado correctamente la nueva provision."
         redirect_to :controller => :provision_articles, :action => :index
       else
@@ -94,7 +95,7 @@ class Administration::ProvisionsController < ApplicationController
         if ver_type[ver_ids.index(vid)] == "purchase_order"
           PurchaseOrderDetail.find(vid).update_attributes(:received_provision => nil)
         elsif ver_type[ver_ids.index(vid)] == "service_order"
-          OrderOfServiceDetail.find(vid).update_attributes(:received_provision => nil)
+          OrderOfServiceDetail.find(vid).update_attributes(:received => nil)
         end
       end
     end
@@ -109,9 +110,9 @@ class Administration::ProvisionsController < ApplicationController
       elsif det.type_order == "service_order"
         order = OrderOfServiceDetail.find(det.order_detail_id)
         if order.amount == det.amount
-          order.update_attributes(:received_provision => 1)
+          order.update_attributes(:received => 1)
         else
-          order.update_attributes(:received_provision => nil)
+          order.update_attributes(:received => nil)
         end          
       end
     end

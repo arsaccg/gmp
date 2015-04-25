@@ -82,7 +82,7 @@ class Administration::ProvisionArticlesController < ApplicationController
       if pdpd.type_order == "purchase_order"
         PurchaseOrderDetail.find(pdpd.order_detail_id).update_attributes(:received_provision => nil)
       elsif pdpd.type_order == "service_order"
-        OrderOfServiceDetail.find(pdpd.order_detail_id).update_attributes(:received_provision => nil)
+        OrderOfServiceDetail.find(pdpd.order_detail_id).update_attributes(:received => nil)
       end
       pdpd.destroy
     end
@@ -91,6 +91,7 @@ class Administration::ProvisionArticlesController < ApplicationController
     render :json => provision
 
   end
+
 
   #CUSTOM METHODS
   def add_modal_extra_operations

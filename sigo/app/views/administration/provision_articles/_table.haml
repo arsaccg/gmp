@@ -29,12 +29,13 @@
                 = provision.entity.name.to_s
               %td
                 = provision.description
+              - unit = provision.money.symbol rescue ' '
               %td
-                = number_to_currency provision.provision_direct_purchase_details.sum(:unit_price_before_igv), unit: provision.money.symbol, precision: 2
+                = number_to_currency provision.provision_direct_purchase_details.sum(:unit_price_before_igv), unit: unit, precision: 2
               %td
-                = number_to_currency provision.provision_direct_purchase_details.sum(:quantity_igv), unit: provision.money.symbol, precision: 2
+                = number_to_currency provision.provision_direct_purchase_details.sum(:quantity_igv), unit: unit, precision: 2
               %td
-                = number_to_currency(Provision.sumProvisionDetailDirectPurchaseAfterIGV(provision), unit: provision.money.symbol, precision: 2)
+                = number_to_currency(Provision.sumProvisionDetailDirectPurchaseAfterIGV(provision), unit: unit, precision: 2)
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{administration_provision_path(provision.id)}', 'content', null, null, 'GET')"}
                   Ver Información              

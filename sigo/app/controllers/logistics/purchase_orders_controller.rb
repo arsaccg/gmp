@@ -762,7 +762,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
         @igv = 0.18
       end
     end
-
+    if @purchaseOrder.purchase_order_details.select(:igv).map(&:igv).first.nil?
+      @igv = 0
+    end
     @purchaseOrderDetails.each do |pod|
       @total += pod.unit_price_before_igv.to_f.round(2)
       @igv_neto += (pod.unit_price_before_igv.to_f*@igv).round(7).round(6).round(5).round(4).round(3).round(2)
