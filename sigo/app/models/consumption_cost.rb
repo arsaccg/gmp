@@ -334,7 +334,7 @@ class ConsumptionCost < ActiveRecord::Base
     end
   end
 
-  def self.get_the_acumulated(articleid,end_date,cc,type,filters)
+  def self.get_the_acumulated(articleid,end_date,cc,type,filters,sumatoria)
     cc = CostCenter.find(cc)
     end_date = Time.now
     tables = Array.new
@@ -352,25 +352,23 @@ class ConsumptionCost < ActiveRecord::Base
     if tables[tables.count-1]==now
       tables.delete(now)
     end
-
-    if type == "specific_lvl_1"
-      rows = "SUM(IFNULL(programado_specific_lvl_1,0)), SUM(IFNULL(valorizado_specific_lvl_1,0)), SUM(IFNULL(valor_ganado_specific_lvl_1,0)), SUM(IFNULL(real_specific_lvl_1,0)), SUM(IFNULL(meta_specific_lvl_1,0))"
-    else
-      rows = "SUM(IFNULL(measured_programado,0)), SUM(IFNULL(measured_meta,0)), SUM(IFNULL(measured_real,0)), SUM(IFNULL(measured_valorizado,0)), SUM(IFNULL(measured_valor_ganado,0))"
+    ceros = Array.new
+    sumatoria.each do |se|
+      ceros << 0
     end
     rest = Array.new
     tables.each do |ta|
       sum = (connection.execute(
-              "SELECT " + rows.to_s + " 
+              "SELECT " + sumatoria.join(',').to_s + " 
                FROM " + ta.to_s + "
-               WHERE article_code = #{articleid}
+               WHERE article_code = '#{articleid}'
                " + filters.join(',').to_s + "
-               GROUP BY #{articleid}
+               GROUP BY article_code
               ") rescue []).first.to_a
       if sum.count > 0
         rest << sum
       else
-        rest << [0,0,0,0,0]
+        rest << ceros
       end
     end
     rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
@@ -378,20 +376,6 @@ class ConsumptionCost < ActiveRecord::Base
   end
 
   def self.get_accumulated_father(name,end_date,cc,type,filters,sumatoria)
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-    p name
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-    p end_date
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-    p cc
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-    p type
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-    p filters
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-    p sumatoria
-    p "---------------------------------------------------------------------------------------------------------------------------------"
-
     
     cc = CostCenter.find(cc)
     end_date = Time.now
@@ -412,7 +396,10 @@ class ConsumptionCost < ActiveRecord::Base
     end
     rest = Array.new
     filters = filters.join(',').to_s
-
+    ceros = Array.new
+    sumatoria.each do |se|
+      ceros << 0
+    end
     tables.each do |ta|
       sum = (connection.execute(
               "SELECT " + sumatoria.join(',').to_s + " 
@@ -427,10 +414,10 @@ class ConsumptionCost < ActiveRecord::Base
       if sum.count > 0
         rest << sum
       else
-        rest << [0,0,0,0,0]
+        rest << ceros
       end
     end
-    rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
+    rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum.to_f+element.to_f}}
     return rest    
   end
 
@@ -439,6 +426,10 @@ class ConsumptionCost < ActiveRecord::Base
     now = "actual_values_" + cc.id.to_s + "_" + end_date.to_date.strftime("%m%Y").to_s
     rest = Array.new
     filters = filters.join(',')
+    ceros = Array.new
+    sumatoria.each do |se|
+      ceros << 0
+    end
     sum = (connection.execute(
             "SELECT " + sumatoria.join(',').to_s + " 
              FROM " + now.to_s + "
@@ -457,11 +448,61 @@ class ConsumptionCost < ActiveRecord::Base
     if sum.count > 0
       rest << sum
     else
-      rest << [0,0,0,0,0]
+      rest << ceros
     end
     rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
     return rest    
-  end  
+  end
+
+  def self.get_total_accum_father(end_date,cc,type,filters,sumatoria)
+    cc = CostCenter.find(cc)
+    end_date = Time.now
+    tables = Array.new
+    if end_date.to_date - 4.years >= cc.start_date.to_date
+      start_date = end_date.to_date - 4.years
+    else
+      start_date = cc.start_date
+    end
+    start_date2 = start_date.to_date
+    while start_date2 < end_date do
+      tables << "actual_values_" + cc.id.to_s + "_" + start_date2.to_date.strftime("%m%Y").to_s
+      start_date2 += 1.months
+    end
+    now = "actual_values_" + cc.id.to_s + "_" + Time.now.to_date.strftime("%m%Y").to_s
+    if tables[tables.count-1]==now
+      tables.delete(now)
+    end
+    rest = Array.new
+    filters = filters.join(',')
+    ceros = Array.new
+    sumatoria.each do |se|
+      ceros << 0
+    end
+    tables.each do |ta|
+      sum = (connection.execute(
+              "SELECT " + sumatoria.join(',').to_s + " 
+               FROM " + ta.to_s + "
+               WHERE type = '#{type}'
+               AND fase_cod_padre != 'NULL'
+               AND fase_cod_padre_nombre != ''
+               AND fase_cod_hijo != ''
+               AND fase_cod_hijo_nombre != ''
+               AND sector_cod_padre != ''
+               AND sector_cod_padre_nombre != ''
+               AND sector_cod_hijo != ''
+               AND sector_cod_hijo_nombre != 'NULL'
+               " + filters.to_s + "
+               GROUP BY type"
+               ) rescue []).first.to_a
+      if sum.count > 0
+        rest << sum
+      else
+        rest << ceros
+      end
+    end
+    rest = rest.transpose.map{|arr| arr.inject{|sum, element| sum+element}}
+    return rest    
+  end   
 
   def self.do_order array_order, table_name, array_columns_delivered, array_columns_prev_delivered, type_amount, array_order_filters, array_columns_delivered_sum
     @treeOrderCD = Tree::TreeNode.new('Costo Directo')
