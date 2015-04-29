@@ -63,8 +63,8 @@ class StockInput < ActiveRecord::Base
   def self.get_input(cost_center_id, display_length, pager_number, keyword = '')
     if keyword != '' && pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
-        FROM stock_inputs si, warehouses wa, warehouses w, formats fo
+        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, e.name , fo.name
+        FROM stock_inputs si, warehouses wa, warehouses w, formats fo, entities e
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 1
         AND si.status = 'A'
@@ -73,14 +73,15 @@ class StockInput < ActiveRecord::Base
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
         AND (wa.name LIKE '%" + keyword + "%' OR si.document LIKE '%" + keyword + "%')
+        AND e.id = si.supplier_id
         ORDER BY si.id DESC
         LIMIT " + display_length +
         " OFFSET " + pager_number
       )
     elsif pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
-        FROM stock_inputs si, warehouses wa, warehouses w, formats fo
+        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, e.name , fo.name
+        FROM stock_inputs si, warehouses wa, warehouses w, formats fo, entities e
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 1
         AND si.status = 'A'
@@ -88,14 +89,15 @@ class StockInput < ActiveRecord::Base
         AND w.cost_center_id = "+ cost_center_id.to_s + "
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
+        AND e.id = si.supplier_id
         ORDER BY si.id DESC
         LIMIT " + display_length +
         " OFFSET " + pager_number
       )
     else
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
-        FROM stock_inputs si, warehouses wa, warehouses w, formats fo
+        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, e.name , fo.name
+        FROM stock_inputs si, warehouses wa, warehouses w, formats fo, entities e
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 1
         AND si.status = 'A'
@@ -103,6 +105,7 @@ class StockInput < ActiveRecord::Base
         AND w.cost_center_id = "+ cost_center_id.to_s + "
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
+        AND e.id = si.supplier_id
         ORDER BY si.id DESC
         LIMIT " + display_length
       )
