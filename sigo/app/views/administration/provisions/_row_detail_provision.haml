@@ -23,7 +23,7 @@
       = Phase.find(data_order_detail[15]).code.to_s
       %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'style' => 'display:none;', 'value'=>data_order_detail[15]}
     %td.amount
-      - pending = data_order_detail[4].to_f - Provision.get_amount(data_order_detail[0]).first.to_f
+      - pending = data_order_detail[4].to_f - Provision.get_amount(data_order_detail[0]).to_a.first.to_f
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pending, class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pending})"
       %code= "Por atender: " + pending.to_s
     %td.unit-price
