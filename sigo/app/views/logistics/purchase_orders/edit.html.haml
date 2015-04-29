@@ -381,3 +381,22 @@
     if(num%1)s= s.replace(/5$/, '6');
     return Number((+s).toFixed(dec));
   }
+
+  function delete_extra_op(code){
+    var reg = code.split('-')[0];
+    var apply = code.split('-')[1];
+    var reg2;
+    if(apply=="before"){
+      reg2 = reg + "b > input";
+    }else{
+      reg2 = reg + "a > input";
+    }    
+    var hijos = $('#'+reg2).length;
+    hijos = hijos - 1;
+    var id = reg+"-"+hijos;
+    
+    $('#'+id).remove();
+    $("#"+code).remove();
+
+    calcularcondescuentos(reg);    
+  }  
