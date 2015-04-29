@@ -104,14 +104,18 @@
           -actual.each do |accum|
             %td
               = accum.to_f.round(4).round(2)
-          -acuum = ConsumptionCost.get_total_accum_father(@for_acumulated_end_date,@cost_center_id,arr[i],@array_order_filters, @array_columns_delivered_sum)
-          -acuum.each do |accum|
-            %td
-              = accum.to_f.round(4).round(2)
-          -accum_actual = [actual,acuum].transpose.map {|x| x.reduce(:+)}
-          -accum_actual.each do |accum|
-            %td
-              = accum.to_f.round(4).round(2)
+          - if @array_order_accum_before.count > 0 || @array_order_accum.count > 0
+            -acuum = ConsumptionCost.get_total_accum_father(@for_acumulated_end_date,@cost_center_id,arr[i],@array_order_filters, @array_columns_delivered_sum)
+            -acuum.each do |accum|
+              %td
+                = accum.to_f.round(4).round(2)
+          -if @array_order_accum.count > 0
+            -accum_actual = [actual,acuum].transpose.map {|x| x.reduce(:+)}
+            -accum_actual.each do |accum|
+              %td
+                = accum.to_f.round(4).round(2)
+          %td
+          %td
           -i+=1
           - tree_order.children.each do |first_node|
             %tr
@@ -146,20 +150,20 @@
                       %td
                         = first_node.content.meta.to_f.round(2)
                         -array_actual_values<<first_node.content.meta.to_f.round(2)
-                
-                -if first_node.content.type == "objeto"
-                  - accum = ConsumptionCost.get_the_acumulated(first_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters,@array_columns_prev_delivered_sum)
-                - elsif first_node.content.type == "nodo"
-                  - accum = ConsumptionCost.get_accumulated_father(first_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_prev_delivered_sum)
-                -if @array_order_accum_before.count > 0
-                  - accum.each do |accum|
-                    %td= accum.to_f.round(4).round(2)
+                - if @array_order_accum_before.count > 0 || @array_order_accum.count > 0
+                  -if first_node.content.type == "objeto"
+                    - accum = ConsumptionCost.get_the_acumulated(first_node.content.name.to_s[1..10],@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters,@array_columns_prev_delivered_sum)
+                  - elsif first_node.content.type == "nodo"
+                    - accum = ConsumptionCost.get_accumulated_father(first_node.content.name.to_s,@for_acumulated_end_date,@cost_center_id,@type_amount,@array_order_filters, @array_columns_prev_delivered_sum)
+                  -if @array_order_accum_before.count > 0
+                    - accum.each do |accum|
+                      %td= accum.to_f.round(4).round(2)
 
-                -if @array_order_accum.count > 0
-                  - array_actual_values = [array_actual_values,accum].transpose.map {|x| x.reduce(:+)}
-                  -array_actual_values.each do |accum|
-                    %td
-                      = accum.to_f.round(4).round(2)
+                  -if @array_order_accum.count > 0
+                    - array_actual_values = [array_actual_values,accum].transpose.map {|x| x.reduce(:+)}
+                    -array_actual_values.each do |accum|
+                      %td
+                        = accum.to_f.round(4).round(2)
                 %td
                 %td
             - if first_node.children.count > 0

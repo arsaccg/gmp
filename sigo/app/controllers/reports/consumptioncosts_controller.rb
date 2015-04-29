@@ -138,9 +138,10 @@ class Reports::ConsumptioncostsController < ApplicationController
   end 
 
   def consult_with_config_2
-    @array_order_accum_before = params[:all_previous_accumulates].to_a.reject{|x| x=='1'}
-    @array_order_accum  = params[:all_actual_accumulate_values].to_a.reject{|x| x=='1'}
-    @array_order_actual = params[:all_actual_values].reject{|x| x=='1'}    
+    @array_order_accum_before = params[:all_previous_accumulates].to_a.reject{|x| x=='1'} rescue Array.new
+    @array_order_accum  = params[:all_actual_accumulate_values].to_a.reject{|x| x=='1'} rescue Array.new
+    @array_order_actual = params[:all_actual_values].reject{|x| x=='1'} rescue Array.new
+    values_viewed = params[:values_viewed]
     @for_acumulated_end_date = Date.parse(params[:date] + '-01')
     @month = Date.parse(params[:date] + '-01').strftime('%m-%Y')
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
@@ -177,7 +178,12 @@ class Reports::ConsumptioncostsController < ApplicationController
     if array_order.count < 1
       array_order = ['fase', 'sector', 'working_group_id', 'article']
     end
+    @array_columns_prev_delivered = Array.new
+    @array_columns_prev_delivered_sum = Array.new
     @type_amount = 'specific_lvl_1'
+    if !params[:type_amount].nil?
+      params[:type_amount][0] = 'specific_lvl_1'
+    end
     if !params[:type_amount].nil?
       if params[:type_amount][0].include?('specific_lvl_1')
         @type_amount = 'specific_lvl_1'
@@ -203,8 +209,7 @@ class Reports::ConsumptioncostsController < ApplicationController
         end
       end
     end
-
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, @array_columns_delivered, @array_columns_prev_delivered, @type_amount, @array_order_filters, @array_columns_delivered_sum) rescue nil
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, @array_columns_delivered, @array_columns_prev_delivered, @type_amount, @array_order_filters, @array_columns_delivered_sum)
     render(partial: 'table_config.html', :layout => false)
   end
 

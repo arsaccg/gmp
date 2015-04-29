@@ -537,10 +537,9 @@ class ConsumptionCost < ActiveRecord::Base
     if !array_order.index('working_group_id').nil?
       array_extras_columns << "working_group_id AS working_group"
     end
-
-    @treeOrderCD = make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
-    @treeOrderGG = make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
-    @treeOrderSG = make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
+    @treeOrderCD =  make_tree(@treeOrderCD, array_order, table_name, 'CD', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
+    @treeOrderGG =  make_tree(@treeOrderGG, array_order, table_name, 'GG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
+    @treeOrderSG =  make_tree(@treeOrderSG, array_order, table_name, 'SG', array_extras_columns, array_columns_delivered, type_amount, array_order_filters, array_columns_delivered_sum)
 
     return @treeOrderCD, @treeOrderGG, @treeOrderSG
   end
