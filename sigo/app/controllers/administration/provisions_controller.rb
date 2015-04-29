@@ -52,7 +52,6 @@ class Administration::ProvisionsController < ApplicationController
             end
           end
         end
-        provision.update_attributes(:money_id => money_id)
         flash[:notice] = "Se ha creado correctamente la nueva provision."
         redirect_to :controller => :provision_articles, :action => :index
       else

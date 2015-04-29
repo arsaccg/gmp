@@ -22,7 +22,6 @@ class Logistics::ExchangeOfRatesController < ApplicationController
   def create
     flash[:error] = nil
     x = ExchangeOfRate.new(eor_parameters)
-    x.day = DateTime.now
     if x.save
       flash[:notice] = "Se ha creado correctamente el tipo de cambio."
       redirect_to :action => :index

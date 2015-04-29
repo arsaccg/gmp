@@ -23,8 +23,9 @@
       = Phase.find(data_order_detail[15]).code.to_s
       %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'style' => 'display:none;', 'value'=>data_order_detail[15]}
     %td.amount
-      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[4], class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[4]})"
-      %code= "Por atender: #{data_order_detail[4]}"
+      - pending = data_order_detail[4].to_f - Provision.get_amount(data_order_detail[0]).first.to_f
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pending, class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pending})"
+      %code= "Por atender: " + pending.to_s
     %td.unit-price
       = number_to_currency(data_order_detail[5], unit: data_order_detail[11], precision: 4)
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', data_order_detail[5], class: "unit-price-item"

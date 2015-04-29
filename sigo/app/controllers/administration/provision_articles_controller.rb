@@ -61,6 +61,7 @@ class Administration::ProvisionArticlesController < ApplicationController
   def edit
     @provision = Provision.find(params[:id])
     @documentProvisions = DocumentProvision.all
+    @tc = "T.C.: S/. " + ExchangeOfRate.find_by_day(@provision.accounting_date).value.to_s
     @suppliers = TypeEntity.find_by_preffix('P').entities
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort

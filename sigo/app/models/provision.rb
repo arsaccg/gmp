@@ -77,4 +77,14 @@ class Provision < ActiveRecord::Base
     ")
     return mysql_result
   end
+
+  def self.get_amount(order_id)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT SUM(amount)
+      FROM provision_direct_purchase_details
+      WHERE order_detail_id = #{order_id}
+      GROUP BY amount
+    ").first
+    return mysql_result
+  end  
 end
