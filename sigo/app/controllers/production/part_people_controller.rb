@@ -32,7 +32,7 @@ class Production::PartPeopleController < ApplicationController
   end
 
   def new
-    @partpersonlast = PartPerson.where("cost_center_id = " + get_company_cost_center('cost_center')).count
+    @partpersonlast = PartPerson.where("cost_center_id = " + get_company_cost_center('cost_center').to_s).count
     cost_center = get_company_cost_center('cost_center')
     @numbercode = @partpersonlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
