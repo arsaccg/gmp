@@ -141,7 +141,8 @@ class Reports::ConsumptioncostsController < ApplicationController
     @array_order_accum_before = params[:all_previous_accumulates].to_a.reject{|x| x=='1'} rescue Array.new
     @array_order_accum  = params[:all_actual_accumulate_values].to_a.reject{|x| x=='1'} rescue Array.new
     @array_order_actual = params[:all_actual_values].reject{|x| x=='1'} rescue Array.new
-    values_viewed = params[:values_viewed]
+    array_values_viewed = Array.new
+    array_values_viewed = params[:values_viewed]
     @for_acumulated_end_date = Date.parse(params[:date] + '-01')
     @month = Date.parse(params[:date] + '-01').strftime('%m-%Y')
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
@@ -209,7 +210,7 @@ class Reports::ConsumptioncostsController < ApplicationController
         end
       end
     end
-    @treeOrders = ConsumptionCost.do_order(array_order, table_name, @array_columns_delivered, @array_columns_prev_delivered, @type_amount, @array_order_filters, @array_columns_delivered_sum)
+    @treeOrders = ConsumptionCost.do_order(array_order, table_name, @array_columns_delivered, @array_columns_prev_delivered, @type_amount, @array_order_filters, @array_columns_delivered_sum, array_values_viewed)
     render(partial: 'table_config.html', :layout => false)
   end
 
