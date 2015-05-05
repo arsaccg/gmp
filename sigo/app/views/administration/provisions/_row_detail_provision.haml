@@ -20,18 +20,18 @@
       = Sector.find(data_order_detail[14]).code.to_s + ' - '+ Sector.find(data_order_detail[14]).name.to_s
       %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][sector_id]', 'style' => 'display:none;', 'value'=>data_order_detail[14]}
     %td.phase
-      = Phase.find(data_order_detail[15]).code.to_s
+      = Phase.find(data_order_detail[15]).code.to_s rescue nil
       %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'style' => 'display:none;', 'value'=>data_order_detail[15]}
     %td.amount
       - pending = data_order_detail[4].to_f - Provision.get_amount(data_order_detail[0]).to_a.first.to_f
-      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pending, class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pending})"
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pending, class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(#{@reg_n});", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0.01, #{pending})"
       %code= "Por atender: " + pending.to_s
     %td.unit-price
       = number_to_currency(data_order_detail[5], unit: data_order_detail[11], precision: 4)
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', data_order_detail[5], class: "unit-price-item"
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', data_order_detail[5], class: "unit-price-item", onfocusout: "calculatePrice_from_orders(#{@reg_n});"
     %td.discount-before
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', data_order_detail[6].to_f.round(2), class: "form-control amount_with_discount_before_igv", onfocusout: "calculatePrice_from_orders(#{@reg_n});"
       %div#db
-        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', data_order_detail[6].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
       -if data_order_detail[16] == 'purchase_order'
         -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
           -if pdec.type =="percent"

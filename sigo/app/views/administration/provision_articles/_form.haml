@@ -173,18 +173,25 @@
                           -if pod.flag.to_i == 1
                             %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.phase_id}
                           -else
-                            -p = Phase.find(pod.phase_id)
-                            = p.code
+                            -p = Phase.find(pod.phase_id) rescue nil
+                            = p.code rescue nil
 
                         %td.amount
-                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);"
-                        
+                          -pending = 0
+                          - if pod.type_order == 'purchase_order'
+                            - pending = PurchaseOrderDetail.find(pod.order_detail_id).amount.to_f - Provision.get_amount(pod.order_detail_id).to_a.first.to_f + pod.amount.to_f
+                          - elsif pod.type_order == 'service_order'
+                            - pending = OrderOfServiceDetail.find(pod.order_detail_id).amount.to_f - Provision.get_amount(pod.order_detail_id).to_a.first.to_f + pod.amount.to_f
+                          -pending = pending.round(2)
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice_from_orders(#{@reg_n.to_s});", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0.01, #{pending})"
+                          %code= "Por atender: " + pending.to_s   
+
                         %td.unit-price
-                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);"
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePrice_from_orders(#{@reg_n.to_s});", onkeypress: "return isNumber(event);"
 
                         %td.discount-before
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before, class: "form-control amount_with_discount_before_igv", onfocusout: "calculatePrice_from_orders(#{@reg_n.to_s});"
                           %div#db
-                            = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before, class: "form-control amount_with_discount_before_igv", :readonly => true
                           -if pod.type_order == 'purchase_order'
                             -PurchaseOrderDetail.find(pod.order_detail_id).purchase_order_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
                               -if pdec.type =="percent"
@@ -695,9 +702,9 @@
   }
 
   function minmax(value, min, max){
-    if(parseInt(value) < min || isNaN(value)) 
+    if(parseFloat(value) < min || isNaN(value)) 
       return min; 
-    else if(parseInt(value) > max) 
+    else if(parseFloat(value) > max) 
       return max; 
     else return value;
   }
@@ -813,10 +820,10 @@
   /* For items from Orders */
 
   function calculatePrice_from_orders(element){
-    var amount = parseFloat($(element).val());
-    var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
-    var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
-    var discount_before = $(element).parent().siblings('.discount-before').find('input');
+    var amount = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_amount").val());
+    var igv = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_igv").val());
+    var unit_price = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_price").val());
+    var discount_before = $('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").siblings().find('input');
 
     var total_dis_bes = 0;
     var total_dis_bep = 0;
@@ -829,15 +836,27 @@
         }
       }
     });
+    console.log(amount)
+    console.log(unit_price)
+    console.log(total_dis_bes)
+    console.log(total_dis_bep)
     var sdb = (total_dis_bes + total_dis_bep).toFixed(2);
-    var a =(1+igv).toFixed(2)
+    console.log(parseFloat($(element).parent().siblings('.discount-before').find('input.amount_with_discount_before_igv').val()))
+    if(parseFloat(sdb)!= parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").val())){
+      sdb = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").val());
+    }
+    console.log(sdb)    
+    var a =(1+igv).toFixed(2);
+    console.log(a)
+    console.log(igv)
     var total_price = (((amount * unit_price) - sdb)).toFixed(2);
-    $(element).parent().siblings('.price-without-igv').find('input').val(total_price);
-    $(element).parent().siblings('.discount-before').children('#db').find('input').val(sdb);
-
-    $(element).parent().siblings('.quantity-igv').find('input').val(parseFloat(((amount * unit_price) - sdb)*igv).toFixed(2));
+    console.log(total_price)
+    $('#provision_provision_direct_purchase_details_attributes_' + element + '_unit_price_before_igv')
+    $('#provision_provision_direct_purchase_details_attributes_' + element + '_unit_price_before_igv').val(total_price);
+    $('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").val(sdb);
+    $('#provision_provision_direct_purchase_details_attributes_' + element + "_quantity_igv").val(parseFloat(((amount * unit_price) - sdb)*igv).toFixed(2));
     var net_total_price = (((amount * unit_price) - sdb)*(a)).toFixed(2);
-    $(element).parent().siblings('.unit-price-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
+    $('#provision_provision_direct_purchase_details_attributes_' + element + "_unit_price_igv").val(parseFloat(net_total_price).toFixed(2));
   }
 
   function calculate_amounts(){
