@@ -37,7 +37,7 @@ class Logistics::StockInputsController < ApplicationController
         total.each do |tt|
           sum+=tt.amount.to_f
         end
-        if @pod.amount == sum
+        if @pod.amount.to_f == sum.to_f
           @pod.update_attributes(:received => 1)
         end
       end
@@ -117,12 +117,12 @@ class Logistics::StockInputsController < ApplicationController
       sum = 0
       total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
       total.each do |tt|
-        sum+=tt.amount.to_i
+        sum+=tt.amount.to_f
       end
-      if @pod.amount == sum
+      if @pod.amount.to_f == sum.to_f
         @pod.update_attributes(:received => 1)
       end
-      if @pod.amount != sum
+      if @pod.amount.to_f != sum.to_f
         @pod.update_attributes(:received => nil)
       end
     end
@@ -150,10 +150,10 @@ class Logistics::StockInputsController < ApplicationController
       sum = 0
       total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
       total.each do |tt|
-        sum+=tt.amount.to_i
+        sum+=tt.amount.to_f
       end
-      if @pod.amount > sum
-          @pod.update_attributes(:received => nil)
+      if @pod.amount.to_f > sum.to_f
+        @pod.update_attributes(:received => nil)
       end
     end
     item = StockInput.destroy(params[:id])
@@ -214,7 +214,7 @@ class Logistics::StockInputsController < ApplicationController
   def show_purchase_orders
     str_option = ""
     supplier_id = params[:id]
-    PurchaseOrder.select(:id).select(:code).select(:description).where("entity_id = ? AND state LIKE 'approved' AND cost_center_id = ?", supplier_id, get_company_cost_center('cost_center')).each do |purchaseOrder|
+    PurchaseOrder.select(:id).select(:code).select(:description).joins(:purchase_order_details).where("purchase_order_details.received IS NULL AND purchase_order_details.purchase_order_id = purchase_orders.id AND entity_id = ? AND state LIKE 'approved' AND cost_center_id = ?", supplier_id, get_company_cost_center('cost_center')).each do |purchaseOrder|
       if purchaseOrder.purchase_order_details.where("received IS NULL").count > 0 
         str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.code.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
       end

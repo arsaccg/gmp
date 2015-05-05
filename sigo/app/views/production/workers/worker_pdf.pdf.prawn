@@ -1,6 +1,6 @@
 index = 1
 bounding_box [bounds.left, bounds.bottom + 788], :width  => bounds.width do
-  table([ ["A&R S.A.C. Contratistas Generales"] ], :width => 100, :cell_style => {:height => 64}, :column_widths => [100]) do
+  table([ ["#{@company.name}"] ], :width => 100, :cell_style => {:height => 64}, :column_widths => [100]) do
           style(row(0), :valign => :center)
           style(row(0), :align => :center)
           style(columns(0), :size => 10)

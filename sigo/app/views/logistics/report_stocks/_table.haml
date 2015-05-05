@@ -19,15 +19,15 @@
           - @articleresult.each do |re|
             %tr
               %td
-                = re[1]
-              %td
-                = re[6]
+                = re[1].to_s + " - " + re[2].to_s
               %td
                 = re[7]
               %td
+                = re[8]
+              %td
                 = re[10]
               %td
-                = re[8]
+                = re[9]
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();

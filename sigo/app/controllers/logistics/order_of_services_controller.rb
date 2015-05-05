@@ -437,8 +437,8 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def order_service_pdf
-    @company = Company.find(params[:company_id])
     @orderOfService = OrderOfService.find(params[:id])
+    @company = @orderOfService.cost_center.company
     @orderServiceDetails = @orderOfService.order_of_service_details
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     # Numerics/Text values for footer

@@ -34,7 +34,7 @@
               -if @pending > 0
                 %tr
                   %td.col-md-1
-                    = x.id.to_s.rjust(5, '0')
+                    = x.code.to_s.rjust(5, '0')
                   %td.col-md-1
                     = y.delivery_order_detail.article.code
                   %td.col-md-1

@@ -1,7 +1,7 @@
 - @arrItems.each do |x|
   - @pod = x.purchase_order_detail
   - @article = x.purchase_order_detail.delivery_order_detail.article
-  - @pending = @pod.amount.to_f - PurchaseOrderDetail.get_total_received(@pod.id).to_f
+  - @pending = @pod.amount.to_f - PurchaseOrderDetail.get_total_received(@pod.id).to_f + x.amount.to_f
   %tr{id: "tr" + @reg_n.to_s}
     %td(style="display:none" class="pod-di")
       = hidden_field_tag 'stock_input[stock_input_details_attributes][' + @reg_n.to_s + '][purchase_order_detail_id]', @pod.id.to_i
@@ -20,7 +20,7 @@
     %td.pending
       = @pending
     %td.unit-price
-      = text_field_tag 'stock_input[stock_input_details_attributes][' + @reg_n.to_s + '][amount]', nil, class: "form-control unit-price", value: x.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0.01, #{@pod.amount})"
+      = text_field_tag 'stock_input[stock_input_details_attributes][' + @reg_n.to_s + '][amount]', nil, class: "form-control unit-price", value: x.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0.01, #{@pending})"
     %td.delete-item
       %label.checkbox
         = check_box 'stock_input', '[stock_input_details_attributes][' + @reg_n.to_s + '][_destroy]'

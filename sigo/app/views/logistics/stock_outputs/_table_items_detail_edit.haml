@@ -18,12 +18,10 @@
         %select.form-control{:name =>"stock_input[stock_input_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
           %option{:selected => true, :disabled => true} Seleccionar Sector
           - @sectors.each do |sect|
-            - if sect.id == x.sector_id
-              %option{:value => "#{sect.id}", :selected => true}
-                = sect.name
-            - else
-              %option{:value => "#{sect.id}"}
-                = sect.name
+            %optgroup{:label => "#{sect.name}"}
+              -Sector.getSubSectors(sect.code, @cost_center).each do |subsector|
+                %option{:value => "#{subsector.id}", :selected => x.sector_id == subsector.id }          
+                  = sect.name
     %td
       %div
         %select.form-control{:name =>"stock_input[stock_input_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}

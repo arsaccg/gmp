@@ -146,7 +146,7 @@ class Logistics::StockOutputsController < ApplicationController
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @sectors = Sector.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND code LIKE '__'")
     @phases = Phase.getSpecificPhases(@cost_center)
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where(cost_center_id: "#{@head.cost_center_id}")
     @reg_n = Time.now.to_i
     @arrItems = Array.new
     @head.stock_input_details.each do |sid|
