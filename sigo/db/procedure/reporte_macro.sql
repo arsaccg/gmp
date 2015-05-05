@@ -57,18 +57,13 @@ BEGIN
   DECLARE real_materials FLOAT(10,2);
   DECLARE real_equipment FLOAT(10,2);
   DECLARE real_subcontract FLOAT(10,2);
-  DECLARE real_service FLOAT(10,2);  
+  DECLARE real_service FLOAT(10,2);
 
-  DECLARE vi_cost_center_id INTEGER;
   DECLARE v_amount DOUBLE;
   DECLARE v_type_article TEXT;
   DECLARE table_for_insertion TEXT;
 
   DECLARE name_table TEXT;
-
-  DECLARE cost_centers CURSOR FOR 
-    SELECT id FROM cost_centers WHERE active = 1 AND status = "A";
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
   SET val_dir_cost_hand_work = 0.0;
   SET val_dir_cost_materials = 0.0;
@@ -954,7 +949,7 @@ BEGIN
   -- PAYROLLS
   -- SERVICIOS GENERALES REAL
 
-  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_",DATE_FORMAT('2015-02-28','%m%Y'),
+  SET @SQL = CONCAT("INSERT INTO `system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
     "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
           `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
           `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
@@ -969,8 +964,7 @@ BEGIN
           `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
           `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
           `gen_serv_service_costreal`, `gen_serv_service_meta`,
-          `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
-          `insertion_date`)
+          `gen_serv_equip_costreal`,`gen_serv_equip_meta`)
         VALUES (",
           IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",", IFNULL(program_cost_hand_work,0),",",
           IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",", IFNULL(program_cost_materials,0),",",
@@ -986,17 +980,15 @@ BEGIN
           IFNULL(real_materials,0), ",",IFNULL(meta_materials,0), ",",
           IFNULL(real_subcontract,0), ",",IFNULL(meta_subcontract,0), ",",
           IFNULL(real_service,0), ",",IFNULL(meta_service,0), ",",
-          IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0),",","
-          vi_end_date
-          );");
+          IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0), ");");
   PREPARE stmt FROM @SQL;
   EXECUTE stmt;
   DEALLOCATE PREPARE stmt;
-  
+
   SET @minexists = 0;
-  SET name_table = CONCAT("`system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_", DATE_FORMAT('2015-02-28','%m%Y'));
+  SET name_table = CONCAT("`system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_", DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 MONTH),'%m%Y'));
   SET @tbl_sql = CONCAT('SELECT COUNT(*) INTO @minexists FROM ', name_table);
-    
+  
   PREPARE stmt_tbl FROM @tbl_sql;
   EXECUTE stmt_tbl;
   DEALLOCATE PREPARE stmt_tbl;
@@ -1016,7 +1008,7 @@ BEGIN
           `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
           `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
           `gen_serv_service_costreal`, `gen_serv_service_meta`,
-          `gen_serv_equip_costreal`,`gen_serv_equip_meta` FROM `system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_",DATE_FORMAT('2015-01-31','%m%Y'),
+          `gen_serv_equip_costreal`,`gen_serv_equip_meta` FROM `system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_",DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 MONTH),'%m%Y'),
     "` INTO 
           @direct_cost_mo_valoriz, @direct_cost_mo_costreal, @direct_cost_mo_meta, @program_cost_hand_work, 
           @direct_cost_mat_valoriz, @direct_cost_mat_costreal, @direct_cost_mat_meta, @program_cost_materials, 
@@ -1032,7 +1024,8 @@ BEGIN
           @gen_serv_mat_costreal, @gen_serv_mat_meta,
           @gen_serv_subcont_costreal, @gen_serv_subcont_meta,
           @gen_serv_service_costreal, @gen_serv_service_meta,
-          @gen_serv_equip_costreal, @gen_serv_equip_meta");
+          @gen_serv_equip_costreal, @gen_serv_equip_meta
+   LIMIT 1");
     PREPARE stmt_tbl_actual FROM @SELECTSQLACT;
     EXECUTE stmt_tbl_actual;
     DEALLOCATE PREPARE stmt_tbl_actual;
@@ -1084,7 +1077,7 @@ BEGIN
     SET program_cost_service = program_cost_service + @program_cost_service;
   END IF;
 
-  SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",vi_cost_center_id,"_",DATE_FORMAT('2015-02-28','%m%Y'),
+  SET @SQLACC = CONCAT("INSERT INTO `system_bi`.`acc_consumption_cost_actual_",vi_cost_center_id,"_",DATE_FORMAT(vi_start_date,'%m%Y'),
     "`(`direct_cost_mo_valoriz`,`direct_cost_mo_costreal`,`direct_cost_mo_meta`,`direct_cost_mo_prog`,
           `direct_cost_mat_valoriz`,`direct_cost_mat_costreal`,`direct_cost_mat_meta`,`direct_cost_mat_prog`,
           `direct_cost_equip_valoriz`,`direct_cost_equip_costreal`,`direct_cost_equip_meta`,`direct_cost_equip_prog`,
@@ -1099,8 +1092,7 @@ BEGIN
           `gen_serv_mat_costreal`,`gen_serv_mat_meta`,
           `gen_serv_subcont_costreal`, `gen_serv_subcont_meta`,
           `gen_serv_service_costreal`, `gen_serv_service_meta`,
-          `gen_serv_equip_costreal`,`gen_serv_equip_meta`,
-          `insertion_date`)
+          `gen_serv_equip_costreal`,`gen_serv_equip_meta`)
         VALUES (",
           IFNULL(val_dir_cost_hand_work,0),",", IFNULL(real_cost_hand_work,0),",", IFNULL(meta_dir_cost_hand_work,0),",", IFNULL(program_cost_hand_work,0),",",
           IFNULL(val_dir_cost_materials,0),",", IFNULL(real_cost_materials,0), ",",IFNULL(meta_dir_cost_materials,0),",", IFNULL(program_cost_materials,0),",",
@@ -1116,9 +1108,7 @@ BEGIN
           IFNULL(real_materials,0), ",",IFNULL(meta_materials,0), ",",
           IFNULL(real_subcontract,0), ",",IFNULL(meta_subcontract,0), ",",
           IFNULL(real_service,0), ",",IFNULL(meta_service,0), ",",
-          IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0),",","
-          vi_end_date
-          );");
+          IFNULL(real_equipment,0), ",",IFNULL(meta_equipment,0), ");");
   PREPARE accvalue FROM @SQLACC;
   EXECUTE accvalue;
   DEALLOCATE PREPARE accvalue;

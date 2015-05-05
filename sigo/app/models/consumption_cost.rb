@@ -123,34 +123,14 @@ class ConsumptionCost < ActiveRecord::Base
   end
 
   def self.create_tables_new_costcenter(cost_center_id,start_date,end_date)
-    start_date = "2015-01-01".to_date
-    end_date = "2020-03-31".to_date
-    number = 0
-    while (start_date.month <= end_date.month && start_date.year <= end_date.year) do
-      create_tables_accumulated_values = connection.execute(
-        "CREATE TABLE accumulated_values_" + cost_center_id.to_s + "_until_"+start_date.month.to_s.rjust(2,'0')+start_date.year.to_s.rjust(4,'0')+"
-        (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `article_code` varchar(20) NOT NULL,
-          `article_name` varchar(500) NOT NULL,
-          `article_unit` varchar(40) NOT NULL,
-          `programado_specific_lvl1` varchar(255) NOT NULL,
-          `meta_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
-          `real_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
-          `valorizado_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
-          `valor_ganado_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
-          `phase_id` int(11) NOT NULL,
-          `sector_id` int(11) NOT NULL,
-          `working_group_id` int(11) NOT NULL,
-          `measured_meta` varchar(255) NOT NULL,
-          `amount` varchar(255) NOT NULL,
-          `insertion_date` date DEFAULT NULL,
-          PRIMARY KEY (`id`)
-        )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
-      )
+    if end_date.nil?
+      end_date = Time.now.to_date
+    end
+    while (start_date <= end_date) do
       create_tables_acc_consumption_cost_actual = connection.execute(
         "CREATE TABLE acc_consumption_cost_actual_" + cost_center_id.to_s + "_"+start_date.month.to_s.rjust(2,'0')+start_date.year.to_s.rjust(4,'0')+"
         (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `direct_cost_mo_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mo_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mo_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -226,12 +206,14 @@ class ConsumptionCost < ActiveRecord::Base
           `gen_serv_service_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_meta` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `insertion_date` date DEFAULT NULL
-        )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
+          `insertion_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`)
+        )ENGINE=MyISAM  DEFAULT CHARSET=latin1;"
       )
       create_tables_actual_consumption_cost_actual = connection.execute(
         "CREATE TABLE actual_consumption_cost_actual_" + cost_center_id.to_s + "_"+start_date.month.to_s.rjust(2,'0')+start_date.year.to_s.rjust(4,'0')+"
         (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
           `direct_cost_mo_prog` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mo_valgan` varchar(255) COLLATE utf8_bin NOT NULL,
           `direct_cost_mo_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -307,8 +289,9 @@ class ConsumptionCost < ActiveRecord::Base
           `gen_serv_service_costreal` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_meta` varchar(255) COLLATE utf8_bin NOT NULL,
           `gen_serv_service_valoriz` varchar(255) COLLATE utf8_bin NOT NULL,
-          `insertion_date` date DEFAULT NULL
-        )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
+          `insertion_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`)
+        )ENGINE=MyISAM  DEFAULT CHARSET=latin1;"
       )
       create_tables_actual_values = connection.execute(
         "CREATE TABLE actual_values_" + cost_center_id.to_s + "_"+start_date.month.to_s.rjust(2,'0')+start_date.year.to_s.rjust(4,'0')+"
@@ -317,18 +300,29 @@ class ConsumptionCost < ActiveRecord::Base
           `article_code` varchar(20) NOT NULL,
           `article_name` varchar(500) NOT NULL,
           `article_unit` varchar(40) NOT NULL,
-          `programado_specific_lvl1` varchar(255) NOT NULL,
+          `programado_specific_lvl_1` varchar(255) NOT NULL,
           `meta_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
           `real_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
           `valorizado_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
           `valor_ganado_specific_lvl_1` varchar(255) NOT NULL DEFAULT '0',
-          `phase_id` int(11) NOT NULL,
-          `sector_id` int(11) NOT NULL,
+          `measured_programado` varchar(255),
+          `measured_meta` varchar(255),
+          `measured_real` varchar(255),
+          `measured_valorizado` varchar(255),
+          `measured_valor_ganado` varchar(255),
+          `fase_cod_padre` varchar(255),
+          `fase_cod_padre_nombre` varchar(255),
+          `fase_cod_hijo` varchar(255),
+          `fase_cod_hijo_nombre` varchar(255),
+          `sector_cod_padre` varchar(255),
+          `sector_cod_padre_nombre` varchar(255),
+          `sector_cod_hijo` varchar(255),
+          `sector_cod_hijo_nombre` varchar(255),
+          `type` varchar(255),
           `working_group_id` int(11) NOT NULL,
-          `measured_meta` varchar(255) NOT NULL,
-          `insertion_date` date DEFAULT NULL,
+          `insertion_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           PRIMARY KEY (`id`)
-        )ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;"
+        )ENGINE=MyISAM  DEFAULT CHARSET=latin1;"
       )
       start_date = start_date + 1.month
     end
