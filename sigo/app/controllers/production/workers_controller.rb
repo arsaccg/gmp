@@ -469,9 +469,9 @@ class Production::WorkersController < ApplicationController
   end  
 
   def worker_pdf
-    @company = Company.find(session[:company])
     @date = Time.now
     @worker = Worker.find(params[:id])
+    @company = @worker.cost_center.company
     if @worker.entity.date_of_birth!=nil
       @edad = @date.year - @worker.entity.date_of_birth.year
     else

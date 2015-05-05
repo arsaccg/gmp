@@ -6,8 +6,8 @@
       %option{ :value => "OC-#{order[0]}" }
         = "OC - " + order[2].rjust(5, '0') + " - " + order[3].to_s
     - @orders_oos.each do |order|
-      %option{ :value => "OS-#{order.id}" }
-        = "OS - " + order.code.rjust(5, '0') + " - " + order.description.to_s
+      %option{ :value => "OS-#{order[0]}" }
+        = "OS - " + order[2].rjust(5, '0') + " - " + order[3].to_s
   %button.btn.btn-sm.btn-primary#search_deliv_orders{type: "button", :style => "margin-left: 10px;", :onclick => 'show_me_the_details();' }
     %i.fa.fa-search
     Buscar        

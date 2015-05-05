@@ -88,31 +88,32 @@ class Administration::ProvisionsController < ApplicationController
       ver_type << det.type_order
     end
     provision.update_attributes(provision_direct_purchase_parameters)
-
-    ver_ids.each do |vid|
-      if provision.provision_direct_purchase_details.where("order_detail_id = " + vid.to_s).empty?
-        if ver_type[ver_ids.index(vid)] == "purchase_order"
-          PurchaseOrderDetail.find(vid).update_attributes(:received_provision => nil)
-        elsif ver_type[ver_ids.index(vid)] == "service_order"
-          OrderOfServiceDetail.find(vid).update_attributes(:received => nil)
+    if !ver_ids.include?(nil)
+      ver_ids.each do |vid|
+        if provision.provision_direct_purchase_details.where("order_detail_id = " + vid.to_s).empty?
+          if ver_type[ver_ids.index(vid)] == "purchase_order"
+            PurchaseOrderDetail.find(vid).update_attributes(:received_provision => nil)
+          elsif ver_type[ver_ids.index(vid)] == "service_order"
+            OrderOfServiceDetail.find(vid).update_attributes(:received => nil)
+          end
         end
       end
-    end
-    provision.provision_direct_purchase_details.each do |det|
-      if det.type_order == "purchase_order"
-        order = PurchaseOrderDetail.find(det.order_detail_id)
-        if order.amount == det.amount
-          order.update_attributes(:received_provision => 1)
-        else
-          order.update_attributes(:received_provision => nil)
+      provision.provision_direct_purchase_details.each do |det|
+        if det.type_order == "purchase_order"
+          order = PurchaseOrderDetail.find(det.order_detail_id)
+          if order.amount == det.amount
+            order.update_attributes(:received_provision => 1)
+          else
+            order.update_attributes(:received_provision => nil)
+          end
+        elsif det.type_order == "service_order"
+          order = OrderOfServiceDetail.find(det.order_detail_id)
+          if order.amount == det.amount
+            order.update_attributes(:received => 1)
+          else
+            order.update_attributes(:received => nil)
+          end          
         end
-      elsif det.type_order == "service_order"
-        order = OrderOfServiceDetail.find(det.order_detail_id)
-        if order.amount == det.amount
-          order.update_attributes(:received => 1)
-        else
-          order.update_attributes(:received => nil)
-        end          
       end
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
@@ -148,7 +149,7 @@ class Administration::ProvisionsController < ApplicationController
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
     @orders_po = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod WHERE po.state = 'approved' AND po.id = pod.purchase_order_id AND pod.delivery_order_detail_id = dod.id AND dod.requested = 1 AND pod.received_provision IS NULL AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)
-    @orders_oos = OrderOfService.where('entity_id = ? AND state = ? AND cost_center_id = ?', supplier, 'approved', get_company_cost_center('cost_center'))
+    @orders_oos = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM order_of_services po, order_of_service_details pod WHERE po.state = 'approved' AND po.id = pod.order_of_service_id AND pod.received IS NULL AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)    
 
     render(:partial => 'table_list_orders', :layout => false)
   end

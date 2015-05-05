@@ -732,8 +732,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def purchase_order_pdf
-    @company = Company.find(params[:company_id])
     @purchaseOrder = PurchaseOrder.find(params[:id])
+    @company = @purchaseOrder.cost_center.company
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
     aux = 0
