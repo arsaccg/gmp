@@ -249,6 +249,8 @@ class Logistics::StockInputsController < ApplicationController
     @now = Time.now.strftime("%d/%m/%Y - %H:%M")
     @company = Company.find(@input.company_id)
     @orders = Array.new
+    user = User.find(@input.user_inserts_id)
+    @user = user.surname + ", " + user.first_name + " " + user.last_name
     @input.stock_input_details.map(&:purchase_order_detail_id).each do |si|
       @orders << PurchaseOrderDetail.find(si).purchase_order.code
     end

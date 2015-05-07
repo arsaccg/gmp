@@ -222,6 +222,8 @@ class Logistics::StockOutputsController < ApplicationController
     @output = StockInput.find(params[:id])
     @now = Time.now.strftime("%d/%m/%Y - %H:%M")
     @company = Company.find(@output.company_id)
+    user = User.find(@output.user_inserts_id)
+    @user = user.surname + ", " + user.first_name + " " + user.last_name    rescue "-"
     @cost_center = CostCenter.find(@output.cost_center_id)
     @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
     ent = Worker.find(@output.responsible_id).entity rescue nil 

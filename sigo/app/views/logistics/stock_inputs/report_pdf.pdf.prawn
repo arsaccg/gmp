@@ -83,9 +83,9 @@ bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
       style(columns(0..3), :size => 9)
       style(columns(0..1), :align => :center)
     end
-    table([ ["","","","D.N.I.:"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [260,260,50,200]) do
-      columns(0..3).font_style = :bold
-      style(columns(0..3), :size => 9)
+    table([ ["","#{@user}","","","D.N.I.:"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [60,200,260,50,200]) do
+      columns(0..4).font_style = :bold
+      style(columns(0..4), :size => 9)
     end    
     move_down 4
   }
