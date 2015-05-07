@@ -5,12 +5,12 @@ bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
 end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
-    image_tag @company.avatar.path, :fit => [100, 50]
+    image @company.avatar.path, :fit => [100, 50]
     text @company.name, :size => 6
-    text @company.address, :size => 6
+    text @company.short_address, :size => 6
     text @company.ruc, :size => 6
   end
-  bounding_box [bounds.right - 650, bounds.bottom + 500], :width  => 500 do
+  bounding_box [bounds.right - 650, bounds.bottom + 450], :width  => 500 do
     text "ORDEN DE SERVICIO - N° #{@cc.code.to_s}-#{@orderOfService.code.to_s.rjust(3, '0')}", :align => :center, :style => :bold
   end
   move_down 10

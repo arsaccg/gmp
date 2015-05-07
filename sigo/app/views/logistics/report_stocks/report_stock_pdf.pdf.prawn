@@ -31,8 +31,8 @@ table([ ["CÓDIGO", "NOMBRE", "CANTIDAD", "UND"] ], :width => 520, :cell_style =
       end
 
 @articleresult.each do |result|
-  @stock = result[10] - result[12]
-	table([ ["#{result[6]}", "#{result[7]}", "#{@stock}", "#{result[8]}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,300,60,80]) do
+  @stock = result[10] - result[13]
+	table([ ["#{result[7]}", "#{result[8]}", "#{@stock}", "#{result[9]}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,300,60,80]) do
         style(columns(0..0), :align => :center)
         style(columns(2..2), :align => :right)
         style(columns(3..3), :align => :center)

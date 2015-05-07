@@ -31,6 +31,12 @@
               = f.input :address, placeholder: "Dirección del Grupo", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
+            %label.label Dirección Corta
+            %label.input{for: "address"}
+              %i.icon-append.fa.fa-user
+              = f.input :short_address, placeholder: "Dirección del Grupo", input_html: { class: 'form-control' }, label: false              
+        .row
+          %section.col.col-10
             %label.label Logo
             %label.input.input-file{for: "avatar"}
             = f.input :avatar, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"

@@ -180,8 +180,16 @@
                           -pending = 0
                           - if pod.type_order == 'purchase_order'
                             - pending = PurchaseOrderDetail.find(pod.order_detail_id).amount.to_f - Provision.get_amount(pod.order_detail_id).to_a.first.to_f + pod.amount.to_f
+                            - p "----------------------------------------------------------------------------------------------------------------"
+                            - p PurchaseOrderDetail.find(pod.order_detail_id).amount.to_f
+                            - p Provision.get_amount(pod.order_detail_id).to_a.first.to_f
+                            - p "----------------------------------------------------------------------------------------------------------------"
                           - elsif pod.type_order == 'service_order'
                             - pending = OrderOfServiceDetail.find(pod.order_detail_id).amount.to_f - Provision.get_amount(pod.order_detail_id).to_a.first.to_f + pod.amount.to_f
+                            - p "----------------------------------------------------------------------------------------------------------------"
+                            - p OrderOfServiceDetail.find(pod.order_detail_id).amount.to_f
+                            - p Provision.get_amount(pod.order_detail_id).to_a.first.to_f
+                            - p "----------------------------------------------------------------------------------------------------------------"                            
                           -pending = pending.round(2)
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice_from_orders(#{@reg_n.to_s});", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0.01, #{pending})"
                           %code= "Por atender: " + pending.to_s   
@@ -821,7 +829,7 @@
 
   function calculatePrice_from_orders(element){
     var amount = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_amount").val());
-    var igv = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_igv").val());
+    var igv = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_percent_igv").val());
     var unit_price = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_price").val());
     var discount_before = $('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").siblings().find('input');
 
@@ -841,7 +849,7 @@
     console.log(total_dis_bes)
     console.log(total_dis_bep)
     var sdb = (total_dis_bes + total_dis_bep).toFixed(2);
-    console.log(parseFloat($(element).parent().siblings('.discount-before').find('input.amount_with_discount_before_igv').val()))
+    console.log(parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").val()))
     if(parseFloat(sdb)!= parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").val())){
       sdb = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").val());
     }
