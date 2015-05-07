@@ -229,7 +229,7 @@ class Logistics::StockOutputsController < ApplicationController
     ent = Worker.find(@output.responsible_id).entity rescue nil 
     @responsable = ent.paternal_surname + " " + ent.maternal_surname + ", " + ent.name + " - " + ent.dni rescue "-"
     @output_detail = @output.stock_input_details
-    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
+    prawnto inline: true, :prawn => { :page_size => 'A4'}
   end
 
   private

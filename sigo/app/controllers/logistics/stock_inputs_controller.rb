@@ -260,7 +260,7 @@ class Logistics::StockInputsController < ApplicationController
     ent = Entity.find(@input.supplier_id) rescue nil 
     @responsable = ent.name + " - " + ent.ruc rescue "-"
     @input_detail = @input.stock_input_details
-    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
+    prawnto inline: true, :prawn => { :page_size => 'A4'}
   end  
 
   private
