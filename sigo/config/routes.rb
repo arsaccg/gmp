@@ -268,6 +268,7 @@ ArsacLogistica::Application.routes.draw do
       member do
         put 'show_purchase_order_item_field'
         put 'show_purchase_orders'
+        get 'report_pdf'
       end
     end
     resources :stock_outputs do
@@ -279,6 +280,9 @@ ArsacLogistica::Application.routes.draw do
         post 'partial_select_per_warehouse'
         post 'partial_table_per_warehouse'
         post 'display_articles_per_warehouse'
+      end
+      member do
+        get 'report_pdf'
       end
     end
     resources :working_groups

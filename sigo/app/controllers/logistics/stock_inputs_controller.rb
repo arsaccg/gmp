@@ -238,11 +238,28 @@ class Logistics::StockInputsController < ApplicationController
         output[3],
         output[4],
         output[5],
-        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"+ "<a style='margin-left: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/stock_inputs/" + output[0].to_s + "/report_pdf.pdf' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
       ]
     end
     render json: { :aaData => array }
   end
+
+  def report_pdf
+    @input = StockInput.find(params[:id])
+    @now = Time.now.strftime("%d/%m/%Y - %H:%M")
+    @company = Company.find(@input.company_id)
+    @orders = Array.new
+    @input.stock_input_details.map(&:purchase_order_detail_id).each do |si|
+      @orders << PurchaseOrderDetail.find(si).purchase_order.code
+    end
+    @orders = @orders.join(', ')
+    @cost_center = CostCenter.find(@input.cost_center_id)
+    @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
+    ent = Entity.find(@input.supplier_id) rescue nil 
+    @responsable = ent.name + " - " + ent.ruc rescue "-"
+    @input_detail = @input.stock_input_details
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
+  end  
 
   private
   def stock_input_parameters

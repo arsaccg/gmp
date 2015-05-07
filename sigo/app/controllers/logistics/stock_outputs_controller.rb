@@ -90,7 +90,7 @@ class Logistics::StockOutputsController < ApplicationController
         output[3],
         output[4],
         output[5],
-        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_outputs/" + output[0].to_s + "','content','/logistics/stock_outputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_outputs/" + output[0].to_s + "','content','/logistics/stock_outputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/stock_outputs/" + output[0].to_s + "/report_pdf.pdf' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
       ]
     end
     render json: { :aaData => array }
@@ -216,6 +216,18 @@ class Logistics::StockOutputsController < ApplicationController
       @array1 << ai
     end
     render(partial: 'table_items_detail', :layout => false)
+  end
+
+  def report_pdf
+    @output = StockInput.find(params[:id])
+    @now = Time.now.strftime("%d/%m/%Y - %H:%M")
+    @company = Company.find(@output.company_id)
+    @cost_center = CostCenter.find(@output.cost_center_id)
+    @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
+    ent = Worker.find(@output.responsible_id).entity rescue nil 
+    @responsable = ent.paternal_surname + " " + ent.maternal_surname + ", " + ent.name + " - " + ent.dni rescue "-"
+    @output_detail = @output.stock_input_details
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
   end
 
   private
