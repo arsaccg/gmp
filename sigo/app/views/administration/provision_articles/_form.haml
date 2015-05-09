@@ -829,7 +829,7 @@
 
   function calculatePrice_from_orders(element){
     var amount = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_amount").val());
-    var igv = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_percent_igv").val());
+    var igv = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element +"_igv").val());
     var unit_price = parseFloat($('#provision_provision_direct_purchase_details_attributes_' + element + "_price").val());
     var discount_before = $('#provision_provision_direct_purchase_details_attributes_' + element + "_discount_before").siblings().find('input');
 

@@ -10,46 +10,47 @@ repeat :all do
     text @cost_center, :size => 7.5
   end
   bounding_box [bounds.right - 500, bounds.bottom + 740], :width  => 500 do
-    text "Salida - #{@output.warehouse.name}", :align => :center, :style => :bold
+    text "SALIDAS - #{@output.warehouse.name}", :align => :center, :style => :bold
   end
-  move_down 30
+  move_down 10
 
-  table([ ["RESPONSABLE: ", "#{@responsable}", "N° DE DOCUMENTO: ", "#{@output.series.to_s} - #{@output.document}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [80,220,100,130]) do
-    style(columns(0..3), :size => 9)
+  table([ ["RESPONSABLE: ", "#{@responsable[0..50]}", "N° DE DOCUMENTO: ", "#{@output.series.to_s} - #{@output.document}"] ], :width => 530, :cell_style => {:border_color=> "ffffff", :height => "16px"}, :column_widths => [65,243,100,122]) do
+    style(columns(0..3), :size => 7)
+    style(columns(0..3), :border => "white")
     columns(0).font_style = :bold
     columns(2).font_style = :bold
   end
-  table([ ["GRUPO DE TRABAJO", "#{@output.working_group.name}", " TIPO DE DOCUMENTO:", "#{@output.format.name}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [80,220,100,130]) do
-    style(columns(0..3), :size => 9)
+  table([ ["G. DE TRABAJO", "#{@output.working_group.name[0..50]}", " TIPO DE DOCUMENTO:", "#{@output.format.name}"] ], :width => 530, :cell_style => {:border_color=> "ffffff", :height => "16px"}, :column_widths => [65,243,100,122]) do
+    style(columns(0..3), :size => 7)
     columns(0).font_style = :bold
     columns(2).font_style = :bold
   end
-  table([ ["GLOSA:", "#{@output.description}", " FECHA DE DOCUMENTO:", "#{@output.issue_date.strftime('%d/%m/%Y')}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [80,220,100,130]) do
-    style(columns(0..3), :size => 9)
+  table([ ["GLOSA:", "#{@output.description[0..50]}", " FECHA DE DOCUMENTO:", "#{@output.issue_date.strftime('%d/%m/%Y')}"] ], :width => 530, :cell_style => {:border_color=> "ffffff", :height => "16px"}, :column_widths => [65,243,100,122]) do
+    style(columns(0..3), :size => 7)
     columns(0).font_style = :bold
     columns(2).font_style = :bold
   end  
+  move_down 10
 
-
-  table([ ["CÓDIGO", "DESCRIPCIÓN","UND","CANTIDAD","SECTOR", "FASE - SUBFASE"] ], :width => 530, :column_widths => [60,220,30,70,50,100]) do
+  table([ ["Código", "Descripción","Und","Cant.","Sector", "Fase - Subfase"] ], :width => 530, :column_widths => [55,250,25,57,35,108],:cell_style => {:height => "17px"}) do
         style(columns(0..7), :align => :center)
-        style(columns(0..7), :size => 9)
+        style(columns(0..7), :size => 8)
+        columns(0..7).font_style = :bold
       end
 end
 move_down 3
 index=1
 @output_detail.each do |data|
   if(@output_detail.first == data)
-  stroke_horizontal_rule
   end
   pad(1) {
-    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{data.amount}","#{data.sector.code}", "#{data.phase.code} - #{data.phase.name} "] ], :width => 530, :cell_style => {:border_color=> "ffffff"}, :column_widths =>[60,220,30,70,50,100]) do
-        columns(0).font_style = :bold
-      style(columns(0..5), :size => 9)
+    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{data.amount}","#{data.sector.code}", "#{data.phase.code} - #{data.phase.name[0..12]} "] ], :width => 530, :cell_style => {:border_color=> "ffffff"}, :column_widths =>[55,250,25,57,35,108]) do
+      columns(0).font_style = :bold
+      columns(2).text_align = :center
+      style(columns(0..5), :size => 8)
     end
     move_down 4
   }
-  stroke_horizontal_rule
   move_down 3
   index += 1
   if cursor()<100

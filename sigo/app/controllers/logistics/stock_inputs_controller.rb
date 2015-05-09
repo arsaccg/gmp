@@ -254,11 +254,11 @@ class Logistics::StockInputsController < ApplicationController
     @input.stock_input_details.map(&:purchase_order_detail_id).each do |si|
       @orders << PurchaseOrderDetail.find(si).purchase_order.code
     end
-    @orders = @orders.join(', ')
+    @orders = @orders.uniq.join(', ')
     @cost_center = CostCenter.find(@input.cost_center_id)
     @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
     ent = Entity.find(@input.supplier_id) rescue nil 
-    @responsable = ent.name + " - " + ent.ruc rescue "-"
+    @responsable = ent.ruc + " - " + ent.name rescue "-"
     @input_detail = @input.stock_input_details
     prawnto inline: true, :prawn => { :page_size => 'A4'}
   end  

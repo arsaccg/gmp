@@ -148,7 +148,7 @@ class Administration::ProvisionsController < ApplicationController
   def display_orders
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
-    @orders_po = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod WHERE po.state = 'approved' AND po.id = pod.purchase_order_id AND pod.delivery_order_detail_id = dod.id AND dod.requested = 1 AND pod.received_provision IS NULL AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)
+    @orders_po = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod WHERE po.state = 'approved' AND po.id = pod.purchase_order_id AND pod.delivery_order_detail_id = dod.id AND pod.received_provision IS NULL AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)
     @orders_oos = ActiveRecord::Base.connection.execute("SELECT DISTINCT po.id, po.date_of_issue, po.code, po.description FROM order_of_services po, order_of_service_details pod WHERE po.state = 'approved' AND po.id = pod.order_of_service_id AND pod.received IS NULL AND po.cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND po.entity_id = " + supplier.to_s)    
 
     render(:partial => 'table_list_orders', :layout => false)
@@ -303,13 +303,13 @@ class Administration::ProvisionsController < ApplicationController
       # Lo que falta Atender
       pending = 0
       total = 0
-      provision = ProvisionDetail.where("order_detail_id  = "+ @order.id.to_s)
+      provision = ProvisionDirectPurchaseDetail.where("order_detail_id  = "+ @order.id.to_s)
       if provision.count > 0
         amount = 0
         provision.each do |pd|
-          amount += pd.amount
+          amount += pd.amount.to_f
         end
-        pending = @order.amount - amount
+        pending = @order.amount.to_f - amount.to_f
       else
         pending = @order.amount
       end

@@ -10,46 +10,44 @@ repeat :all do
     text @cost_center, :size => 7.5
   end
   bounding_box [bounds.right - 500, bounds.bottom + 740], :width  => 500 do
-    text "Ingreso - #{@input.warehouse.name}", :align => :center, :style => :bold
+    text "INGRESO - #{@input.warehouse.name}", :align => :center, :style => :bold
   end
-  move_down 30
+  move_down 10
 
-  table([ ["PROVEEDOR: ", "#{@responsable}", "N° DE DOCUMENTO: ", "#{@input.series.to_s} - #{@input.document}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [80,220,100,130]) do
-    style(columns(0..3), :size => 8)
+  table([ ["PROVEEDOR: ", "#{@responsable[0..50]}", "N° DE DOCUMENTO: ", "#{@input.series.to_s} - #{@input.document}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [60,243,100,127],:cell_style => {:border_color=> "ffffff", :height=> "16px"}) do
+    style(columns(0..3), :size => 7.5)
     columns(0).font_style = :bold
     columns(2).font_style = :bold
   end
-  table([ ["ORDEN DE COMPRA", "#{@orders}", " TIPO DE DOCUMENTO:", "#{@input.format.name}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [80,220,100,130]) do
-    style(columns(0..3), :size =>8)
+  table([ ["O.COMPRA:", "#{@orders[0..50]}", " TIPO DE DOCUMENTO:", "#{@input.format.name}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [60,243,100,127],:cell_style => {:border_color=> "ffffff", :height=> "16px"}) do
+    style(columns(0..3), :size =>7.5)
     columns(0).font_style = :bold
     columns(2).font_style = :bold
   end
-  table([ ["GLOSA:", "#{@input.description}", " FECHA DE DOC.:", "#{@input.issue_date.strftime('%d/%m/%Y')}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [80,220,100,130]) do
-    style(columns(0..3), :size => 8)
+  table([ ["GLOSA:", "#{@input.description[0..50]}", " FECHA DE DOC.:", "#{@input.issue_date.strftime('%d/%m/%Y')}"] ], :width => 530, :cell_style => {:height => 18}, :column_widths => [60,243,100,127],:cell_style => {:border_color=> "ffffff", :height => "16px"}) do
+    style(columns(0..3), :size => 7.5)
     columns(0).font_style = :bold
     columns(2).font_style = :bold
   end  
 
-
-  table([ ["CÓDIGO", "DESCRIPCIÓN","UND","CANTIDAD"] ], :width => 530, :column_widths => [80,220,100,130]) do
+  move_down 10
+  table([ ["CÓDIGO", "DESCRIPCIÓN","UND","CANTIDAD"] ], :width => 530, :column_widths => [50,250,100,130],:cell_style => {:height => "17px"}) do
         style(columns(0..7), :align => :center)
         style(columns(0..7), :size => 8)
+        columns(0..7).font_style = :bold
       end
 end
-move_down 3
 index=1
 @input_detail.each do |data|
   if(@input_detail.first == data)
-  stroke_horizontal_rule
   end
   pad(1) {
-    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{data.amount}"] ], :width => 530, :cell_style => {:border_color=> "ffffff"}, :column_widths => [80,220,100,130]) do
+    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{data.amount}"] ], :width => 530, :cell_style => {:border_color=> "ffffff", :height=> "17px"}, :column_widths => [50,250,100,130]) do
         columns(0).font_style = :bold
-      style(columns(0..5), :size => 9)
+      style(columns(0..5), :size => 8)
     end
     move_down 4
   }
-  stroke_horizontal_rule
   move_down 3
   index += 1
   if cursor()<100

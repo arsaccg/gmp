@@ -1,21 +1,19 @@
 index2 = 1
 total = "#{pdf.page_count}"
 bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
-  text "Página #{index2}", :size => 9
+  text "Página #{index2}", :size => 7
 end
 repeat :all do
-  bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
-    image @company.avatar.path, :fit => [100, 50]
-    text @company.name, :size => 6
-    text @company.short_address[0..30], :size => 6
-    text @company.ruc, :size => 6
+  bounding_box [bounds.left, bounds.bottom + 540], :width  => 250 do
+    image @company.avatar.path, :fit => [200, 50] rescue nil
+    move_down 5
+    text @company.name, :size => 7
+    text @company.short_address[0..62], :size => 7
+    text @company.ruc, :size => 7
   end
-  move_down 100
-  bounding_box [bounds.right - 650, bounds.bottom + 450], :width  => 500 do
+  bounding_box [bounds.right - 650, bounds.bottom + 470], :width  => 500 do
     text "ORDEN DE COMPRA - N° #{@cc.code.to_s}-#{@purchaseOrder.code.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
-  move_down 10
-
   table([ ["PROVEEDOR", "#{@purchaseOrder.entity.ruc} - #{@purchaseOrder.entity.name}"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [140]) do
         style(columns(0..1), :size => 9)
         columns(0).font_style = :bold
@@ -48,9 +46,10 @@ repeat :all do
       end
   end
 
-  table([ ["ITEM", " CÓDIGO", "DESCRIPCIÓN","At.","Sector","FASE", "U.M", "CANTIDAD", "PRECIO UNITARIO", "% Dscto", "SUBTOTAL"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [35,60,275,35,40,40,30,60,90,50,55]) do
+  table([ ["ITEM", " CÓDIGO", "DESCRIPCIÓN","At.","Sector","FASE", "UND", "CANTIDAD", "PRECIO", "% Dscto", "SUBTOTAL"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [35,60,275,35,40,40,30,60,60,50,85]) do
         style(columns(0..10), :align => :center)
         style(columns(0..10), :size => 9)
+        columns(0..10).font_style = :bold
       end
 end
 move_down 3
@@ -66,7 +65,7 @@ index=1
     "#{number_to_currency((data.discount_before.to_f/(data.amount.to_f*data.unit_price.to_f).to_f)*100.00, unit: ' ', precision: 2)}%", 
 
 
-    "#{number_to_currency(data.unit_price_before_igv.to_f, unit: ' ', precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,60,275,35,40,40,30,60,90,50,55]) do
+    "#{number_to_currency(data.unit_price_before_igv.to_f, unit: ' ', precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,60,275,35,40,40,30,60,60,50,85]) do
       columns(0).font_style = :bold
       style(columns(0..1), :align => :center)
       style(columns(3..7), :align => :center)
@@ -78,11 +77,21 @@ index=1
       text a, :size => 7.5
       if cursor()<100
         a = ""
+        bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
+          table([ 
+            ["", "Condiciones:
+            1. Facturar adjuntando O/C y guias recepcionadas
+            2. Indicar procedencia, marca y lote de producción en casos aplicables
+            3. Adjuntar certificado de calidad, en casos aplicables", ""]
+          ], :width => 550, :column_widths => [70, 410, 70]) do
+              style(columns(0..2), :size => 8)
+            end
+        end         
         start_new_page
         total = "#{pdf.page_count}"
         index2 += 1
         bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
-          text "Página #{index2}", :size => 9
+          text "Página #{index2}", :size => 7
         end
         move_down 152
       end
@@ -92,11 +101,21 @@ index=1
   move_down 2
   index += 1
   if cursor()<100
+    bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
+      table([ 
+        ["", "Condiciones:
+        1. Facturar adjuntando O/C y guias recepcionadas
+        2. Indicar procedencia, marca y lote de producción en casos aplicables
+        3. Adjuntar certificado de calidad, en casos aplicables", ""]
+      ], :width => 550, :column_widths => [70, 410, 70]) do
+          style(columns(0..2), :size => 8)
+        end
+    end  
     start_new_page
     total = "#{pdf.page_count}"
     index2 += 1
     bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
-      text "Página #{index2}", :size => 9
+      text "Página #{index2}", :size => 7
     end
     move_down 152
   end
@@ -125,10 +144,10 @@ if(@percepcion_neto!=0)
       text "de #{total}", :size => 9
     end
   end
-  bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
+  bounding_box [bounds.left, bounds.bottom + 62], :width  => bounds.width do
     text "#{(@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto).to_i.to_words.upcase} Y #{number_with_precision ((@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto)-(@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto).to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name.upcase}", :size => 8,:style => :bold
   end
-  bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
+  bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
     table([ 
       ["", "Condiciones:
       1. Facturar adjuntando O/C y guias recepcionadas
@@ -138,7 +157,7 @@ if(@percepcion_neto!=0)
         style(columns(0..2), :size => 8)
       end
   end
-  bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
+  bounding_box [bounds.right - 200, bounds.bottom + 70], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
       ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"],
@@ -174,10 +193,10 @@ else
       text "de #{total}", :size => 9
     end
   end
-  bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
+  bounding_box [bounds.left, bounds.bottom + 62], :width  => bounds.width do
     text "#{(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto).to_i.to_words.upcase} Y #{number_with_precision ((@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto)-(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto).to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name.upcase}", :size => 8,:style => :bold
   end
-  bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
+  bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
     table([ 
       ["", "Condiciones:
       1. Facturar adjuntando O/C y guias recepcionadas
@@ -187,7 +206,7 @@ else
         style(columns(0..2), :size => 8)
       end
   end
-  bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
+  bounding_box [bounds.right - 200, bounds.bottom + 70], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
       ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]

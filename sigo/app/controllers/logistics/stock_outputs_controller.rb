@@ -30,12 +30,12 @@ class Logistics::StockOutputsController < ApplicationController
   end
 
   def new
-    @company = get_company_cost_center('company')
+    @company = get_company_cost_center('cost_center')
     @head = StockInput.new
     @cost_center = get_company_cost_center('cost_center')
     @responsibles = Worker.where("cost_center_id = ?",@cost_center)
     # @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.where(company_id: "#{@company}")
+    @warehouses = Warehouse.where(cost_center_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @reg_n = Time.now.to_i
@@ -63,11 +63,11 @@ class Logistics::StockOutputsController < ApplicationController
     articles.each do |art|
       rest = Article.getSpecificArticlesforStockOutputs4(warehouse,art[0].to_i)
       if rest.count>0
-        rest = rest.first.at(0).to_i
+        rest = rest.first.at(0).to_f
       else
-        rest = 0
+        rest = 0.0
       end
-      if (art[4]-rest)>0
+      if (art[4]-rest)>0.0
         article_hash << {'id' => art[0].to_s, 'name' => art[1] + ' - ' + art[2] + ' - ' + art[3]}
       end        
     end
@@ -104,11 +104,11 @@ class Logistics::StockOutputsController < ApplicationController
     article.each do |art|
       rest = Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
       if rest.count>0
-        rest = rest.first.at(0).to_i
+        rest = rest.first.at(0).to_f
       else
-        rest = 0
+        rest = 0.0
       end
-      if (art[4]-rest)>0
+      if (art[4]-rest)>0.0
       end    
       @article << [art[0], art[1], art[2], art[3], art[4], art[4]-rest]
     end
@@ -227,7 +227,7 @@ class Logistics::StockOutputsController < ApplicationController
     @cost_center = CostCenter.find(@output.cost_center_id)
     @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
     ent = Worker.find(@output.responsible_id).entity rescue nil 
-    @responsable = ent.paternal_surname + " " + ent.maternal_surname + ", " + ent.name + " - " + ent.dni rescue "-"
+    @responsable = ent.dni + " - " + ent.paternal_surname + " " + ent.maternal_surname + ", " + ent.name rescue "-"
     @output_detail = @output.stock_input_details
     prawnto inline: true, :prawn => { :page_size => 'A4'}
   end

@@ -743,7 +743,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     
 
     @purchaseOrder.purchase_order_details.each do |pod|
-      current_id = pod.delivery_order_detail.delivery_order.id
+      current_id = pod.delivery_order_detail.delivery_order.code
       if aux != current_id
         aux = current_id
         @deliveryOrders << current_id.to_s.rjust(5, '0')
