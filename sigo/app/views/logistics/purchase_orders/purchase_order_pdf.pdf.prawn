@@ -7,7 +7,7 @@ repeat :all do
   bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
     image @company.avatar.path, :fit => [100, 50]
     text @company.name, :size => 6
-    text @company.short_address, :size => 6
+    text @company.short_address[0..30], :size => 6
     text @company.ruc, :size => 6
   end
   move_down 100
