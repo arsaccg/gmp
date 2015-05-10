@@ -5,7 +5,12 @@ bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
 end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 520], :width  => 250 do
-    image @company.avatar.path, :fit => [200, 50] rescue nil
+    imagen = Paperclip::Geometry.from_file(@company.avatar) rescue nil
+    if(!imagen.nil?)
+      if(imagen.width.to_f < 200.00 && imagen.height.to_f < 50.0)
+        image @company.avatar.path rescue nil
+      end
+    end
     move_down 5
     text @company.name, :size => 7
     text @company.short_address[0..62], :size => 7
