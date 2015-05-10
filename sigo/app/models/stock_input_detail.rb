@@ -4,6 +4,7 @@ class StockInputDetail < ActiveRecord::Base
   belongs_to :article
   belongs_to :phase
   belongs_to :sector
+  
   default_scope { where(status: "A") }#.order("id ASC")
   after_validation :do_activecreate, on: [:create]
   

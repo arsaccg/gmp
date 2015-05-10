@@ -31,7 +31,7 @@ repeat :all do
   end  
 
   move_down 10
-  table([ ["CÓDIGO", "DESCRIPCIÓN","UND","CANTIDAD"] ], :width => 530, :column_widths => [50,250,100,130],:cell_style => {:height => "17px"}) do
+  table([ ["Código", "Descripción","Und","Cant.","Sector", "Fase - Subfase"] ], :width => 530, :column_widths => [55,250,25,57,35,108],:cell_style => {:height => "17px"}) do
         style(columns(0..7), :align => :center)
         style(columns(0..7), :size => 8)
         columns(0..7).font_style = :bold
@@ -42,7 +42,8 @@ index=1
   if(@input_detail.first == data)
   end
   pad(1) {
-    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{data.amount}"] ], :width => 530, :cell_style => {:border_color=> "ffffff", :height=> "17px"}, :column_widths => [50,250,100,130]) do
+    phase = data.purchase_order_detail.delivery_order_detail.phase
+    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{number_to_currency(data.amount.to_f, unit: ' ', precision: 2)}", "#{data.purchase_order_detail.delivery_order_detail.sector.code}", "#{phase.code} - #{phase.name[0..12]}"] ], :width => 530, :cell_style => {:border_color=> "ffffff", :height=> "17px"}, :column_widths => [55,250,25,57,35,108]) do
         columns(0).font_style = :bold
       style(columns(0..5), :size => 8)
     end

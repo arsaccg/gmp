@@ -38,13 +38,12 @@ repeat :all do
         columns(0..7).font_style = :bold
       end
 end
-move_down 3
 index=1
 @output_detail.each do |data|
   if(@output_detail.first == data)
   end
   pad(1) {
-    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{data.amount}","#{data.sector.code}", "#{data.phase.code} - #{data.phase.name[0..12]} "] ], :width => 530, :cell_style => {:border_color=> "ffffff"}, :column_widths =>[55,250,25,57,35,108]) do
+    table([ ["#{data.article.code}", "#{data.article.name}", "#{data.article.unit_of_measurement.symbol}", "#{number_to_currency(data.amount.to_f, unit: ' ', precision: 2)}","#{data.sector.code}", "#{data.phase.code} - #{data.phase.name[0..12]} "] ], :width => 530, :cell_style => {:border_color=> "ffffff"}, :column_widths =>[55,250,25,57,35,108]) do
       columns(0).font_style = :bold
       columns(2).text_align = :center
       style(columns(0..5), :size => 8)
