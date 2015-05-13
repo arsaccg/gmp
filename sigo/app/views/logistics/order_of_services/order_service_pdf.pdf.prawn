@@ -84,7 +84,7 @@ index=1
     bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
       text "Página #{index2}", :size => 9
     end
-    move_down 140
+    move_down 147
     stroke_horizontal_rule
   end
 end
