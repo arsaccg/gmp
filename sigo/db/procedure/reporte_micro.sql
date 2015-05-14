@@ -5,7 +5,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOWME_MICRO_VALUES_BI`(IN vi_cost_
 BEGIN
   DECLARE done INT DEFAULT FALSE;
 
-  DECLARE vi_cost_center_id INTEGER;
   DECLARE v_article_code TEXT;
   DECLARE v_article_name TEXT;
   DECLARE v_article_unit TEXT;
@@ -359,11 +358,14 @@ BEGIN
       
       -- GENERAL
       SELECT LEFT(p.code, 2), p.code, p.name INTO v_phase_cod_padre, v_phase_cod_hijo, v_phase_cod_hijo_name FROM phases p WHERE p.id = @i_identify;
+      
       SELECT p.name INTO v_phase_cod_padre_name FROM phases p WHERE p.code LIKE v_phase_cod_padre;
+      
       SELECT LEFT(s.code, 2), s.code, s.name INTO v_sector_cod_padre, v_sector_cod_hijo, v_sector_cod_hijo_name FROM sectors s WHERE s.id = v_sector_id;
-      SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre;
+      
+      SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre LIMIT 1;
+      
       -- GENERAL
-
       BLOCKMO: BEGIN
         DECLARE manoObraInsumos CURSOR FOR
           SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
@@ -395,7 +397,7 @@ BEGIN
             END LOOP read_loop_mo;
           CLOSE manoObraInsumos;
       END BLOCKMO;
-
+      
       BLOCKMATERIAL: BEGIN
         DECLARE materialInsumos CURSOR FOR
           SELECT SUM( ibi.quantity * ibi.price * IFNULL(ib.measured,0) ) as 'parcial', SUM( ibi.quantity * IFNULL(ib.measured,0) ) as 'cantidad',ibi.cod_input
@@ -603,11 +605,14 @@ BEGIN
       SET @i_identify = (SELECT p.id FROM itembywbses ibw, wbsitems wi, phases p WHERE ibw.wbsitem_id = wi.id AND p.code > '0___' AND p.code < '89__' AND wi.phase_id = p.id AND ibw.budget_id = v_budget_id AND ibw.order_budget LIKE v_order GROUP BY p.id);
 
       IF @i_identify IS NOT NULL THEN
-      
+        SELECT @i_identify FROM DUAL;
         -- GENERAL
         SELECT LEFT(s.code, 2), s.code, s.name INTO v_sector_cod_padre, v_sector_cod_hijo, v_sector_cod_hijo_name FROM sectors s WHERE s.id = v_sector_id;
-        SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre;
+        
+        SELECT s.name INTO v_sector_cod_padre_name FROM sectors s WHERE s.code LIKE v_sector_cod_padre LIMIT 1;
+        
         SET v_itembybudget_sale_id = (SELECT eoi.sale_item_by_budget_id FROM equivalence_of_items eoi WHERE eoi.target_item_by_budget_id = v_itembybudget_id);
+        
         SET v_percentage = (SELECT eoi.percentage FROM equivalence_of_items eoi WHERE eoi.target_item_by_budget_id = v_itembybudget_id);
         -- GENERAL
 
@@ -775,6 +780,8 @@ BEGIN
     END LOOP read_loop;
     CLOSE itembybudgets;
   END BLOCKCDVG;
+
+  SELECT 3 FROM DUAL;
 
   -- COSTO DIRECTO / PROGRAMADO
   BLOCKCDP: BEGIN
@@ -1005,6 +1012,8 @@ BEGIN
     CLOSE distributions;
 
   END BLOCKCDP;
+
+  SELECT 4 FROM DUAL;
 
   -- COSTO DIRECTO / COSTO REAL
   BLOCKCDCR: BEGIN
@@ -1314,6 +1323,8 @@ BEGIN
 
   END BLOCKCDCR;
 
+  SELECT 5 FROM DUAL;
+
   -- GASTOS GENERALES META
   BLOCK2: BEGIN
     DECLARE done2 INT DEFAULT FALSE;
@@ -1352,6 +1363,8 @@ BEGIN
     CLOSE articles_gg_meta;
   END BLOCK2;
   -- GASTOS GENERALES META
+
+  SELECT 6 FROM DUAL;
 
   -- GASTOS GENERALES REAL
   -- STOCK OUTPUTS

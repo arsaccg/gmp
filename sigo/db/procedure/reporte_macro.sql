@@ -984,10 +984,10 @@ BEGIN
   PREPARE stmt FROM @SQL;
   EXECUTE stmt;
   DEALLOCATE PREPARE stmt;
-
+  
   SET @minexists = 0;
-  SET name_table = CONCAT("`system_bi`.`actual_consumption_cost_actual_",vi_cost_center_id,"_", DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 MONTH),'%m%Y'));
-  SET @tbl_sql = CONCAT('SELECT COUNT(*) INTO @minexists FROM ', name_table);
+  SET name_table = CONCAT("actual_consumption_cost_actual_",vi_cost_center_id,"_", DATE_FORMAT(DATE_ADD(vi_start_date,INTERVAL -1 MONTH),'%m%Y'));
+  SET @tbl_sql = CONCAT("SELECT COUNT(1) INTO @minexists FROM information_schema.tables WHERE table_schema = 'system_bi' AND table_name = '", name_table, "'");
   
   PREPARE stmt_tbl FROM @tbl_sql;
   EXECUTE stmt_tbl;
@@ -1024,8 +1024,8 @@ BEGIN
           @gen_serv_mat_costreal, @gen_serv_mat_meta,
           @gen_serv_subcont_costreal, @gen_serv_subcont_meta,
           @gen_serv_service_costreal, @gen_serv_service_meta,
-          @gen_serv_equip_costreal, @gen_serv_equip_meta
-   LIMIT 1");
+          @gen_serv_equip_costreal, @gen_serv_equip_meta");
+
     PREPARE stmt_tbl_actual FROM @SELECTSQLACT;
     EXECUTE stmt_tbl_actual;
     DEALLOCATE PREPARE stmt_tbl_actual;
