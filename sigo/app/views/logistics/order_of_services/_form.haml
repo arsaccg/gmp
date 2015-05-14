@@ -427,8 +427,9 @@
       beforeSubmit: function() {
         $('#new_order_of_service').validate({
           // Rules for form validation
+          ignore: '',
           rules : {
-            'order_of_service[supplier_id]': {
+            'order_of_service[entity_id]': {
               required: true
             },
             'order_of_service[money_id]': {
@@ -456,7 +457,7 @@
 
           // Messages for form validation
           messages : {
-            'order_of_service[supplier_id]': "Porfavor, especifica el proveedor.",
+            'order_of_service[entity_id]': "Porfavor, especifica el proveedor.",
             'order_of_service[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
             'order_of_service[method_of_payment_id]': "Porfavor, especifica el método de págo.",
             'order_of_service[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
@@ -472,15 +473,18 @@
             error.insertAfter(element.parent());
             $('#modalLoadingLabelading').modal('hide');
             $('.modal-backdrop.fade.in').remove();
+            $('em.invalid').attr('style', 'color:red');
           }
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr('style', 'color:red');
         // Client Valid
         if( $('#new_order_of_service').valid() ){
           $('#modalLoadingLabelading').modal();
+          $('em.invalid').attr('style', 'color:red');
         }
         // Client Valid
         return $('#new_order_of_service').valid();
@@ -494,6 +498,7 @@
       error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr('style', 'color:red');
       }
     });
 
@@ -501,8 +506,9 @@
       beforeSubmit: function(arr, $form, options) {
         $form.validate({
           // Rules for form validation
+          ignore: '',
           rules : {
-            'order_of_service[supplier_id]': {
+            'order_of_service[entity_id]': {
               required: true
             },
             'order_of_service[money_id]': {
@@ -524,7 +530,7 @@
 
           // Messages for form validation
           messages : {
-            'order_of_service[supplier_id]': "Porfavor, especifica el proveedor.",
+            'order_of_service[entity_id]': "Porfavor, especifica el proveedor.",
             'order_of_service[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
             'order_of_service[method_of_payment_id]': "Porfavor, especifica el método de págo.",
             'order_of_service[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
@@ -533,9 +539,11 @@
           },
           highlight: function (element) {
             $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            $('em.invalid').attr('style', 'color:red');
           },
           unhighlight: function (element) {
             $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+            $('em.invalid').attr('style', 'color:red');
           },
           errorElement: 'span',
           errorClass: 'help-block',
@@ -543,15 +551,18 @@
             error.insertAfter(element.parent());
             $('#modalLoadingLabelading').modal('hide');
             $('.modal-backdrop.fade.in').remove();
+            $('em.invalid').attr('style', 'color:red');
           }
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('em.invalid').attr('style', 'color:red');
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
         // Client Valid
         if( $form.valid() ){
           $('#modalLoadingLabelading').modal();
+          $('em.invalid').attr('style', 'color:red');
         }
         // Client Valid
         return $form.valid();
@@ -565,6 +576,7 @@
       error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
+        $('em.invalid').attr('style', 'color:red');
       }
     });
 

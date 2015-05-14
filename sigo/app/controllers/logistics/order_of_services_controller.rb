@@ -43,7 +43,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          AND (os.description LIKE '%#{keyword}%' OR e.name LIKE '%#{keyword}%')
+          AND (os.description LIKE '%#{keyword}%' OR e.name LIKE '%#{keyword}%' OR os.code LIKE '%#{keyword}%')
           ORDER BY os.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}"
@@ -56,7 +56,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.status = 1
-          AND (os.description LIKE '%#{keyword}%' OR e.name LIKE '%#{keyword}%')
+          AND (os.description LIKE '%#{keyword}%' OR e.name LIKE '%#{keyword}%' OR os.code LIKE '%#{keyword}%')
           AND os.state LIKE '"+state.to_s+"'
           ORDER BY os.id DESC
           LIMIT #{display_length}
@@ -186,7 +186,7 @@ class Logistics::OrderOfServicesController < ApplicationController
       else
         @fecha = OrderOfService.find(dos[0]).state_per_order_of_services.last.created_at.strftime("%d/%m/%Y").to_s
       end
-      array << [dos[6].to_s.rjust(5, '0'), @state, dos[2].to_s, dos[3].to_s, @fecha, dos[4].strftime("%d/%m/%Y").to_s, dos[5].to_s, @action]
+      array << [dos[6].to_s.rjust(5, '0'), @state, dos[2].split( /\r?\n/ )[0].to_s, dos[3].to_s, @fecha, dos[4].strftime("%d/%m/%Y").to_s, dos[5].to_s, @action]
     end
     render json: { :aaData => array }
   end

@@ -214,7 +214,7 @@ class Logistics::StockInputsController < ApplicationController
   def show_purchase_orders
     str_option = ""
     supplier_id = params[:id]
-    PurchaseOrder.select(:id).select(:code).select(:description).joins(:purchase_order_details).where("purchase_order_details.received IS NULL AND purchase_order_details.purchase_order_id = purchase_orders.id AND entity_id = ? AND state LIKE 'approved' AND cost_center_id = ?", supplier_id, get_company_cost_center('cost_center')).each do |purchaseOrder|
+    PurchaseOrder.select(:id).select(:code).select(:description).joins(:purchase_order_details).where("purchase_order_details.received IS NULL AND purchase_order_details.purchase_order_id = purchase_orders.id AND entity_id = ? AND state LIKE 'approved' AND cost_center_id = ?", supplier_id, get_company_cost_center('cost_center')).uniq.each do |purchaseOrder|
       if purchaseOrder.purchase_order_details.where("received IS NULL").count > 0 
         str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.code.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
       end
@@ -238,11 +238,30 @@ class Logistics::StockInputsController < ApplicationController
         output[3],
         output[4],
         output[5],
-        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"+ "<a style='margin-left: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/stock_inputs/" + output[0].to_s + "/report_pdf.pdf' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
       ]
     end
     render json: { :aaData => array }
   end
+
+  def report_pdf
+    @input = StockInput.find(params[:id])
+    @now = Time.now.strftime("%d/%m/%Y - %H:%M")
+    @company = Company.find(@input.company_id)
+    @orders = Array.new
+    user = User.find(@input.user_inserts_id)
+    @user = user.surname + ", " + user.first_name + " " + user.last_name
+    @input.stock_input_details.map(&:purchase_order_detail_id).each do |si|
+      @orders << PurchaseOrderDetail.find(si).purchase_order.code
+    end
+    @orders = @orders.uniq.join(', ')
+    @cost_center = CostCenter.find(@input.cost_center_id)
+    @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
+    ent = Entity.find(@input.supplier_id) rescue nil 
+    @responsable = ent.ruc + " - " + ent.name rescue "-"
+    @input_detail = @input.stock_input_details
+    prawnto inline: true, :prawn => { :page_size => 'A4'}
+  end  
 
   private
   def stock_input_parameters

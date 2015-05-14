@@ -30,12 +30,12 @@ class Logistics::StockOutputsController < ApplicationController
   end
 
   def new
-    @company = get_company_cost_center('company')
+    @company = get_company_cost_center('cost_center')
     @head = StockInput.new
     @cost_center = get_company_cost_center('cost_center')
     @responsibles = Worker.where("cost_center_id = ?",@cost_center)
     # @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.where(company_id: "#{@company}")
+    @warehouses = Warehouse.where(cost_center_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @working_groups = WorkingGroup.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     @reg_n = Time.now.to_i
@@ -63,11 +63,11 @@ class Logistics::StockOutputsController < ApplicationController
     articles.each do |art|
       rest = Article.getSpecificArticlesforStockOutputs4(warehouse,art[0].to_i)
       if rest.count>0
-        rest = rest.first.at(0).to_i
+        rest = rest.first.at(0).to_f
       else
-        rest = 0
+        rest = 0.0
       end
-      if (art[4]-rest)>0
+      if (art[4]-rest)>0.0
         article_hash << {'id' => art[0].to_s, 'name' => art[1] + ' - ' + art[2] + ' - ' + art[3]}
       end        
     end
@@ -90,7 +90,7 @@ class Logistics::StockOutputsController < ApplicationController
         output[3],
         output[4],
         output[5],
-        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_outputs/" + output[0].to_s + "','content','/logistics/stock_outputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_outputs/" + output[0].to_s + "','content','/logistics/stock_outputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/stock_outputs/" + output[0].to_s + "/report_pdf.pdf' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
       ]
     end
     render json: { :aaData => array }
@@ -104,11 +104,11 @@ class Logistics::StockOutputsController < ApplicationController
     article.each do |art|
       rest = Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
       if rest.count>0
-        rest = rest.first.at(0).to_i
+        rest = rest.first.at(0).to_f
       else
-        rest = 0
+        rest = 0.0
       end
-      if (art[4]-rest)>0
+      if (art[4]-rest)>0.0
       end    
       @article << [art[0], art[1], art[2], art[3], art[4], art[4]-rest]
     end
@@ -216,6 +216,20 @@ class Logistics::StockOutputsController < ApplicationController
       @array1 << ai
     end
     render(partial: 'table_items_detail', :layout => false)
+  end
+
+  def report_pdf
+    @output = StockInput.find(params[:id])
+    @now = Time.now.strftime("%d/%m/%Y - %H:%M")
+    @company = Company.find(@output.company_id)
+    user = User.find(@output.user_inserts_id)
+    @user = user.surname + ", " + user.first_name + " " + user.last_name    rescue "-"
+    @cost_center = CostCenter.find(@output.cost_center_id)
+    @cost_center = @cost_center.code.to_s + " - " + @cost_center.name
+    ent = Worker.find(@output.responsible_id).entity rescue nil 
+    @responsable = ent.dni + " - " + ent.paternal_surname + " " + ent.maternal_surname + ", " + ent.name rescue "-"
+    @output_detail = @output.stock_input_details
+    prawnto inline: true, :prawn => { :page_size => 'A4'}
   end
 
   private

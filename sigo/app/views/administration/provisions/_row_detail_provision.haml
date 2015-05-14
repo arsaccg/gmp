@@ -62,7 +62,7 @@
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', data_order_detail[7] , class: "form-control unit-price-igv", :readonly => true  
     %td.current-igv
       = (data_order_detail[8]*100).round.to_s + '%'
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][percent_igv]',data_order_detail[8], class: "igv-item"
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]',data_order_detail[8], class: "igv-item"
     %td.quantity-igv
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',(data_order_detail[9]).round(2), class: "form-control igv-item", :readonly => true
     %td.unit-price-igv

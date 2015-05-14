@@ -4,17 +4,21 @@ bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
   text "Página #{index2}", :size => 9
 end
 repeat :all do
-  bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
-    image_tag @company.avatar.path, :fit => [100, 50]
-    text @company.name, :size => 6
-    text @company.address, :size => 6
-    text @company.ruc, :size => 6
+  bounding_box [bounds.left, bounds.bottom + 520], :width  => 250 do
+    imagen = Paperclip::Geometry.from_file(@company.avatar) rescue nil
+    if(!imagen.nil?)
+      if(imagen.width.to_f < 200.00 && imagen.height.to_f < 50.0)
+        image @company.avatar.path rescue nil
+      end
+    end
+    move_down 5
+    text @company.name, :size => 7
+    text @company.short_address[0..62], :size => 7
+    text @company.ruc, :size => 7
   end
-  bounding_box [bounds.right - 650, bounds.bottom + 500], :width  => 500 do
+  bounding_box [bounds.right - 650, bounds.bottom + 470], :width  => 500 do
     text "ORDEN DE SERVICIO - N° #{@cc.code.to_s}-#{@orderOfService.code.to_s.rjust(3, '0')}", :align => :center, :style => :bold
   end
-  move_down 10
-
   table([ ["PROVEEDOR", "#{@orderOfService.entity.ruc} - #{@orderOfService.entity.name}"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [140]) do
         style(columns(0..1), :size => 9)
         columns(0).font_style = :bold
@@ -32,7 +36,7 @@ repeat :all do
         columns(2).font_style = :bold
       end
 
-  table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN","G. T.","SECTOR","FASE","U.M", "CANTIDAD", "PRECIO UNI.", "% Dscto", "SUBTOTAL"] ], :width => 770, :cell_style => {:height => 18}, :column_widths => [35,70,230,80,40,40,30,65,50,55,75]) do
+  table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN","G. T.","SECTOR","FASE","U.M", "CANTIDAD", "PRECIO UNI.", "% Dscto", "SUBTOTAL"] ], :width => 770, :cell_style => {:height => "18px"}, :column_widths => [35,70,230,80,40,40,30,65,50,55,75]) do
         style(columns(0..10), :align => :center)
         style(columns(0..10), :size => 9)
         columns(0).font_style = :bold
@@ -80,7 +84,7 @@ index=1
     bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
       text "Página #{index2}", :size => 9
     end
-    move_down 140
+    move_down 147
     stroke_horizontal_rule
   end
 end
@@ -93,10 +97,10 @@ repeat :all do
     text "de #{total}", :size => 9
   end
 end
-bounding_box [bounds.left, bounds.bottom + 72], :width  => bounds.width do
+bounding_box [bounds.left, bounds.bottom + 62], :width  => bounds.width do
   text "#{@total_neto.to_i.to_words.upcase} Y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@orderOfService.money.name.upcase}", :size => 9,:style => :bold
 end
-bounding_box [bounds.left, bounds.bottom + 60], :width  => bounds.width do
+bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
 table([ 
   ["", "Condiciones:
   1. Facturar adjuntando O/C y guias recepcionadas

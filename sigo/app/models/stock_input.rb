@@ -72,7 +72,7 @@ class StockInput < ActiveRecord::Base
         AND w.cost_center_id = "+ cost_center_id.to_s + "
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
-        AND (wa.name LIKE '%" + keyword + "%' OR si.document LIKE '%" + keyword + "%')
+        AND (wa.name LIKE '%" + keyword + "%' OR si.document LIKE '%" + keyword + "%' OR e.name LIKE '%" + keyword + "%')
         AND e.id = si.supplier_id
         ORDER BY si.id DESC
         LIMIT " + display_length +
@@ -117,7 +117,7 @@ class StockInput < ActiveRecord::Base
   def self.get_output(cost_center_id, display_length, pager_number, keyword = '')
     if keyword != '' && pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
+        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, w.name , fo.name
         FROM stock_inputs si, warehouses wa, working_groups w, formats fo
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
@@ -133,7 +133,7 @@ class StockInput < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
+        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, w.name , fo.name
         FROM stock_inputs si, warehouses wa, working_groups w, formats fo
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
@@ -148,7 +148,7 @@ class StockInput < ActiveRecord::Base
       )
     else
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.name , fo.name
+        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, w.name , fo.name
         FROM stock_inputs si, warehouses wa, working_groups w, formats fo
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0

@@ -83,7 +83,7 @@ class Provision < ActiveRecord::Base
       SELECT SUM(amount)
       FROM provision_direct_purchase_details
       WHERE order_detail_id = #{order_id}
-      GROUP BY amount
+      GROUP BY order_detail_id
     ").first
     return mysql_result
   end  
