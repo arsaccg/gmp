@@ -63,7 +63,7 @@ class StockInput < ActiveRecord::Base
   def self.get_input(cost_center_id, display_length, pager_number, keyword = '')
     if keyword != '' && pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, e.name , fo.name
+        SELECT si.id, wa.name, si.issue_date, si.document, e.name , fo.name, si.description
         FROM stock_inputs si, warehouses wa, warehouses w, formats fo, entities e
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 1
@@ -80,7 +80,7 @@ class StockInput < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, e.name , fo.name
+        SELECT si.id, wa.name, si.issue_date, si.document, e.name , fo.name, si.description
         FROM stock_inputs si, warehouses wa, warehouses w, formats fo, entities e
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 1
@@ -96,7 +96,7 @@ class StockInput < ActiveRecord::Base
       )
     else
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, e.name , fo.name
+        SELECT si.id, wa.name, si.issue_date, si.document, e.name , fo.name, si.description
         FROM stock_inputs si, warehouses wa, warehouses w, formats fo, entities e
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 1
@@ -117,13 +117,14 @@ class StockInput < ActiveRecord::Base
   def self.get_output(cost_center_id, display_length, pager_number, keyword = '')
     if keyword != '' && pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, w.name , fo.name
-        FROM stock_inputs si, warehouses wa, working_groups w, formats fo
+        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, concat(IF(LENGTH(e.dni)>0,e.dni,e.ruc), ' - ', IF(LENGTH(e.paternal_surname)>0, concat(e.paternal_surname, ', '), ' ') , e.name) , fo.name, si.description
+        FROM stock_inputs si, warehouses wa, working_groups w, formats fo, entities e 
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
         AND si.status = 'A'
         AND si.working_group_id = w.id 
         AND w.cost_center_id = "+ cost_center_id.to_s + "
+        AND si.responsible_id = e.id
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
         AND (wa.name LIKE '%" + keyword + "%' OR si.document LIKE '%" + keyword + "%')
@@ -133,13 +134,14 @@ class StockInput < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, w.name , fo.name
-        FROM stock_inputs si, warehouses wa, working_groups w, formats fo
+        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, concat(IF(LENGTH(e.dni)>0,e.dni,e.ruc), ' - ', IF(LENGTH(e.paternal_surname)>0, concat(e.paternal_surname, ', '), ' ') , e.name) , fo.name, si.description
+        FROM stock_inputs si, warehouses wa, working_groups w, formats fo, entities e 
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
         AND si.status = 'A'
         AND si.working_group_id = w.id 
         AND w.cost_center_id = "+ cost_center_id.to_s + "
+        AND si.responsible_id = e.id
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
         ORDER BY si.id DESC
@@ -148,13 +150,14 @@ class StockInput < ActiveRecord::Base
       )
     else
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, w.name , fo.name
-        FROM stock_inputs si, warehouses wa, working_groups w, formats fo
+        SELECT si.id, CONCAT(wa.name), si.issue_date, si.document, concat(IF(LENGTH(e.dni)>0,e.dni,e.ruc), ' - ', IF(LENGTH(e.paternal_surname)>0, concat(e.paternal_surname, ', '), ' ') , e.name) , fo.name, si.description
+        FROM stock_inputs si, warehouses wa, working_groups w, formats fo, entities e 
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
         AND si.status = 'A'
         AND si.working_group_id = w.id 
         AND w.cost_center_id = "+ cost_center_id.to_s + "
+        AND si.responsible_id = e.id
         AND wa.id = si.warehouse_id
         AND fo.id = si.format_id 
         ORDER BY si.id DESC

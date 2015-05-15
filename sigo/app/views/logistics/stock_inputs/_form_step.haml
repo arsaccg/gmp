@@ -11,23 +11,18 @@
           %label.control-label Almacén
           %input#cont{:style=>"display:none;", :value=>0}
           .input-group
-            %select.form-control#warehouse-select{:name =>"stock_input[warehouse_id]"}
-              -if @warehouses.count == 1
-                - @warehouses.each do |x|
-                  %option{:value => "#{x.id}"}
-                    = x.name
-              -else
-                %option{:value => nil, :disabled => true} Seleccione un almacen
-                - @warehouses.each do |x|
-                  %option{:value => "#{x.id}"}
-                    = x.name
+            %select.form-control#warehouse-select{:name =>"stock_input[warehouse_id]", :required => true}
+              %option{:value => nil, :selected => true, :disabled=> true} Seleccione un Almacén
+              - @warehouses.each do |x|
+                %option{:value => "#{x.id}"}
+                  = x.name
             %span.input-group-addon
               %i.fa.fa-gears
         .col-md-3{"style"=>" margin-right: 20px; "}
           %label.control-label Formato
           .input-group
             %select.form-control#format-select{:name =>"stock_input[format_id]", :required => true}
-              %option{:value => nil, :disabled => true} Seleccione un Formato
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione un Formato
               - @formats.each do |x|
                 %option{:value => "#{x.id}"}
                   = x.name

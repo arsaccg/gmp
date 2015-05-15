@@ -57,7 +57,7 @@ class Logistics::StockInputsController < ApplicationController
     @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.new
     #@periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.where(company_id: "#{@company}")
+    @warehouses = Warehouse.where(cost_center_id: "#{@cost_center}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
   end
@@ -89,10 +89,11 @@ class Logistics::StockInputsController < ApplicationController
 
   def edit
     @company = get_company_cost_center('company')
+    @cc = get_company_cost_center('cost_center')
     @head = StockInput.find(params[:id])
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.where(company_id: "#{@company}")
+    @warehouses = Warehouse.where(cost_center_id: "#{@cc}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     @reg_n = Time.now.to_i
     @arrItems = @head.stock_input_details
@@ -236,9 +237,10 @@ class Logistics::StockInputsController < ApplicationController
         output[1],
         output[2].strftime("%d/%m/%Y").to_s,
         output[3],
+        output[6],
         output[4],
         output[5],
-        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"+ "<a style='margin-left: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/stock_inputs/" + output[0].to_s + "/report_pdf.pdf' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+        "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-warning btn-xs' data-original-title='Editar' data-placement='top' onclick=javascript:load_url_ajax('/logistics/stock_inputs/" + output[0].to_s + "/edit','content',null,null,'GET') rel='tooltip'><i class='fa fa-edit'></i></a>"+ "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/stock_inputs/" + output[0].to_s + "/report_pdf.pdf' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a class='btn btn-danger btn-xs' onclick=javascript:delete_to_url('/logistics/stock_inputs/" + output[0].to_s + "','content','/logistics/stock_inputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title='' style='margin-right: 5px;' data-original-title='Eliminar'  data-placement='top' ><i class='fa fa-trash-o'></i></a>"
       ]
     end
     render json: { :aaData => array }

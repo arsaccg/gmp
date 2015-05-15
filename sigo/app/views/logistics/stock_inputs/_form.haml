@@ -21,15 +21,10 @@
                 %label.control-label Almacén
                 .input-group
                   %select.form-control#warehouse-select{:name =>"stock_input[warehouse_id]"}
-                    -if @warehouses.count == 1
-                      - @warehouses.each do |x|
-                        %option{:value => "#{x.id}", :selected=>@head.warehouse_id==x.id}
-                          = x.name
-                    -else
-                      %option{:value => nil} Seleccione un almacen
-                      - @warehouses.each do |x|
-                        %option{:value => "#{x.id}", :selected=>@head.warehouse_id==x.id}
-                          = x.name
+                    %option{:value => nil} Seleccione un almacen
+                    - @warehouses.each do |x|
+                      %option{:value => "#{x.id}", :selected=>@head.warehouse_id==x.id}
+                        = x.name
                   %span.input-group-addon
                     %i.fa.fa-gears
               .col-md-3{"style"=>" margin-right: 20px; "}
