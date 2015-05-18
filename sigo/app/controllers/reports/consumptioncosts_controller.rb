@@ -49,8 +49,10 @@ class Reports::ConsumptioncostsController < ApplicationController
     @mssg_error = nil
     @month = Date.parse(params[:date] + '-01').strftime('%B %Y')
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
+    inicio =  Date.parse(params[:date] + '-01')
+    inicio_ant =  (Date.parse(params[:date] + '-01') - 1.days).strftime("%Y-%m-01")
   	cost_center_obj = CostCenter.find(get_company_cost_center('cost_center'))
-
+    budget = Budget.where("cost_center_id = #{cost_center_obj.id} AND type_of_budget = 0").first.id rescue 0 
   	@cost_center_str = cost_center_obj.company.name.to_s + ': ' + ' CC ' + cost_center_obj.code.to_s + ' - ' + cost_center_obj.name.to_s
   	@magic_result_ge = ConsumptionCost.apply_all_general_expenses(cost_center_obj.id, month) rescue nil # => MODIFICAR A MONTH
     @magic_result_gen_serv = ConsumptionCost.apply_all_general_services(cost_center_obj.id, month) rescue nil # => MODIFICAR A MONTH
@@ -59,6 +61,9 @@ class Reports::ConsumptioncostsController < ApplicationController
     @accumulated_result_ge = ConsumptionCost.apply_all_accumulated_general_expenses(cost_center_obj.id, month) rescue nil # => MODIFICAR A MONTH
     @accumulated_result_gen_serv = ConsumptionCost.apply_all_accumulated_general_services(cost_center_obj.id, month) rescue nil # => MODIFICAR A MONTH
     @accumulated_result_dc = ConsumptionCost.apply_all_accumulated_direct_cost(cost_center_obj.id, month) rescue nil # => MODIFICAR A MONTH
+    @total_cost = ActiveRecord::Base.connection.execute("SELECT get_total_cost('','#{budget}')").first.first.to_f
+    @proyec_act = [0.0,0.0,0.0]
+    @proyec_bef = [0.0,0.0,0.0]
 
     if (@magic_result_ge != nil && @magic_result_gen_serv != nil && @magic_result_dc != nil) && (@accumulated_result_ge != nil && @accumulated_result_gen_serv != nil && @accumulated_result_dc != nil)
       @costo_total_programado = @magic_result_dc['sum_programado'].to_f
@@ -71,6 +76,50 @@ class Reports::ConsumptioncostsController < ApplicationController
       @costo_total_accumulado_valor_ganado = @accumulated_result_dc['sum_valorganado'].to_f
       @costo_total_accumulado_costo_real = @accumulated_result_dc['sum_costo_real'].to_f + @accumulated_result_ge['sum_costo_real'].to_f + @accumulated_result_gen_serv['sum_costo_real'].to_f
       @costo_total_accumulado_meta = @accumulated_result_dc['sum_meta'].to_f + @accumulated_result_ge['sum_meta'].to_f + @accumulated_result_gen_serv['sum_meta'].to_f
+      proyec_act = ActiveRecord::Base.connection.execute("
+        SELECT SUM( pwd.bill_of_quantitties ) , LEFT( wbs.fase, 2 ) 
+        FROM part_works pw, part_work_details pwd, itembybudgets ibb, wbsitems wbs, itembywbses ibw
+        WHERE pw.cost_center_id = #{cost_center_obj.id}
+        AND pw.date_of_creation BETWEEN  '#{cost_center_obj.start_date}' AND  '#{inicio.to_date.end_of_month.strftime("%Y-%m-%d")}'
+        AND pwd.part_work_id = pw.id
+        AND pwd.itembybudget_id = ibb.id
+        AND ibb.id = ibw.itembybudget_id
+        AND ibw.wbsitem_id = wbs.id
+        GROUP BY LEFT( wbs.fase, 2 ) ")
+      proyec_act.each do |pa|
+        if pa[1].to_i < 90
+          @proyec_act[0] += @proyec_act[0].to_f + pa[0].to_f
+        elsif pa[1].to_i = 90
+          @proyec_act[1] += @proyec_act[1].to_f + pa[0].to_f          
+        else
+          @proyec_act[2] += @proyec_act[2].to_f + pa[0].to_f          
+        end
+      end
+      proyec_bef = ActiveRecord::Base.connection.execute("
+        SELECT SUM( pwd.bill_of_quantitties ) , LEFT( wbs.fase, 2 ) 
+        FROM part_works pw, part_work_details pwd, itembybudgets ibb, wbsitems wbs, itembywbses ibw
+        WHERE pw.cost_center_id = #{cost_center_obj.id}
+        AND pw.date_of_creation BETWEEN  '#{cost_center_obj.start_date}' AND  '#{inicio_ant.to_date.end_of_month.strftime("%Y-%m-%d")}'
+        AND pwd.part_work_id = pw.id
+        AND pwd.itembybudget_id = ibb.id
+        AND ibb.id = ibw.itembybudget_id
+        AND ibw.wbsitem_id = wbs.id
+        GROUP BY LEFT( wbs.fase, 2 ) ")
+      proyec_bef.each do |pa|
+        if pa[1].to_i < 90
+          @proyec_bef[0] += @proyec_bef[0].to_f + pa[0].to_f
+        elsif pa[1].to_i = 90
+          @proyec_bef[1] += @proyec_bef[1].to_f + pa[0].to_f          
+        else
+          @proyec_bef[2] += @proyec_bef[2].to_f + pa[0].to_f          
+        end
+      end
+      p "----------------------------------------------------------------------------------------------------------------"   
+      p @proyec_bef
+      p "----------------------------------------------------------------------------------------------------------------"   
+      p @proyec_act
+      p "----------------------------------------------------------------------------------------------------------------"   
+
     else
       @mssg_error = "No estan completos los datos para hacer la consulta en la fecha seleccionada."
     end
