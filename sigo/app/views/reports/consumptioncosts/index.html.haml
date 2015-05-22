@@ -212,78 +212,78 @@
                 .col-md-12
                   %label.checkbox
                     ACUMUL. ANTERIOR
-                    = check_box_tag 'chbx_all_previous_accumulates'
+                    = check_box_tag 'chbx_all_previous_accumulates', false
 
                   %label.checkbox
                     Programado
-                    = check_box_tag 'chbx_all_previous_accumulates', 'programado'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'programado', true, {class: 'chckbx-ancient-item'}
 
                   %label.checkbox
                     Valorizado
-                    = check_box_tag 'chbx_all_previous_accumulates', 'valorizado'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'valorizado', true, {class: 'chckbx-ancient-item'}
 
                   %label.checkbox
                     Valor Ganado
-                    = check_box_tag 'chbx_all_previous_accumulates', 'valor_ganado'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'valor_ganado', true, {class: 'chckbx-ancient-item'}
 
                   %label.checkbox
                     Real
-                    = check_box_tag 'chbx_all_previous_accumulates', 'real'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'real', true, {class: 'chckbx-ancient-item'}
 
                   %label.checkbox
                     Meta
-                    = check_box_tag 'chbx_all_previous_accumulates', 'meta'
+                    = check_box_tag 'chbx_all_previous_accumulates', 'meta', true, {class: 'chckbx-ancient-item'}
 
                 .col-md-12{:style => "border-top: 1px solid #7D7D7D; border-bottom: 1px solid #7D7D7D;"}
                   %label.checkbox
                     ACUMULADO ACTUAL
-                    = check_box_tag 'chbx_all_actual_accumulate_values'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', false
 
                   %label.checkbox
                     Programado
-                    = check_box_tag 'chbx_all_actual_accumulate_values', 'programado'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'programado', true, {class: 'chckbx-actual-item'}
 
                   %label.checkbox
                     Valorizado
-                    = check_box_tag 'chbx_all_actual_accumulate_values', 'valorizado'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'valorizado', true, {class: 'chckbx-actual-item'}
 
                   %label.checkbox
                     Valor ganado
-                    = check_box_tag 'chbx_all_actual_accumulate_values', 'valor_ganado'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'valor_ganado', true, {class: 'chckbx-actual-item'}
 
                   %label.checkbox
                     Real
-                    = check_box_tag 'chbx_all_actual_accumulate_values', 'real'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'real', true, {class: 'chckbx-actual-item'}
 
                   %label.checkbox
                     Meta
-                    = check_box_tag 'chbx_all_actual_accumulate_values', 'meta'
+                    = check_box_tag 'chbx_all_actual_accumulate_values', 'meta', true, {class: 'chckbx-actual-item'}
 
                 .col-md-12
 
                   %label.checkbox
                     ACTUAL
-                    = check_box_tag 'chbx_all_actual_values'
+                    = check_box_tag 'chbx_all_actual_values', false
 
                   %label.checkbox
                     Programado
-                    = check_box_tag 'chbx_all_actual_values', 'programado'
+                    = check_box_tag 'chbx_all_actual_values', 'programado', true, {class: 'chckbx-actual-to-item'}
 
                   %label.checkbox
                     Valorizado
-                    = check_box_tag 'chbx_all_actual_values', 'valorizado'
+                    = check_box_tag 'chbx_all_actual_values', 'valorizado', true, {class: 'chckbx-actual-to-item'}
 
                   %label.checkbox
                     Valor ganado
-                    = check_box_tag 'chbx_all_actual_values', 'valor_ganado'
+                    = check_box_tag 'chbx_all_actual_values', 'valor_ganado', true, {class: 'chckbx-actual-to-item'}
 
                   %label.checkbox
                     Real
-                    = check_box_tag 'chbx_all_actual_values', 'real'
+                    = check_box_tag 'chbx_all_actual_values', 'real', true, {class: 'chckbx-actual-to-item'}
 
                   %label.checkbox
                     Meta
-                    = check_box_tag 'chbx_all_actual_values', 'meta'
+                    = check_box_tag 'chbx_all_actual_values', 'meta', true, {class: 'chckbx-actual-to-item'}
 
               // MOSTRANDO CANTIDAD O PARCIALES
               .col-md-4
@@ -294,18 +294,18 @@
 
                 %label.checkbox
                   Parcial
-                  = check_box_tag 'type_amount', 'specific_lvl_1'
+                  = check_box_tag 'type_amount', 'specific_lvl_1', true
 
               // MOSTRANDO PROYECCIONES ACTUALES O ANTERIORES
               .col-md-4
                 %h5 Proyecciones
                 %label.checkbox
                   Actual
-                  = check_box_tag 'chbx_showme_actual_forecasts'
+                  = check_box_tag 'chbx_showme_actual_forecasts', true
 
                 %label.checkbox
                   Anterior
-                  = check_box_tag 'chbx_showme_previous_forecasts'
+                  = check_box_tag 'chbx_showme_previous_forecasts', true
 
         .modal-footer
           %button#search_with_config.btn.btn-primary{type: "button"}
@@ -316,9 +316,30 @@
   :javascript
     
     loadScript("#{ asset_path 'toolbox.min.js', type: :javascript }");
+
     $(document).ready(function(){
+
       size = $('.config-class').parent().parent().outerHeight();
       $('.config-class').select2({ width: '130px' });
+
+      $('#chbx_all_previous_accumulates').click(function(){
+        if($(this).is(':checked')){
+          $('.chckbx-ancient-item').prop('checked', true);
+        }
+      });
+
+      $('#chbx_all_actual_accumulate_values').click(function(){
+        if($(this).is(':checked')){
+          $('.chckbx-actual-item').prop('checked', true);
+        }
+      });
+
+      $('#chbx_all_actual_values').click(function(){
+        if($(this).is(':checked')){
+          $('.chckbx-actual-to-item').prop('checked', true);
+        }
+      });
+
     });
     
     $('#search_with_config').click(function(){
