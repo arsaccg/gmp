@@ -51,7 +51,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   def new
     @action="new"
     @costCenter = CostCenter.new
-    @executors = SubcontractEquipment.where("cost_center_id = " + get_company_cost_center('cost_center'))
+    @executors = SubcontractEquipment.where("cost_center_id = " + get_company_cost_center('cost_center').to_s)
     last=ValuationOfEquipment.last
     if !last.nil?
       @start = last.start_date
