@@ -746,7 +746,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       #desc_after_for_order = ((@valuationofequipment.detraction.to_f*@valuationofequipment.totalbill.to_f/100 + @valuationofequipment.fuel_discount.to_f + @valuationofequipment.other_discount.to_f)/ids_sec_phase.count.to_f).round(2)
       ids_sec_phase.each do |isp|
         # Creacion
-        code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
+        code_str = (OrderOfService.where("cost_center_id = " + cost_center_id.to_s).last.code.to_i + 1).to_s.rjust(5, '0') rescue 1.to_s.rjust(5, '0') # next_code
 
         order_of_service = OrderOfService.new
         order_of_service.state = 'approved'
