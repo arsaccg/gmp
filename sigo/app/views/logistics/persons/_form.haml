@@ -67,7 +67,7 @@
           %section.col.col-10
             %label.label Acceso a Compañias
             %label.select
-              = f.association :companies, :as => :collection_select, :label => false, wrapper_html: false
+              = f.association :companies, :as => :collection_select, :label => false, wrapper_html: false, input_html: { :multiple => true }
         .row
           %section.col.col-10.collection_select 
             %label.label Acceso a Centro de Costo

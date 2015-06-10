@@ -99,6 +99,8 @@
                   - if @action != nil && @action == 'edit'
                     - i = 1
                     - @deliveryOrder.delivery_order_details.each do |dod|
+                      -flag = PurchaseOrderDetail.find_by_delivery_order_detail_id(dod.id)
+                      - p flag.inspect
                       %tr(class="order_delivery_item"){id: "tr" + dod.id.to_s}
                         %td.article-id(style="display:none")
                           = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][article_id]', dod.article_id.to_i
@@ -112,7 +114,10 @@
                           = Article.find_idarticle_global_by_specific_idarticle(dod.article_id, @costcenter_id)[2]
                         %td.col-md-1
                           .col-md-9
-                            = text_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
+                            -if !flag.nil?
+                              = text_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount', :readonly=> true
+                            -else
+                              = text_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
                         %td.precio
                           %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][sector_id]"}
                             %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
@@ -149,9 +154,10 @@
                         %td(style="display:none")
                           = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][delivery_order_id]', @deliveryOrder.id
                         %td.delete-item
-                          %label.checkbox
-                            = check_box 'delivery_order', '[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][_destroy]'
-                            %i
+                          -if flag.nil?
+                            %label.checkbox
+                              = check_box 'delivery_order', '[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][_destroy]'
+                              %i
                       - i += 1
         %footer
           %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}

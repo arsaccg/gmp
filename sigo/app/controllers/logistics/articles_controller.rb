@@ -336,7 +336,7 @@ class Logistics::ArticlesController < ApplicationController
     if article.save
       flash[:notice] = "Se ha actualizado correctamente los datos."
       CostCenter.all.each do |cc|
-        ActiveRecord::Base.connection.execute("UPDATE articles_from_cost_center_"+cc.id.to_s+" SET  code = '"+article.code.to_s+"', type_of_article_id ="+article.type_of_article_id.to_s+" , category_id = "+article.category_id.to_s+", name= '"+article.name.to_s+"' , description= '"+article.description.to_s+"', unit_of_measurement_id="+article.unit_of_measurement_id.to_s+" WHERE id ="+article.id.to_s)
+        ActiveRecord::Base.connection.execute("UPDATE articles_from_cost_center_"+cc.id.to_s+" SET  code = '"+article.code.to_s+"', type_of_article_id ="+article.type_of_article_id.to_s+" , category_id = "+article.category_id.to_s+", name= '"+article.name.to_s+"' , description= '"+article.description.to_s+"', unit_of_measurement_id="+article.unit_of_measurement_id.to_s+" WHERE article_id ="+article.id.to_s)
       end
       redirect_to :action => :index
     else

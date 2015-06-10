@@ -35,7 +35,7 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Fecha de Vencimiento
             %section.col-md-6
-              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control"
+              = text_field_tag 'bond_letter_detail[expiration_date]', nil, class: "form-control", as: :string, type: "date"
           .row
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Monto
@@ -94,17 +94,6 @@
   $(document).ready(function (){
     
     $('#bond_letter_new').attr("tabindex","");
-    $('#bond_letter_detail_expiration_date').datetimepicker({
-          language:  'es',
-          weekStart: 1,
-          todayBtn:  1,
-          autoclose: 1,
-          todayHighlight: 1,
-          startView: 1,
-          minView: 0,
-          maxView: 1,
-          forceParse: 0
-    });
 
     $("#concept").change(function() {
         // foo is the id of the other select box 

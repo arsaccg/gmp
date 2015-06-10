@@ -35,7 +35,7 @@
                         %th Doc
                         %th Acciones
                     %tbody
-                      - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
+                      - type_issu.issued_letters.order(:date).each do |lawre|
                         %tr
                           %td
                             = lawre.type_of_doc.to_s
@@ -69,7 +69,7 @@
                         %th Doc
                         %th Acciones
                     %tbody
-                      - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
+                      - type_issu.issued_letters.order(:date).each do |lawre|
                         %tr
                           %td
                             = lawre.type_of_doc.to_s

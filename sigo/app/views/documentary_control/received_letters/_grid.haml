@@ -33,7 +33,7 @@
                         %th Doc
                         %th Acciones
                     %tbody
-                      - type_recei.received_letters.each do |lawre|
+                      - type_recei.received_letters.order(:date).each do |lawre|
                         %tr
                           %td
                             = lawre.name.to_s
@@ -64,7 +64,7 @@
                         %th Doc
                         %th Acciones
                     %tbody
-                      - type_recei.received_letters.each do |lawre|
+                      - type_recei.received_letters.order(:date).each do |lawre|
                         %tr
                           %td
                             = lawre.name.to_s

@@ -114,12 +114,6 @@ class Reports::ConsumptioncostsController < ApplicationController
           @proyec_bef[2] += @proyec_bef[2].to_f + pa[0].to_f          
         end
       end
-      p "----------------------------------------------------------------------------------------------------------------"   
-      p @proyec_bef
-      p "----------------------------------------------------------------------------------------------------------------"   
-      p @proyec_act
-      p "----------------------------------------------------------------------------------------------------------------"   
-
     else
       @mssg_error = "No estan completos los datos para hacer la consulta en la fecha seleccionada."
     end
@@ -197,9 +191,22 @@ class Reports::ConsumptioncostsController < ApplicationController
     month = Date.parse(params[:date] + '-01').strftime('%m%Y')
     prev_month = (Date.parse(params[:date] + '-01') - 1.month).strftime('%m%Y')
     @cost_center_id = get_company_cost_center('cost_center')
+    cc= CostCenter.find(@cost_center_id)
+    budget = Budget.where("cost_center_id = #{@cost_center_id} AND type_of_budget = 0").first.id rescue 0 
+    total_cost = ActiveRecord::Base.connection.execute("select get_total_cost('','#{budget}')").first.first
+    fin = Date.parse(params[:date] + '-01').strftime('%Y-%m-01')
+    partidas = ActiveRecord::Base.connection.execute("
+      SELECT SUM( pwd.bill_of_quantitties ) 
+      FROM part_works pw, part_work_details pwd
+      WHERE pw.cost_center_id =1
+      AND pw.date_of_creation
+      BETWEEN  '#{cc.start_date}' AND  '#{fin}'
+      AND pwd.part_work_id = pw.id
+      GROUP BY pw.cost_center_id
+      ").first.first
+    resta = total_cost.to_f - partidas.to_f
     table_name = "actual_values_" + @cost_center_id.to_s + '_' + month
     @array_order_filters = Array.new
-
     if params[:subphase]!=""
       @array_order_filters << " AND fase_cod_hijo IN (" + Phase.where( :id => params[:subphase] ).map(&:code).join(',').to_s + ")"
     elsif params[:phase]!=""

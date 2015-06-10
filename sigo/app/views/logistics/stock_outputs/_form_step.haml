@@ -15,7 +15,7 @@
             .input-group
               %select.form-control#responsible-select{:name => 'stock_input[responsible_id]', :style=>'width:100%;padding: 0;'}
                 - @responsibles.each do |x|
-                  %option(value = "#{x.id}")
+                  %option(value = "#{x.entity.id}")
                     = x.entity.name.to_s + ' ' + x.entity.second_name.to_s + ' ' + x.entity.paternal_surname.to_s + ' ' + x.entity.maternal_surname.to_s
 
         .col-md-2
